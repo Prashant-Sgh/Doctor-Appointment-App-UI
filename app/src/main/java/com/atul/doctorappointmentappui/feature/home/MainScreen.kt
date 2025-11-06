@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,12 +17,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
 
 @Composable
 fun MainScreen(
-
+    viewModel: MainViewModel,
+    modifier: Modifier
 ) {
+
+    val categories by viewModel.category.collectAsState()
     var selectedBottom by remember { mutableStateOf(2) }
+
+    LaunchedEffect(Unit) {
+        if (categories.isEmpty()) viewModel.loadCategory()
+    }
 
     Scaffold (
         containerColor = Color.White,
@@ -35,12 +45,8 @@ fun MainScreen(
             item { HomeHeader() }
             item { Banner() }
             item { SectionHeader(title = "Doctor Speciality", onSeeAll = null) }
+            item { CategoryRow(categories) }
         }
     }
 }
 
-@Preview
-@Composable
-private fun Preview() {
-    MainScreen()
-}
