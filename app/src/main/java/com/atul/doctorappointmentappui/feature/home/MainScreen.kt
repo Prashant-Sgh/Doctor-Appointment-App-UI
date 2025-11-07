@@ -17,16 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
 
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
-    modifier: Modifier
+    modifier: Modifier? = null
 ) {
 
     val categories by viewModel.category.collectAsState()
-    var selectedBottom by remember { mutableStateOf(2) }
+    var selectedBottom by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
         if (categories.isEmpty()) viewModel.loadCategory()
@@ -50,3 +51,9 @@ fun MainScreen(
     }
 }
 
+@Preview
+@Composable
+private fun Preview() {
+    val viewmodel: MainViewModel = viewModel ()
+    MainScreen(viewmodel)
+}
