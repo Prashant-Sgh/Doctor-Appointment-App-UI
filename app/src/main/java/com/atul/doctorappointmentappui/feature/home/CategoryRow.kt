@@ -1,5 +1,6 @@
 package com.atul.doctorappointmentappui.feature.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,11 +22,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.CategoryModel
 
@@ -45,12 +50,16 @@ fun CategoryItem(item: CategoryModel) {
                 .background(color = colorResource(R.color.lightPuurple)),
             contentAlignment = Alignment.Center
         ) {
+            Log.d("Async Image 1:" , "URL : ${item.Picture}")
             AsyncImage(
-                model = item.Picture,
-                contentDescription = null,
+                model = ImageRequest.Builder(LocalContext.current).data(item.Picture).crossfade(true).build(),
+                contentDescription = "async image",
+                placeholder = painterResource(R.drawable.fav_bold),
                 modifier = Modifier.size(30.dp),
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Fit,
+                error = painterResource(R.drawable.btn_2)
             )
+            Log.d("Async Image 2:" , "URL : ${item.Picture}")
         }
 
         Spacer(Modifier.height(8.dp))
@@ -63,7 +72,9 @@ fun CategoryItem(item: CategoryModel) {
 
 @Composable
 fun CategoryRow(items: List<CategoryModel>) {
-    Box(Modifier.fillMaxWidth().height(100.dp)) {
+    Box(Modifier
+        .fillMaxWidth()
+        .height(100.dp)) {
         if (items.isEmpty()) {
             CircularProgressIndicator(Modifier.align(Alignment.Center))
         }
@@ -79,3 +90,9 @@ fun CategoryRow(items: List<CategoryModel>) {
         }
     }
 }
+
+//@Preview
+//@Composable
+//private fun Preview() {
+//    CategoryItem (CategoryModel(0, "Item", "https://img.freepik.com/premium-photo/random-image_590832-7710.jpg"))
+//}
