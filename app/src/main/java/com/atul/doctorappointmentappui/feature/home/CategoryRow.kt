@@ -50,16 +50,13 @@ fun CategoryItem(item: CategoryModel) {
                 .background(color = colorResource(R.color.lightPuurple)),
             contentAlignment = Alignment.Center
         ) {
-            Log.d("Async Image 1:" , "URL : ${item.Picture}")
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current).data(item.Picture).crossfade(true).build(),
                 contentDescription = "async image",
                 placeholder = painterResource(R.drawable.fav_bold),
                 modifier = Modifier.size(30.dp),
                 contentScale = ContentScale.Fit,
-                error = painterResource(R.drawable.btn_2)
             )
-            Log.d("Async Image 2:" , "URL : ${item.Picture}")
         }
 
         Spacer(Modifier.height(8.dp))
