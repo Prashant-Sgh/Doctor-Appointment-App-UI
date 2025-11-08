@@ -2,6 +2,7 @@ package com.atul.doctorappointmentappui.core.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.atul.doctorappointmentappui.core.model.CategoryModel
+import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -35,6 +36,35 @@ class MainViewModel: ViewModel() {
 
             override fun onCancelled(error: DatabaseError) {
                 categoryLoaded = false
+            }
+
+        })
+    }
+
+    private val _doctors = MutableStateFlow<List<DoctorModel>>(emptyList())
+    val doctors: StateFlow<List<DoctorModel>> = _doctors
+
+    var doctorsLoaded = false
+
+    fun loadDoctors(force: Boolean = false) {
+        if (doctorsLoaded && !force) return
+
+        doctorsLoaded = true
+
+        val ref = db.getReference("Doctors")
+
+        ref.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var items = mutableListOf<DoctorModel>()
+                for (child in snapshot.children) {
+                    child.getValue(DoctorModel::class.java)?.let { items.add(it) }
+                }
+
+                _doctors.value = items
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                doctorsLoaded = false
             }
 
         })

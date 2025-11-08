@@ -38,8 +38,11 @@ fun MainScreen(
     val categories by viewModel.category.collectAsState()
     var selectedBottom by remember { mutableStateOf(0) }
 
+    val doctors by viewModel.doctors.collectAsState()
+
     LaunchedEffect(Unit) {
         if (categories.isEmpty()) viewModel.loadCategory()
+        if (doctors.isEmpty()) viewModel.loadDoctors()
     }
 
     Scaffold (
@@ -56,6 +59,8 @@ fun MainScreen(
             item { Banner() }
             item { SectionHeader(title = "Doctor Speciality", onSeeAll = null) }
             item { CategoryRow(categories) }
+            item { SectionHeader(title = "Doctor Speciality", onSeeAll = null) }
+            item { DoctorRow(items = doctors, onClick = {}) }
         }
     }
 }

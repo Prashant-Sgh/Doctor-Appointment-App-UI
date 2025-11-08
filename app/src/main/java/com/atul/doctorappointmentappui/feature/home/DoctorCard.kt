@@ -4,14 +4,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -56,7 +60,7 @@ fun DoctorCard(item: DoctorModel, onClick: () -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
-                    model = item.Picture,
+                    model = item.picture,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit
@@ -65,14 +69,14 @@ fun DoctorCard(item: DoctorModel, onClick: () -> Unit) {
 
             Spacer(Modifier.height(8.dp))
             Text(
-                item.Name,
+                item.name,
                 color = Color.Black,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = item.Specialization,
+                text = item.specialty,
                 color = colorResource(R.color.ggray),
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
@@ -88,7 +92,19 @@ fun DoctorCard(item: DoctorModel, onClick: () -> Unit) {
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = "${item.Rating}",
+                    text = "${item.rating}",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(Modifier.weight(1f))
+                Image(
+                    painter = painterResource(R.drawable.experience),
+                    contentDescription = null
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    "${item.experience} Years",
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
@@ -100,5 +116,5 @@ fun DoctorCard(item: DoctorModel, onClick: () -> Unit) {
 @Preview
 @Composable
 private fun Preview() {
-    DoctorCard(DoctorModel(Name = "Dr. John Doe", Specialization = "Cardiologist", Picture = "", Rating =  4.9), {})
+    DoctorCard(DoctorModel(name = "Dr. John Doe", specialty = "Cardiologist", picture = "", rating =  4.9), {})
 }
