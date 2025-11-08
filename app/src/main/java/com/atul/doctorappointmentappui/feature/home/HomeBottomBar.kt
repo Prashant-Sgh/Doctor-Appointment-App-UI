@@ -54,9 +54,3 @@ fun HomeBottomBar (selected: Int, onSelect: (Int) -> Unit) {
 
     }
 }
-
-@Preview
-@Composable
-private fun Preview() {
-    HomeBottomBar(1, {})
-}

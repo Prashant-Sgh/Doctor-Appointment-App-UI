@@ -50,9 +50,3 @@ fun HomeHeader() {
         }
     }
 }
-
-@Preview
-@Composable
-private fun Preview() {
-    HomeHeader()
-}

@@ -79,10 +79,3 @@ fun CategoryRow(items: List<CategoryModel>) {
         }
     }
 }
-
-
-@Preview
-@Composable
-private fun Preview() {
-    CategoryItem(CategoryModel(0, "Category 1", "https://yt3.googleusercontent.com/ytc/AIdro_ldUJ4E23r9SokViYq6Y6Wj0bcSuv6ILJs8EFjw8gGDIA=s160-c-k-c0x00ffffff-no-rj"))
-}

@@ -50,10 +50,3 @@ fun MainScreen(
         }
     }
 }
-
-@Preview
-@Composable
-private fun Preview() {
-    val viewmodel: MainViewModel = viewModel ()
-    MainScreen(viewmodel)
-}

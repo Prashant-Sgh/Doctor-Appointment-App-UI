@@ -90,9 +90,3 @@ fun IntroScreen(onStartClick: ()-> Unit ) {
         }
     }
 }
-
-@Preview
-@Composable
-private fun Preview() {
-    IntroScreen { {} }
-}

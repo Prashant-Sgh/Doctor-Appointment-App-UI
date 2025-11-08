@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -12,25 +13,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
 import com.atul.doctorappointmentappui.feature.home.MainScreen
+import com.atul.doctorappointmentappui.navigatiion.AppNavGraph
 import com.atul.doctorappointmentappui.ui.theme.DoctorAppointmentAppUITheme
 
 class MainActivity : ComponentActivity() {
+    private val vm by viewModels<MainViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val viewModel: MainViewModel = viewModel()
-            DoctorAppointmentAppUITheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    Greeting(
-//                        name = "Android",
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
-                    MainScreen(viewModel = viewModel, modifier = Modifier.padding(innerPadding))
-                }
-            }
+                val nav = rememberNavController()
+                AppNavGraph(nav, vm)
         }
     }
 }
