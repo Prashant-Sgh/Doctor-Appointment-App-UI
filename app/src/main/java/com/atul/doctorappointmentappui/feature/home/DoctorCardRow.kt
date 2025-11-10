@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -18,6 +19,7 @@ fun DoctorRow(
 ) {
     Box(
         modifier = Modifier
+            .padding(top = 16.dp)
             .fillMaxWidth()
             .heightIn(min = 260.dp)
     ) {
