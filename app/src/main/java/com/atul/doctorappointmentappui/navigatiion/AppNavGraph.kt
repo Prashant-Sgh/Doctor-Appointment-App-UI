@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
+import com.atul.doctorappointmentappui.navigatiion.routes.detailRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.homeRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.introRoute
 
@@ -22,5 +23,12 @@ fun AppNavGraph(
             }
         )
         homeRoute(vm)
+
+        detailRoute(
+            nav = navCon,
+            onBack = {
+                navCon.popBackStack()
+            }
+        )
     }
 }

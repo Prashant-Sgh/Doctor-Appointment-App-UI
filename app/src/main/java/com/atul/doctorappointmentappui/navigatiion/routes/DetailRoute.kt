@@ -1,5 +1,6 @@
 package com.atul.doctorappointmentappui.navigatiion.routes
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavBackStackEntry
@@ -19,5 +20,15 @@ fun NavGraphBuilder.detailRoute(
         val context = LocalContext.current
         val prevEntry = remember (nav) { nav.previousBackStackEntry }
         val doctor = remember (prevEntry) { prevEntry?.savedStateHandle?.get<DoctorModel>("doctor") }
+
+        LaunchedEffect(prevEntry, doctor) {
+            if (doctor == null) {
+                onBack()
+            }
+            else {
+                prevEntry?.savedStateHandle?.remove<DoctorModel>("doctor")
+            }
+        }
+
     }
 }
