@@ -56,7 +56,7 @@ fun NavGraphBuilder.detailRoute(
                     context.startActivity(
                         Intent.createChooser(
                             Intent(Intent.ACTION_SEND).apply {
-                                type="text.plain"
+                                type="text/plain"
                                 putExtra(Intent.EXTRA_SUBJECT,subject)
                                 putExtra(Intent.EXTRA_TEXT,text)
                             },
