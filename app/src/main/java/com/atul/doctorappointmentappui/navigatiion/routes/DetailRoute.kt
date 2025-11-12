@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toUri
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -38,16 +39,31 @@ fun NavGraphBuilder.detailRoute(
                 item = doctor,
                 onBack = onBack,
                 onOpenWebsite = {url ->
-                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
                 },
                 onSendSms = {mobile, body ->
-                    context.startActivity(Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:$mobile"))
-                        .apply { putExtra("sms body", body) }
+                    context.startActivity(Intent(Intent.ACTION_SENDTO, "smsto:${mobile.trim()}".toUri())
+                        .apply { putExtra("sms_body", body) }
                     )
                 },
                 onDial = {mobile ->
-                    context.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${mobile.trim()}")))
+                    context.startActivity(Intent(Intent.ACTION_DIAL, "tel:${mobile.trim()}".toUri()))
                 },
+                onDirection = {loc ->
+                    context.startActivity(Intent(Intent.ACTION_VIEW, loc.toUri()))
+                },
+                onShare = {subject, text ->
+                    context.startActivity(
+                        Intent.createChooser(
+                            Intent(Intent.ACTION_SEND).apply {
+                                type="text.plain"
+                                putExtra(Intent.EXTRA_SUBJECT,subject)
+                                putExtra(Intent.EXTRA_TEXT,text)
+                            },
+                            "choose one"
+                        )
+                    )
+                }
             )
         }
 

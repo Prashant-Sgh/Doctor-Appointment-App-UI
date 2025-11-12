@@ -11,6 +11,8 @@ fun DetailScreen(
     onOpenWebsite: (String) -> Unit,
     onSendSms: (mobile: String, body: String) -> Unit,
     onDial: (mobile: String) -> Unit,
+    onDirection: (String) -> Unit,
+    onShare: (subject: String, text: String) -> Unit
 ) {
 
 }
