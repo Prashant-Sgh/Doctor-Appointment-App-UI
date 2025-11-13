@@ -63,7 +63,11 @@ fun DoctorCard(item: DoctorModel, onClick: () -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current).data(item.picture).crossfade(true).build(),
+                    model = ImageRequest
+                        .Builder(LocalContext.current)
+                        .data(item.picture)
+                        .crossfade(true)
+                        .build(),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit
