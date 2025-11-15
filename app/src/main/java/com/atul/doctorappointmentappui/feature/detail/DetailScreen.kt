@@ -41,6 +41,7 @@ fun DetailScreen(
                     .padding(top = 400.dp)
             ) {
                 DetailBody(
+                    item = item,
                     onOpenWebsite = onOpenWebsite,
                     onSendSms = onSendSms,
                     onDial = onDial,
