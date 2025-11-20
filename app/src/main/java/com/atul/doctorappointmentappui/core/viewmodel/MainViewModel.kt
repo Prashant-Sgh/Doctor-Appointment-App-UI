@@ -37,14 +37,13 @@ class MainViewModel: ViewModel() {
             override fun onCancelled(error: DatabaseError) {
                 categoryLoaded = false
             }
-
         })
     }
 
     private val _doctors = MutableStateFlow<List<DoctorModel>>(emptyList())
     val doctors: StateFlow<List<DoctorModel>> = _doctors
 
-    var doctorsLoaded = false
+    private var doctorsLoaded = false
 
     fun loadDoctors(force: Boolean = false) {
         if (doctorsLoaded && !force) return
@@ -55,7 +54,7 @@ class MainViewModel: ViewModel() {
 
         ref.addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                var items = mutableListOf<DoctorModel>()
+                val items = mutableListOf<DoctorModel>()
                 for (child in snapshot.children) {
                     child.getValue(DoctorModel::class.java)?.let { items.add(it) }
                 }
@@ -66,7 +65,6 @@ class MainViewModel: ViewModel() {
             override fun onCancelled(error: DatabaseError) {
                 doctorsLoaded = false
             }
-
         })
     }
 }

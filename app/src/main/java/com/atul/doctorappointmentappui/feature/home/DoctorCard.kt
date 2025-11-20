@@ -48,7 +48,7 @@ fun DoctorCard(item: DoctorModel, onClick: () -> Unit) {
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        onClick = onClick
+        onClick = { onClick() }
     ) {
         Column(Modifier
             .fillMaxSize()
@@ -65,7 +65,7 @@ fun DoctorCard(item: DoctorModel, onClick: () -> Unit) {
                 AsyncImage(
                     model = ImageRequest
                         .Builder(LocalContext.current)
-                        .data(item.picture)
+                        .data(item.Picture)
                         .crossfade(true)
                         .build(),
                     contentDescription = null,
@@ -76,14 +76,14 @@ fun DoctorCard(item: DoctorModel, onClick: () -> Unit) {
 
             Spacer(Modifier.height(8.dp))
             Text(
-                item.name,
+                item.Name?: "Something is wrong",
                 color = Color.Black,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = item.specialty,
+                text = item.Special,
                 color = colorResource(R.color.ggray),
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
@@ -99,7 +99,7 @@ fun DoctorCard(item: DoctorModel, onClick: () -> Unit) {
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = "${item.rating}",
+                    text = "${item.Rating}",
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
@@ -111,17 +111,11 @@ fun DoctorCard(item: DoctorModel, onClick: () -> Unit) {
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    "${item.experience} Years",
+                    "${item.Expriense} Years",
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun Preview() {
-    DoctorCard(DoctorModel(name = "Dr. John Doe", specialty = "Cardiologist", picture = "", rating =  4.9), {})
 }

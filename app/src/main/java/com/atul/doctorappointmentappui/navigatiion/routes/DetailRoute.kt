@@ -2,6 +2,7 @@ package com.atul.doctorappointmentappui.navigatiion.routes
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.LaunchedEffect
@@ -29,8 +30,10 @@ fun NavGraphBuilder.detailRoute(
         val prevEntry = remember (nav) { nav.previousBackStackEntry }
         val doctor = remember (prevEntry) { prevEntry?.savedStateHandle?.get<DoctorModel>("doctor") }
 
+        Log.d("NavigateToDetail", "Name is: ${doctor?.Name?: "Unknown"}")
         LaunchedEffect(prevEntry, doctor) {
             if (doctor == null) {
+                Log.d("NavigateToDetail", "Doctor was Null}")
                 onBack()
             }
             else {
@@ -39,6 +42,7 @@ fun NavGraphBuilder.detailRoute(
         }
 
         if(doctor != null) {
+            Log.d("NavigateToDetail", "Doctor wasn't Null")
             DetailScreen(
                 item = doctor,
                 onBack = onBack,

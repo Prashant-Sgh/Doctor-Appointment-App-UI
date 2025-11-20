@@ -1,25 +1,20 @@
 package com.atul.doctorappointmentappui.core.model
 
-//data class DoctorModel (
-//    val Id: Int = 0,
-//    val Name: String = "",
-//    val Specialization: String = "",
-//    val Experience: Int = 0,
-//    val Picture: String = "",
-//    val Rating: Double = 0.0,
-//)
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class DoctorModel(
-    val id: Int = 0,
-    val name: String = "",
-    val address: String = "",
-    val biography: String = "",
-    val experience: Int = 0,
-    val location: String = "",
-    val mobile: String = "",
-    val patients: String = "",
-    val picture: String = "",
-    val rating: Double = 0.0,
-    val site: String = "",
-    val specialty: String = ""
-)
+    val Id: Int = 0,
+    val Name: String = "Unknown",
+    val Address: String = "Address",
+    val Biography: String = "Biography",
+    val Expriense: Int = 0,
+    val Location: String = "Location",
+    val Mobile: String = "+11 23456456789",
+    val Patiens: String = "500+",
+    val Picture: String = "",
+    val Rating: Double = 0.0,
+    val Site: String = "Website",
+    val Special: String = "Speciality"
+): Parcelable

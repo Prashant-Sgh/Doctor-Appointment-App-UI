@@ -27,12 +27,14 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.atul.doctorappointmentappui.R
+import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
 
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
-    modifier: Modifier? = null
+    modifier: Modifier? = null,
+    onOpenDoctorDetails: (DoctorModel) -> Unit
 ) {
 
     val categories by viewModel.category.collectAsState()
@@ -59,8 +61,8 @@ fun MainScreen(
             item { Banner() }
             item { SectionHeader(title = "Doctor Speciality", onSeeAll = null) }
             item { CategoryRow(categories) }
-            item { SectionHeader(title = "Doctor Speciality", onSeeAll = null) }
-            item { DoctorRow(items = doctors, onClick = {}) }
+            item { SectionHeader(title = "Top Doctors", onSeeAll = null) }
+            item { DoctorRow(items = doctors, onClick = { onOpenDoctorDetails(it) }) }
         }
     }
 }

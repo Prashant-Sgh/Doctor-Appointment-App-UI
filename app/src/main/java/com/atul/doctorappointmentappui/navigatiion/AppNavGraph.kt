@@ -1,5 +1,6 @@
 package com.atul.doctorappointmentappui.navigatiion
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -22,7 +23,13 @@ fun AppNavGraph(
                 }
             }
         )
-        homeRoute(vm)
+        homeRoute(
+            viewmodel = vm,
+            onOpenDetails = { doctorModel ->
+                Log.d("NavigateToDetail", "onOpenDetail CLICKED!!")
+                navCon.navigateToDetail(doctorModel)
+            }
+        )
 
         detailRoute(
             nav = navCon,
