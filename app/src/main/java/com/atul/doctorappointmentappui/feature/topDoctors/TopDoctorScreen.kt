@@ -50,7 +50,7 @@ fun TopDoctorScreen(
                         .height(56.dp)
                 ) {
                     IconButton(
-                        onClick = {},
+                        onClick = { onBack() },
                         modifier = Modifier.align(Alignment.CenterStart)
                     ) {
                         Icon(

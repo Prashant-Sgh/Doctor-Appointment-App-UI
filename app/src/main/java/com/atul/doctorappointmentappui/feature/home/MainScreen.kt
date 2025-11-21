@@ -34,7 +34,8 @@ import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
 fun MainScreen(
     viewModel: MainViewModel,
     modifier: Modifier? = null,
-    onOpenDoctorDetails: (DoctorModel) -> Unit
+    onOpenDoctorDetails: (DoctorModel) -> Unit,
+    onOpenTopDoctors: () -> Unit
 ) {
 
     val categories by viewModel.category.collectAsState()
@@ -61,7 +62,7 @@ fun MainScreen(
             item { Banner() }
             item { SectionHeader(title = "Doctor Speciality", onSeeAll = null) }
             item { CategoryRow(categories) }
-            item { SectionHeader(title = "Top Doctors", onSeeAll = null) }
+            item { SectionHeader(title = "Top Doctors", onSeeAll = { onOpenTopDoctors() }) }
             item { DoctorRow(items = doctors, onClick = { onOpenDoctorDetails(it) }) }
         }
     }
