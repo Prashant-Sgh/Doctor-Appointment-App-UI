@@ -45,7 +45,7 @@ fun RowScope.RatingState(title: String, rating: Double) {
     val black = Color.Black
     val purple = colorResource(R.color.puurple)
 
-    Column (
+    Column(
         Modifier
             .weight(1f)
             .padding(horizontal = 8.dp),
@@ -53,20 +53,16 @@ fun RowScope.RatingState(title: String, rating: Double) {
     ) {
         Text(title, color = black, textAlign = TextAlign.Center)
         Spacer(Modifier.height(8.dp))
-        Row (
+        Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(painter = painterResource(R.drawable.star), contentDescription = null)
             Spacer(Modifier.width(8.dp))
-            Text(text = String.format(Locale.US, "%.1f", rating), color = purple, fontWeight = FontWeight.Bold,)
+            Text(
+                text = String.format(Locale.US, "%.1f", rating),
+                color = purple,
+                fontWeight = FontWeight.Bold,
+            )
         }
-    }
-}
-
-@Preview
-@Composable
-private fun Preview() {
-    Row {
-        RatingState("HP", 4.5)
     }
 }
