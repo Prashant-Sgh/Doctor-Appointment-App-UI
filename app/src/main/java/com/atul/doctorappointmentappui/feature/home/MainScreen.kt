@@ -37,10 +37,8 @@ fun MainScreen(
     onOpenDoctorDetails: (DoctorModel) -> Unit,
     onOpenTopDoctors: () -> Unit
 ) {
-
     val categories by viewModel.category.collectAsState()
     var selectedBottom by remember { mutableStateOf(0) }
-
     val doctors by viewModel.doctors.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -54,8 +52,7 @@ fun MainScreen(
             HomeBottomBar(
                 selected = selectedBottom,
                 onSelect = {selectedBottom = it}
-            )
-        }
+            )}
     ) { inner ->
         LazyColumn( contentPadding = inner) {
             item { HomeHeader() }
