@@ -15,6 +15,9 @@ composeBom = "2025.10.01"
 coil = "3.3.0"
 navigation = "2.9.5"
 
+# Material3
+material_icon_version = "1.7.8"
+
 googleGmsGoogleServices = "4.4.4"
 firebaseDatabase = "22.0.1"
 firebaseBoM = "34.5.0"
@@ -42,9 +45,16 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 # Coil
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-okhttp = {module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil"}
+
+# Firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBoM"}
 firebase-database = { group = "com.google.firebase", name = "firebase-database"}
+firebase-authentication = {module = "com.google.firebase:firebase-auth"}
+
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
+
+# Material Icons
+androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "material_icon_version" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

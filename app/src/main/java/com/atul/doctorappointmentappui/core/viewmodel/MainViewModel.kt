@@ -67,4 +67,23 @@ class MainViewModel: ViewModel() {
             }
         })
     }
+
+    fun authenticate(email: String, password: String, isLogin: Boolean) {
+        if (isLogin) {
+            // Login with email & password
+            loginUser(email, password)
+        } else {
+            // Create new account
+            createUser(email, password)
+        }
+    }
+
+    fun loginUser(email: String, password: String) {
+
+    }
+
+    fun createUser(email: String, password: String) {
+
+    }
+
 }
