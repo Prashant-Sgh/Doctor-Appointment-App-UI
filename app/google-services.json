@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "868470174063",
+    "firebase_url": "https://doctor-appointment-app-ui-default-rtdb.firebaseio.com",
     "project_id": "doctor-appointment-app-ui",
     "storage_bucket": "doctor-appointment-app-ui.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.atul.doctorappointmentappui"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "868470174063-vg599edmhsarnnfer8vsspongc3lg9r6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.atul.doctorappointmentappui",
+            "certificate_hash": "cf9af08d2c58ea8f1ec59ab187b17ff5a1697e11"
+          }
+        },
+        {
+          "client_id": "868470174063-oqgjjrt15gtkql8pmloqdds0rb74e31v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB6UxHV8VjxHPzayYOAXpNbvDXlS1cfUWs"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "868470174063-oqgjjrt15gtkql8pmloqdds0rb74e31v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

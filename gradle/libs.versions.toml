@@ -20,7 +20,7 @@ material_icon_version = "1.7.8"
 
 googleGmsGoogleServices = "4.4.4"
 firebaseDatabase = "22.0.1"
-firebaseBoM = "34.5.0"
+firebaseBoM = "34.6.0"
 runtime = "1.9.4"
 
 [libraries]
@@ -50,6 +50,11 @@ coil-okhttp = {module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "c
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBoM"}
 firebase-database = { group = "com.google.firebase", name = "firebase-database"}
 firebase-authentication = {module = "com.google.firebase:firebase-auth"}
+
+# Credential Manager
+androidx-credentials-play-services-auth = {module = "androidx.credentials:credentials-play-services-auth", version = "1.5.0"}
+androidx-credentials = {module = "androidx.credentials:credentials", version = "1.5.0"}
+android-libraries-identity = {module = "com.google.android.libraries.identity.googleid:googleid", version = "1.1.1"}
 
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 
