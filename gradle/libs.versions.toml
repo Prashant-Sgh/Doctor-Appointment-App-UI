@@ -22,6 +22,7 @@ googleGmsGoogleServices = "4.4.4"
 firebaseDatabase = "22.0.1"
 firebaseBoM = "34.6.0"
 runtime = "1.9.4"
+playServicesAuth = "21.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +51,7 @@ coil-okhttp = {module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "c
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBoM"}
 firebase-database = { group = "com.google.firebase", name = "firebase-database"}
 firebase-authentication = {module = "com.google.firebase:firebase-auth"}
+android-play-services-auth = {module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth"}
 
 # Credential Manager
 androidx-credentials-play-services-auth = {module = "androidx.credentials:credentials-play-services-auth", version = "1.5.0"}
