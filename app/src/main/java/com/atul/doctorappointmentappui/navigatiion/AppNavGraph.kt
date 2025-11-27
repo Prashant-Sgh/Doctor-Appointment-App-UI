@@ -3,7 +3,9 @@ package com.atul.doctorappointmentappui.navigatiion
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.atul.doctorappointmentappui.core.viewmodel.AuthViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
+import com.atul.doctorappointmentappui.navigatiion.routes.authRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.detailRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.homeRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.introRoute
@@ -12,7 +14,8 @@ import com.atul.doctorappointmentappui.navigatiion.routes.topDoctorsRoute
 @Composable
 fun AppNavGraph(
     navCon: NavHostController,
-    vm: MainViewModel
+    vm: MainViewModel,
+    authViewModel: AuthViewModel
 ) {
     NavHost(navCon, Screen.Intro.route) {
         introRoute(
@@ -22,6 +25,14 @@ fun AppNavGraph(
                 }
             }
         )
+
+        authRoute(
+            onGoogleSignIn = { authViewModel.signInWithGoogle(it) },
+            onEmailAuth = {email, password, isLogin ->
+                authViewModel.authenticateWithEmailPassword(email, password, isLogin )
+            }
+        )
+
         homeRoute(
             viewmodel = vm,
             onOpenDetails = { doctorModel ->

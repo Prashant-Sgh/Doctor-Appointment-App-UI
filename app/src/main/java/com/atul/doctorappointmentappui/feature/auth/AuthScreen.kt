@@ -33,11 +33,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.credentials.Credential
 import com.atul.doctorappointmentappui.feature.auth.Components.GoogleSignInButton
 
 @Composable
 fun AuthScreen(
-    onGoogleSignIn: () -> Unit,
+    onGoogleSignIn: (Credential) -> Unit,
     onEmailAuth: (String, String, Boolean) -> Unit, // email, pass, isLogin
 ) {
     var isLogin by remember { mutableStateOf(true) }

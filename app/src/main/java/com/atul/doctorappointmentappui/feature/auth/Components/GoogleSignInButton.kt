@@ -12,22 +12,30 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.credentials.Credential
 import com.atul.doctorappointmentappui.R
+import com.atul.doctorappointmentappui.feature.auth.launchCredManButtonUI
+import kotlinx.coroutines.launch
 
 @Composable
-fun GoogleSignInButton(onClick: () -> Unit) {
+fun GoogleSignInButton(onRequestResult: (Credential) -> Unit) {
+
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     val Purple = Color(0xFF9868D3)
     val PurpleLight = Color(0xFFE9DDF9)
 
     OutlinedButton(
-        onClick = onClick,
+        onClick = {coroutineScope.launch { launchCredManButtonUI(context, onRequestResult) }},
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
@@ -49,8 +57,8 @@ fun GoogleSignInButton(onClick: () -> Unit) {
     }
 }
 
-@Preview
-@Composable
-private fun Preview() {
-    GoogleSignInButton({})
-}
+//@Preview
+//@Composable
+//private fun Preview() {
+//    GoogleSignInButton({})
+//}
