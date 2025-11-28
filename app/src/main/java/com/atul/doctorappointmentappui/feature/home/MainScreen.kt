@@ -40,6 +40,7 @@ fun MainScreen(
     val categories by viewModel.category.collectAsState()
     var selectedBottom by remember { mutableStateOf(0) }
     val doctors by viewModel.doctors.collectAsState()
+    val userName by viewModel.UserName.collectAsState()
 
     LaunchedEffect(Unit) {
         if (categories.isEmpty()) viewModel.loadCategory()
@@ -55,7 +56,7 @@ fun MainScreen(
             )}
     ) { inner ->
         LazyColumn( contentPadding = inner) {
-            item { HomeHeader() }
+            item { HomeHeader(userName) }
             item { Banner() }
             item { SectionHeader(title = "Doctor Speciality", onSeeAll = null) }
             item { CategoryRow(categories) }

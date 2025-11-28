@@ -1,6 +1,9 @@
 package com.atul.doctorappointmentappui.core.viewmodel
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.credentials.Credential
 import androidx.credentials.CustomCredential
 import androidx.lifecycle.ViewModel
@@ -8,6 +11,9 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.firebase.Firebase
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,13 +25,33 @@ import java.lang.Exception
 
 class AuthViewModel: ViewModel() {
 
-    val firebase = Firebase
-    private val _email = MutableStateFlow("")
-    val email: StateFlow<String> = _email.asStateFlow()
-    private val _password = MutableStateFlow<String>("")
-    val password: StateFlow<String> = _password
+    private val _currentUser = MutableStateFlow<FirebaseUser?>(null)
+    val currentUser: StateFlow<FirebaseUser?> = _currentUser
+    fun updateUserId(userId: FirebaseUser?) {
+        _currentUser.value = userId
+    }
 
-    suspend fun signInWithGoogle(credential: Credential, openAndPopUp: (String, String) -> Unit) {
+    init {
+        viewModelScope.launch{
+            _currentUser.value = checkCurrentUser()
+        }
+    }
+
+    private val _UserName = MutableStateFlow("Authenticated Guest")
+    val UserName: StateFlow<String> = _UserName
+
+    fun updateUserName(name: String) {
+        _UserName.value = name
+    }
+
+    suspend fun checkCurrentUser (): FirebaseUser? {
+        val currentUser = auth.currentUser
+        updateUserId(currentUser)
+        return currentUser
+    }
+
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    suspend fun signInWithGoogle(credential: Credential, openAndPopUp: (String, String) -> Unit, context: Context) {
         viewModelScope.launch {
             try{
                 if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
@@ -34,7 +60,7 @@ class AuthViewModel: ViewModel() {
 //                accountService.signInWithGoogle(googleIdTokenCredential.idToken)
                     val firebaseCredential =
                         GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
-                    firebase.auth.signInWithCredential(firebaseCredential).await()
+                    auth.signInWithCredential(firebaseCredential).await()
 //                openAndPopUp(NOTES_LIST_SCREEN, SIGN_IN_SCREEN)
                 } else {
                     Log.e("AuthError", "UNEXPECTED_CREDENTIAL")
@@ -46,12 +72,23 @@ class AuthViewModel: ViewModel() {
         }
     }
 
-    suspend fun authenticateWithEmailPassword(email: String, password: String, isLogin: Boolean) {
+    suspend fun authenticateWithEmailPassword(email: String, password: String, isLogin: Boolean, context: Context) {
         if (isLogin) {
-            firebase.auth.signInWithEmailAndPassword(email, password)
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val userId = auth.currentUser
+                        updateUserId(userId)
+                        Toast.makeText(context, "Signing in successful", Toast.LENGTH_SHORT).show()
+                    }
+                    else {
+                        updateUserId(null)
+                        Toast.makeText(context, "Signing in failed", Toast.LENGTH_SHORT).show()
+                    }
+                }
         }
         else {
-            firebase.auth.createUserWithEmailAndPassword(email, password)
+            auth.createUserWithEmailAndPassword(email, password)
         }
     }
 

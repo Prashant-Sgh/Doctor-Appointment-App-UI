@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.atul.doctorappointmentappui.R
 
 @Composable
-fun HomeHeader() {
+fun HomeHeader(userName: String) {
     Row(
         Modifier.fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 24.dp),
@@ -32,7 +32,9 @@ fun HomeHeader() {
                 .padding(horizontal = 16.dp)
         ) {
 
-            Text("Hi, Edward Greek",
+            Text(
+//                "Hi, Edward Greek",
+                userName,
                 color = Color.Black,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold

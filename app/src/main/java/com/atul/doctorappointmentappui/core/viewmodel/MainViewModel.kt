@@ -68,22 +68,11 @@ class MainViewModel: ViewModel() {
         })
     }
 
-    fun authenticate(email: String, password: String, isLogin: Boolean) {
-        if (isLogin) {
-            // Login with email & password
-            loginUser(email, password)
-        } else {
-            // Create new account
-            createUser(email, password)
-        }
-    }
+    private val _UserName = MutableStateFlow("Guest")
+    val UserName: StateFlow<String> = _UserName
 
-    fun loginUser(email: String, password: String) {
-
-    }
-
-    fun createUser(email: String, password: String) {
-
+    fun updateUserName(name: String) {
+        _UserName.value
     }
 
 }
