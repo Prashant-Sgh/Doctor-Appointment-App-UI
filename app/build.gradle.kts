@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
     id ("kotlin-parcelize")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+
 }
 
 android {
@@ -63,6 +66,11 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.android.libraries.identity)
     implementation(libs.androidx.compose.runtime)
+
+//   Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

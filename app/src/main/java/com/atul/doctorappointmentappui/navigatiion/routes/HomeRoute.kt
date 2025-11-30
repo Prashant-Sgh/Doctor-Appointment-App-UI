@@ -13,7 +13,8 @@ import com.atul.doctorappointmentappui.navigatiion.Screen
 fun NavGraphBuilder.homeRoute(
     viewmodel: MainViewModel,
     onOpenDetails: (DoctorModel) -> Unit,
-    onOpenTopDoctors: () -> Unit
+    onOpenTopDoctors: () -> Unit,
+    onManageAccount: () -> Unit
 ) {
     composable (Screen.Home.route) {
         val category by viewmodel.category.collectAsState()
@@ -27,7 +28,8 @@ fun NavGraphBuilder.homeRoute(
         MainScreen(
             viewModel = viewmodel,
             onOpenDoctorDetails = { onOpenDetails(it) },
-            onOpenTopDoctors = { onOpenTopDoctors() }
+            onOpenTopDoctors = { onOpenTopDoctors() },
+            onManageAccount = { onManageAccount() }
         )
     }
 }

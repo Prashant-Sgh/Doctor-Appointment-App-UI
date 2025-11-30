@@ -35,7 +35,8 @@ fun MainScreen(
     viewModel: MainViewModel,
     modifier: Modifier? = null,
     onOpenDoctorDetails: (DoctorModel) -> Unit,
-    onOpenTopDoctors: () -> Unit
+    onOpenTopDoctors: () -> Unit,
+    onManageAccount: () -> Unit
 ) {
     val categories by viewModel.category.collectAsState()
     var selectedBottom by remember { mutableStateOf(0) }
@@ -56,7 +57,7 @@ fun MainScreen(
             )}
     ) { inner ->
         LazyColumn( contentPadding = inner) {
-            item { HomeHeader(userName) }
+            item { HomeHeader(userName) { onManageAccount() } }
             item { Banner() }
             item { SectionHeader(title = "Doctor Speciality", onSeeAll = null) }
             item { CategoryRow(categories) }

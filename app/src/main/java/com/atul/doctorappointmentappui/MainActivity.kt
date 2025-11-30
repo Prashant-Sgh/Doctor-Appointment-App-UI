@@ -19,16 +19,19 @@ import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
 import com.atul.doctorappointmentappui.feature.home.MainScreen
 import com.atul.doctorappointmentappui.navigatiion.AppNavGraph
 import com.atul.doctorappointmentappui.ui.theme.DoctorAppointmentAppUITheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val vm by viewModels<MainViewModel>()
-    private val authVm by viewModels<AuthViewModel>()
+    private val authViewmodel: AuthViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-                val nav = rememberNavController()
-                AppNavGraph(nav, vm, authVm)
+            val nav = rememberNavController()
+            AppNavGraph(nav, vm, authViewmodel)
         }
     }
 }

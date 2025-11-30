@@ -16,14 +16,19 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
+import javax.inject.Inject
 
-class AuthViewModel: ViewModel() {
+@HiltViewModel
+class AuthViewModel @Inject constructor (
+    private val firebaseAuth: FirebaseAuth
+) : ViewModel() {
 
     private val _currentUser = MutableStateFlow<FirebaseUser?>(null)
     val currentUser: StateFlow<FirebaseUser?> = _currentUser
@@ -45,12 +50,11 @@ class AuthViewModel: ViewModel() {
     }
 
     suspend fun checkCurrentUser (): FirebaseUser? {
-        val currentUser = auth.currentUser
+        val currentUser = firebaseAuth.currentUser
         updateUserId(currentUser)
         return currentUser
     }
 
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     suspend fun signInWithGoogle(credential: Credential, openAndPopUp: (String, String) -> Unit, context: Context) {
         viewModelScope.launch {
             try{
@@ -60,7 +64,7 @@ class AuthViewModel: ViewModel() {
 //                accountService.signInWithGoogle(googleIdTokenCredential.idToken)
                     val firebaseCredential =
                         GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
-                    auth.signInWithCredential(firebaseCredential).await()
+                    firebaseAuth.signInWithCredential(firebaseCredential).await()
 //                openAndPopUp(NOTES_LIST_SCREEN, SIGN_IN_SCREEN)
                 } else {
                     Log.e("AuthError", "UNEXPECTED_CREDENTIAL")
@@ -72,13 +76,14 @@ class AuthViewModel: ViewModel() {
         }
     }
 
-    suspend fun authenticateWithEmailPassword(email: String, password: String, isLogin: Boolean, context: Context) {
+    suspend fun authenticateWithEmailPassword(email: String, password: String, isLogin: Boolean, context: Context, onSuccessful: () -> Unit) {
         if (isLogin) {
-            auth.signInWithEmailAndPassword(email, password)
+            firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val userId = auth.currentUser
+                        val userId = firebaseAuth.currentUser
                         updateUserId(userId)
+                        onSuccessful()
                         Toast.makeText(context, "Signing in successful", Toast.LENGTH_SHORT).show()
                     }
                     else {
@@ -88,7 +93,8 @@ class AuthViewModel: ViewModel() {
                 }
         }
         else {
-            auth.createUserWithEmailAndPassword(email, password)
+            firebaseAuth.createUserWithEmailAndPassword(email, password)
+            onSuccessful()
         }
     }
 

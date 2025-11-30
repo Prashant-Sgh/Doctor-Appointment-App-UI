@@ -11,8 +11,8 @@ import com.atul.doctorappointmentappui.navigatiion.routes.authRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.detailRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.homeRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.introRoute
+import com.atul.doctorappointmentappui.navigatiion.routes.manageAccountRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.topDoctorsRoute
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -51,7 +51,11 @@ fun AppNavGraph(
                              },
             onEmailAuth = {email, password, isLogin ->
                 scope.launch {
-                    authVm.authenticateWithEmailPassword(email, password, isLogin, context)
+                    authVm.authenticateWithEmailPassword(email, password, isLogin, context) {
+                        navCon.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Auth.route) {inclusive = true}
+                        }
+                    }
                 }
                           },
         )
@@ -63,8 +67,13 @@ fun AppNavGraph(
             },
             onOpenTopDoctors = {
                 navCon.navigate(Screen.TopDoctors.route)
+            },
+            onManageAccount = {
+                navCon.navigate(Screen.ManageAccount.route)
             }
         )
+
+        manageAccountRoute()
 
         topDoctorsRoute(
             viewmodel = vm,
