@@ -1,12 +1,17 @@
 package com.atul.doctorappointmentappui.navigatiion
 
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.atul.doctorappointmentappui.core.model.UserModel
 import com.atul.doctorappointmentappui.core.viewmodel.AuthViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
+import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
 import com.atul.doctorappointmentappui.navigatiion.routes.authRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.detailRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.homeRoute
@@ -19,16 +24,22 @@ import kotlinx.coroutines.launch
 fun AppNavGraph(
     navCon: NavHostController,
     vm: MainViewModel,
-    authVm: AuthViewModel
+    authVm: AuthViewModel,
+    userDataViewmodel: UserDataViewModel
 ) {
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
+//    userDataViewmodel.getData(authVm.currentUserId.value?: "")
+    val userData by userDataViewmodel.userData.collectAsState()
+
+    var user = UserModel()
+
     NavHost(navCon, Screen.Intro.route) {
         introRoute(
             onStart = {
-                if (authVm.currentUser.value != null) {
+                if (authVm.currentUserId.value != null) {
                     val userName = authVm.UserName
                     vm.updateUserName(userName.value)
                     navCon.navigate(Screen.Home.route) {
@@ -69,11 +80,15 @@ fun AppNavGraph(
                 navCon.navigate(Screen.TopDoctors.route)
             },
             onManageAccount = {
+                userDataViewmodel.getData("uid")
+                Log.d("Firestore", "From NavGraph: ${userData.userName}")
+                Log.d("Firestore", "From NavGraph too: ${userDataViewmodel.getUserData()}")
+                user = userDataViewmodel.getUserData()
                 navCon.navigate(Screen.ManageAccount.route)
             }
         )
 
-        manageAccountRoute()
+        manageAccountRoute(user)
 
         topDoctorsRoute(
             viewmodel = vm,

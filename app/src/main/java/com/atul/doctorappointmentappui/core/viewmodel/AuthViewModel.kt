@@ -3,23 +3,18 @@ package com.atul.doctorappointmentappui.core.viewmodel
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 import androidx.credentials.Credential
 import androidx.credentials.CustomCredential
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-import com.google.firebase.Firebase
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
@@ -30,15 +25,15 @@ class AuthViewModel @Inject constructor (
     private val firebaseAuth: FirebaseAuth
 ) : ViewModel() {
 
-    private val _currentUser = MutableStateFlow<FirebaseUser?>(null)
-    val currentUser: StateFlow<FirebaseUser?> = _currentUser
-    fun updateUserId(userId: FirebaseUser?) {
-        _currentUser.value = userId
+    private val _currentUserId = MutableStateFlow<String?>(null)
+    val currentUserId: StateFlow<String?> = _currentUserId
+    fun updateUserId(userId: String?) {
+        _currentUserId.value = userId
     }
 
     init {
         viewModelScope.launch{
-            _currentUser.value = checkCurrentUser()
+            _currentUserId.value = checkCurrentUser()
         }
     }
 
@@ -49,8 +44,8 @@ class AuthViewModel @Inject constructor (
         _UserName.value = name
     }
 
-    suspend fun checkCurrentUser (): FirebaseUser? {
-        val currentUser = firebaseAuth.currentUser
+    suspend fun checkCurrentUser (): String? {
+        val currentUser = firebaseAuth.currentUser?.uid
         updateUserId(currentUser)
         return currentUser
     }
@@ -81,7 +76,7 @@ class AuthViewModel @Inject constructor (
             firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val userId = firebaseAuth.currentUser
+                        val userId = firebaseAuth.currentUser?.uid
                         updateUserId(userId)
                         onSuccessful()
                         Toast.makeText(context, "Signing in successful", Toast.LENGTH_SHORT).show()

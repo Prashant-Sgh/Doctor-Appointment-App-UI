@@ -55,6 +55,7 @@ coil-okhttp = {module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "c
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBoM"}
 firebase-database = { group = "com.google.firebase", name = "firebase-database"}
 firebase-authentication = {module = "com.google.firebase:firebase-auth"}
+firebase-firestore = {module = "com.google.firebase:firebase-firestore"}
 android-play-services-auth = {module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth"}
 
 # Credential Manager
