@@ -11,6 +11,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,7 +35,7 @@ fun DetailItem(
     onValueChange: (String) -> Unit
 ) {
 
-    var fieldDetail = detail
+    var fieldDetail by remember { mutableStateOf(detail) }
     val fontSize = 18.sp
 
     Row(
@@ -47,9 +51,9 @@ fun DetailItem(
         BasicTextField(
             value = fieldDetail,
             enabled = enabled,
-            onValueChange = { value ->
-                fieldDetail = value
-                // onValueChange(value)
+            onValueChange = {
+                fieldDetail = it
+                 onValueChange(it)
             },
             textStyle = TextStyle(
                 fontSize = fontSize,

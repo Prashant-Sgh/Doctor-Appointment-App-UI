@@ -26,24 +26,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.atul.doctorappointmentappui.R
+import com.atul.doctorappointmentappui.core.model.UserModel
 
 @Composable
 fun SaveButton(edit: Boolean = false, onClick: () -> Unit) {
 
-    val icon = if (edit) Icons.Default.Check else Icons.Default.Edit
-    val buttonText = if (edit) "Save" else "Edit"
+    val icon = Icons.Default.Check
+    val color = if(edit) R.color.puurple else R.color.lightPuurple
+    val buttonText = "Save"
 
     IconButton (
-        onClick = {},
+        onClick = {onClick()},
         modifier = Modifier
             .size(height = 24.dp, width = 62.dp)
             .background(
-                color = colorResource(R.color.puurple),
+                color = colorResource(color),
                 shape = RoundedCornerShape(5.dp)
-            ).padding(5.dp)
+            ).padding(5.dp),
+        enabled = edit
     ) {
         Row(
-            Modifier.background(color = colorResource(R.color.puurple)),
+            Modifier.background(color = colorResource(color)),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(

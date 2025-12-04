@@ -24,18 +24,38 @@ import com.atul.doctorappointmentappui.feature.manageAccount.components.AccountH
 import com.atul.doctorappointmentappui.feature.manageAccount.components.DetailItem
 import com.atul.doctorappointmentappui.feature.manageAccount.components.UserPicture
 import kotlinx.coroutines.flow.StateFlow
+import androidx.compose.runtime.collectAsState
 
 @Composable
-fun ManageAccountScreen(userData: UserModel) {
+fun ManageAccountScreen(
+    userDataFlow: StateFlow<UserModel>,
+    saveUserData: (UserModel) -> Unit
+) {
 
-    val userImage = userData.imageURL
-    val userName = userData.userName
-    val userAge = userData.age
-    val userPhone = userData.phone
-    val userEmail = userData.email
-    val userAddress = userData.address
-    val userGender = if(userData.isMale) "Male" else "Female"
-    var editable by remember { mutableStateOf(true) }
+    val userData by userDataFlow.collectAsState()
+
+    var userImage by remember { mutableStateOf(userData.imageURL) }
+    var userName by remember { mutableStateOf(userData.userName) }
+    var userAge by remember { mutableStateOf(userData.age) }
+    var userPhone by remember { mutableStateOf(userData.phone) }
+    var userEmail by remember { mutableStateOf(userData.email) }
+    var userAddress by remember { mutableStateOf(userData.address) }
+    var totalAppointments by remember { mutableStateOf(userData.totalAppointments) }
+    var gender by remember { mutableStateOf(userData.male) }
+    var userGender = if(gender) "Male" else "Female"
+    var editable by remember { mutableStateOf(false) }
+    val newData by remember { mutableStateOf(
+        UserModel(
+            userAddress,
+            userAge,
+            userEmail,
+            userImage,
+            gender,
+            userPhone,
+            totalAppointments,
+            userName
+        )
+    ) }
 
     Column (
         Modifier
@@ -45,20 +65,21 @@ fun ManageAccountScreen(userData: UserModel) {
             .padding(start = 16.dp, top = 16.dp, end = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AccountHeader(editable) {}
+        AccountHeader(editable) {saveUserData(newData)}
         Spacer(Modifier.height(50.dp))
         UserPicture(userImage)
-        Spacer(Modifier.height(50.dp))
+        Spacer(Modifier.height(40.dp))
 
         Column(
             horizontalAlignment = Alignment.Start
         ) {
-            DetailItem("User Name", userName, editable, onValueChange = {})
-            DetailItem("Age", userAge, editable, onValueChange = {})
-            DetailItem("Phone", userPhone, editable, onValueChange = {})
-            DetailItem("Email", userEmail, editable, onValueChange = {})
-            DetailItem("Address", userAddress, editable, onValueChange = {})
-            DetailItem("Gender", userGender, editable, onValueChange = {})
+            DetailItem("User Name", userName, editable, onValueChange = {userName = it})
+            DetailItem("Age", userAge, editable, onValueChange = {userAge = it})
+            DetailItem("Phone", userPhone, editable, onValueChange = {userPhone = it})
+            DetailItem("Address", userAddress, editable, onValueChange = {userAddress = it})
+            DetailItem("Gender", userGender, false, onValueChange = {})
+            DetailItem("Email", userEmail, editable, onValueChange = {userEmail = it})
+            DetailItem("Image Url", userImage, editable, onValueChange = {userImage = it})
         }
 
         Spacer(Modifier.height(50.dp))

@@ -1,6 +1,5 @@
 package com.atul.doctorappointmentappui.navigatiion
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -8,7 +7,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.atul.doctorappointmentappui.core.model.UserModel
 import com.atul.doctorappointmentappui.core.viewmodel.AuthViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
@@ -31,10 +29,7 @@ fun AppNavGraph(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-//    userDataViewmodel.getData(authVm.currentUserId.value?: "")
     val userData by userDataViewmodel.userData.collectAsState()
-
-    var user = UserModel()
 
     NavHost(navCon, Screen.Intro.route) {
         introRoute(
@@ -81,14 +76,16 @@ fun AppNavGraph(
             },
             onManageAccount = {
                 userDataViewmodel.getData("uid")
-                Log.d("Firestore", "From NavGraph: ${userData.userName}")
-                Log.d("Firestore", "From NavGraph too: ${userDataViewmodel.getUserData()}")
-                user = userDataViewmodel.getUserData()
+//                Log.d("Firestore", "From NavGraph too: ${userDataViewmodel.getUserData()}")
                 navCon.navigate(Screen.ManageAccount.route)
             }
         )
 
-        manageAccountRoute(user)
+        manageAccountRoute(
+            userDataVm = userDataViewmodel,
+            saveUserData = {
+                userDataViewmodel.updateUserDetails(it)
+            })
 
         topDoctorsRoute(
             viewmodel = vm,

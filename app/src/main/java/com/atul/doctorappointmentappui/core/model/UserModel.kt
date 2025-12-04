@@ -5,7 +5,7 @@ data class UserModel(
     val age: String = "xx",
     val email: String = "Loading...",
     val imageURL: String = "",
-    val isMale: Boolean = true,
+    val male: Boolean = true,
     val phone: String = "+0 000 00...",
     val totalAppointments: Int = 0,
     val userName: String = "loading..."

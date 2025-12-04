@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.atul.doctorappointmentappui.core.model.UserModel
 
 @Composable
 fun AccountHeader(edit: Boolean, onClick:() -> Unit) {
@@ -24,6 +25,6 @@ fun AccountHeader(edit: Boolean, onClick:() -> Unit) {
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
-            SaveButton(edit) {  }
+            SaveButton(edit) { onClick() }
     }
 }

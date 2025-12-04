@@ -14,19 +14,29 @@ class UserDataViewModel @Inject constructor(
     private val repo: UserDataRepo
 ): ViewModel() {
 
-    private val _userData = MutableStateFlow<UserModel>(UserModel())
+    private val _userData = MutableStateFlow(UserModel())
     val userData: StateFlow<UserModel> = _userData
 
+    private val _userUid = MutableStateFlow("")
+    val userUid: StateFlow<String> = _userUid
+
+    fun updateUid(uid: String) {
+        _userUid.value = uid
+    }
+
     fun getData(uid: String) {
+        updateUid(uid)
         repo.fetchUserData(uid) {result ->
-            _userData.value = result?: UserModel()
-            Log.d("Firestore", "Data Fetched: ${userData.value.userName}")
-            Log.d("Firestore", "Data Fetched too: ${result?.userName}")
-//            Log.d("Firestore", "Entire Data: $result")
+            val data = result?: UserModel(userName = "WTF..")
+            updateUserData(data)
         }
     }
 
-    fun getUserData(): UserModel {
-        return _userData.value
+    fun updateUserData(data: UserModel) {
+        _userData.value = data
+    }
+
+    fun updateUserDetails(details: UserModel) {
+        repo.updateUserDetails(_userUid.value, details)
     }
 }
