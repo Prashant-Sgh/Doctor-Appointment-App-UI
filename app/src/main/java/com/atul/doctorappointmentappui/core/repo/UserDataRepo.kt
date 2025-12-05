@@ -1,6 +1,8 @@
 package com.atul.doctorappointmentappui.core.repo
 
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import com.atul.doctorappointmentappui.core.model.UserModel
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.SetOptions
@@ -46,6 +48,7 @@ class UserDataRepo @Inject constructor(){
             "email" to userData.email,
             "phone" to userData.phone,
             "address" to userData.address,
+//            "address" to "Chicago",
             "totalAppointments" to userData.totalAppointments,
         )
 
@@ -53,6 +56,7 @@ class UserDataRepo @Inject constructor(){
             .document(uid)
             .update(data)
             .addOnSuccessListener {
+                Toast.makeText(LocalContext.current, "Profile Updated", Toast.LENGTH_LONG).show()
                 Log.d("Firestore", "User Updated Successful")
             }
             .addOnFailureListener { e ->

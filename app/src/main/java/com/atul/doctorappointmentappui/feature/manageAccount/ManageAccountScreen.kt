@@ -44,18 +44,6 @@ fun ManageAccountScreen(
     var gender by remember { mutableStateOf(userData.male) }
     var userGender = if(gender) "Male" else "Female"
     var editable by remember { mutableStateOf(false) }
-    val newData by remember { mutableStateOf(
-        UserModel(
-            userAddress,
-            userAge,
-            userEmail,
-            userImage,
-            gender,
-            userPhone,
-            totalAppointments,
-            userName
-        )
-    ) }
 
     Column (
         Modifier
@@ -65,7 +53,22 @@ fun ManageAccountScreen(
             .padding(start = 16.dp, top = 16.dp, end = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AccountHeader(editable) {saveUserData(newData)}
+        AccountHeader(editable) {
+            val newData = (
+                UserModel(
+                    userAddress,
+                    userAge,
+                    userEmail,
+                    userImage,
+                    gender,
+                    userPhone,
+                    totalAppointments,
+                    userName
+                )
+            )
+            saveUserData(newData)
+            editable = false
+        }
         Spacer(Modifier.height(50.dp))
         UserPicture(userImage)
         Spacer(Modifier.height(40.dp))
