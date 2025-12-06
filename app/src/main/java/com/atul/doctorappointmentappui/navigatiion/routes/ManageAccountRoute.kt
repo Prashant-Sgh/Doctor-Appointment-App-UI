@@ -8,10 +8,10 @@ import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
 import com.atul.doctorappointmentappui.feature.manageAccount.ManageAccountScreen
 import com.atul.doctorappointmentappui.navigatiion.Screen
 
-fun NavGraphBuilder.manageAccountRoute(userDataVm: UserDataViewModel, saveUserData: (UserModel) -> Unit) {
+fun NavGraphBuilder.manageAccountRoute(userDataVm: UserDataViewModel, saveUserData: (UserModel) -> Unit, signOutUser: () -> Unit) {
     val userDataFlow = userDataVm.userData
     composable(Screen.ManageAccount.route) {
 //        Log.d("Firestore", "From manageAccountRoute: User Name = ${userDataFlow.value.userName}")
-        ManageAccountScreen(userDataFlow) {saveUserData(it)}
+        ManageAccountScreen(userDataFlow, saveUserData= { saveUserData(it) }, signOutUser = {signOutUser()})
     }
 }

@@ -7,6 +7,7 @@ import com.atul.doctorappointmentappui.core.model.UserModel
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
@@ -28,17 +29,7 @@ class UserDataRepo @Inject constructor(){
             }
     }
 
-    fun updateUserDetails(uid: String, userData: UserModel) {
-
-//        db.collection("users")
-//            .document(uid)
-//            .set(userData, SetOptions.merge())
-//            .addOnSuccessListener {
-//                Log.d("Firestore", "User Updated Successful.")
-//            }
-//            .addOnFailureListener { e ->
-//                Log.d("Firestore", "User Not-updated. ERROR - $e")
-//            }
+    suspend fun updateUserDetails(uid: String, userData: UserModel): Boolean {
 
         val data = mapOf(
             "imageURL" to userData.imageURL,
@@ -48,20 +39,19 @@ class UserDataRepo @Inject constructor(){
             "email" to userData.email,
             "phone" to userData.phone,
             "address" to userData.address,
-//            "address" to "Chicago",
             "totalAppointments" to userData.totalAppointments,
         )
 
-        db.collection("users")
-            .document(uid)
-            .update(data)
-            .addOnSuccessListener {
-                Toast.makeText(LocalContext.current, "Profile Updated", Toast.LENGTH_LONG).show()
-                Log.d("Firestore", "User Updated Successful")
-            }
-            .addOnFailureListener { e ->
-                Log.d("Firestore", "User Not-updated $e")
-            }
+        return try {
+            db.collection("users")
+                .document(uid)
+                .update(data)
+                .await()
+            true
+        }
+        catch (e: Exception) {
+            false
+        }
     }
 
 }

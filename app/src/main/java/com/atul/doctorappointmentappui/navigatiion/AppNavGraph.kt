@@ -83,9 +83,18 @@ fun AppNavGraph(
 
         manageAccountRoute(
             userDataVm = userDataViewmodel,
+            signOutUser = {
+                scope.launch {
+                    authVm.signOutUser()
+                }
+            },
             saveUserData = {
-                userDataViewmodel.updateUserDetails(it)
-            })
+                scope.launch {
+                    userDataViewmodel.updateUserDetails(context,it)
+                }
+                navCon.popBackStack()
+            }
+        )
 
         topDoctorsRoute(
             viewmodel = vm,

@@ -29,10 +29,10 @@ import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.UserModel
 
 @Composable
-fun SaveButton(edit: Boolean = false, onClick: () -> Unit) {
+fun SaveButton(onClick: () -> Unit) {
 
     val icon = Icons.Default.Check
-    val color = if(edit) R.color.puurple else R.color.lightPuurple
+    val color =  R.color.puurple
     val buttonText = "Save"
 
     IconButton (
@@ -43,7 +43,7 @@ fun SaveButton(edit: Boolean = false, onClick: () -> Unit) {
                 color = colorResource(color),
                 shape = RoundedCornerShape(5.dp)
             ).padding(5.dp),
-        enabled = edit
+        enabled = true
     ) {
         Row(
             Modifier.background(color = colorResource(color)),

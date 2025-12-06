@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -21,7 +22,8 @@ import com.atul.doctorappointmentappui.R
 @Composable
 fun UserPicture(imageUrl: String) {
     Box(
-        Modifier.size(150.dp)
+        Modifier
+            .size(150.dp)
             .background(
                 color = colorResource(R.color.puurple),
                 shape = RoundedCornerShape(100.dp)

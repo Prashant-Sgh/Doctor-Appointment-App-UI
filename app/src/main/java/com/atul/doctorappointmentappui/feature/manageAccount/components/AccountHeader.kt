@@ -25,6 +25,8 @@ fun AccountHeader(edit: Boolean, onClick:() -> Unit) {
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
-            SaveButton(edit) { onClick() }
+            if(edit) {
+                SaveButton() { onClick() }
+            }
     }
 }

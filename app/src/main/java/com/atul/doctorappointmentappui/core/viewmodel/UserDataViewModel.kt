@@ -1,6 +1,8 @@
 package com.atul.doctorappointmentappui.core.viewmodel
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.atul.doctorappointmentappui.core.model.UserModel
 import com.atul.doctorappointmentappui.core.repo.UserDataRepo
@@ -36,7 +38,13 @@ class UserDataViewModel @Inject constructor(
         _userData.value = data
     }
 
-    fun updateUserDetails(details: UserModel) {
-        repo.updateUserDetails(_userUid.value, details)
+    suspend fun updateUserDetails(context: Context, details: UserModel) {
+        val isUpdated = repo.updateUserDetails(_userUid.value, details)
+        val toastMessage = if (isUpdated) "Profile updated" else "Profile not-updated!!"
+        showToast(context, toastMessage)
+    }
+
+    fun showToast(context: Context, string: String) {
+        Toast.makeText(context, string, Toast.LENGTH_LONG).show()
     }
 }

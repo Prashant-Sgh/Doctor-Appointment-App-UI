@@ -93,4 +93,8 @@ class AuthViewModel @Inject constructor (
         }
     }
 
+    suspend fun signOutUser () {
+        firebaseAuth.signOut()
+    }
+
 }
