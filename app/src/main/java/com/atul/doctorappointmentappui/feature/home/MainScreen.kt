@@ -29,6 +29,7 @@ import coil3.request.crossfade
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
+import com.atul.doctorappointmentappui.feature.profileTab.ManageProfileScreen
 
 @Composable
 fun MainScreen(
@@ -36,7 +37,9 @@ fun MainScreen(
     modifier: Modifier? = null,
     onOpenDoctorDetails: (DoctorModel) -> Unit,
     onOpenTopDoctors: () -> Unit,
-    onManageAccount: () -> Unit
+    onManageAccount: () -> Unit,
+    onUserSelected: () -> Unit,
+    onDoctorSelected: () -> Unit
 ) {
     val categories by viewModel.category.collectAsState()
     var selectedBottom by remember { mutableStateOf(0) }
@@ -56,13 +59,24 @@ fun MainScreen(
                 onSelect = {selectedBottom = it}
             )}
     ) { inner ->
-        LazyColumn( contentPadding = inner) {
-            item { HomeHeader(userName) { onManageAccount() } }
-            item { Banner() }
-            item { SectionHeader(title = "Doctor Speciality", onSeeAll = null) }
-            item { CategoryRow(categories) }
-            item { SectionHeader(title = "Top Doctors", onSeeAll = { onOpenTopDoctors() }) }
-            item { DoctorRow(items = doctors, onClick = { onOpenDoctorDetails(it) }) }
+        when(selectedBottom) {
+            0 -> {
+                LazyColumn( contentPadding = inner) {
+                    item { HomeHeader(userName) { onManageAccount() } }
+                    item { Banner() }
+                    item { SectionHeader(title = "Doctor Speciality", onSeeAll = null) }
+                    item { CategoryRow(categories) }
+                    item { SectionHeader(title = "Top Doctors", onSeeAll = { onOpenTopDoctors() }) }
+                    item { DoctorRow(items = doctors, onClick = { onOpenDoctorDetails(it) }) }
+                }
+            }
+
+            1 -> {
+                ManageProfileScreen(
+                    onUserSelected = onUserSelected,
+                    onDoctorSelected =onDoctorSelected
+                )
+            }
         }
     }
 }

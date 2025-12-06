@@ -7,11 +7,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.atul.doctorappointmentappui.core.viewmodel.AuthViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
 import com.atul.doctorappointmentappui.navigatiion.routes.authRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.detailRoute
+import com.atul.doctorappointmentappui.navigatiion.routes.docProManageRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.homeRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.introRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.manageAccountRoute
@@ -78,6 +80,12 @@ fun AppNavGraph(
                 userDataViewmodel.getData("uid")
 //                Log.d("Firestore", "From NavGraph too: ${userDataViewmodel.getUserData()}")
                 navCon.navigate(Screen.ManageAccount.route)
+            },
+            onUserSelected = {
+                navCon.navigate(Screen.ManageAccount.route)
+            },
+            onDoctorSelected = {
+
             }
         )
 
@@ -94,6 +102,11 @@ fun AppNavGraph(
                 }
                 navCon.popBackStack()
             }
+        )
+
+        docProManageRoute(
+            doctor = DoctorModel(),
+            onSavedConfirmed = {}
         )
 
         topDoctorsRoute(
