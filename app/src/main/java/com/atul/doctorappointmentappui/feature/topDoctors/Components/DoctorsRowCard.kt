@@ -69,7 +69,7 @@ fun DoctorsRowCard(
                             .background(lightPurple, RoundedCornerShape(10.dp))
                     ) {
                         AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current).data(item.Picture).crossfade(true).build(),
+                            model = ImageRequest.Builder(LocalContext.current).data(item.picture).crossfade(true).build(),
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Fit
@@ -79,18 +79,18 @@ fun DoctorsRowCard(
                     Column(Modifier.weight(1f)) {
                         DegreeChip("Professional Doctor")
                         Spacer(Modifier.height(8.dp))
-                        Text(item.Name, color =Color.Black, fontWeight = FontWeight.Bold)
+                        Text(item.name, color =Color.Black, fontWeight = FontWeight.Bold)
                         Spacer(Modifier.height(8.dp))
-                        Text(item.Special, color = gray)
+                        Text(item.special, color = gray)
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(top = 8.dp)
                         ) {
-                            ComposeRatingBar(rating = item.Rating.toFloat() )
+                            ComposeRatingBar(rating = item.rating.toFloat() )
                             Spacer(Modifier.width(8.dp))
                             Text(
-                                item.Rating.toString(),
+                                item.rating.toString(),
                                 color = Color.Black,
                                 fontWeight = FontWeight.Bold
                             )

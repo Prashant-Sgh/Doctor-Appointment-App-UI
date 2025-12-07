@@ -1,11 +1,8 @@
 package com.atul.doctorappointmentappui.core.repo
 
 import android.util.Log
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 import com.atul.doctorappointmentappui.core.model.UserModel
 import com.google.firebase.Firebase
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject

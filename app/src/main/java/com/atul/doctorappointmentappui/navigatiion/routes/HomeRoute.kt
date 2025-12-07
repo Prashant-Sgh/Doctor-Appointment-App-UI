@@ -15,8 +15,8 @@ fun NavGraphBuilder.homeRoute(
     onOpenDetails: (DoctorModel) -> Unit,
     onOpenTopDoctors: () -> Unit,
     onManageAccount: () -> Unit,
-    onUserSelected: () -> Unit,
-    onDoctorSelected: () -> Unit
+    onOpenUserProfile: () -> Unit,
+    onOpenDrProfile: () -> Unit
 ) {
     composable (Screen.Home.route) {
         val category by viewmodel.category.collectAsState()
@@ -32,8 +32,8 @@ fun NavGraphBuilder.homeRoute(
             onOpenDoctorDetails = { onOpenDetails(it) },
             onOpenTopDoctors = { onOpenTopDoctors() },
             onManageAccount = { onManageAccount() },
-            onUserSelected = onUserSelected,
-            onDoctorSelected = onDoctorSelected
+            onOpenUserProfile = onOpenUserProfile,
+            onOpenDrProfile = onOpenDrProfile
         )
     }
 }

@@ -19,8 +19,8 @@ import com.atul.doctorappointmentappui.feature.profileTab.components.ProfileOpti
 
 @Composable
 fun ManageProfileScreen(
-    onUserSelected: () -> Unit,
-    onDoctorSelected: () -> Unit
+    onOpenUserProfile: () -> Unit,
+    onOpenDrProfile: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -45,14 +45,14 @@ fun ManageProfileScreen(
             ProfileOptionCard(
                 title = "User Profile",
                 icon = Icons.Default.Person,
-                onClick = onUserSelected
+                onClick = onOpenUserProfile
             )
 
             // SELLER PROFILE OPTION
             ProfileOptionCard(
                 title = "Doctor Profile",
                 icon = Icons.Default.LocalHospital,
-                onClick = onDoctorSelected
+                onClick = onOpenDrProfile
             )
         }
     }

@@ -71,7 +71,7 @@ fun TopDoctorScreen(
             }
             items(
                 items = doctors,
-                key = {it.Name + "_" + it.Mobile}
+                key = {it.name + "_" + it.phone}
             ) {doc ->
                 DoctorsRowCard(
                     doc,

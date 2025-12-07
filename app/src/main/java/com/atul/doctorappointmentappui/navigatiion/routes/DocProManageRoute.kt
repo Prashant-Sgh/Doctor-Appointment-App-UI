@@ -6,8 +6,8 @@ import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.atul.doctorappointmentappui.feature.profileTab.DocProfileManageScreen
 import com.atul.doctorappointmentappui.navigatiion.Screen
 
-fun NavGraphBuilder.docProManageRoute(doctor: DoctorModel, onSavedConfirmed: (DoctorModel) -> Unit) {
-    composable(Screen.DocProManage.route) {
+fun NavGraphBuilder.drProfileManagementRoute(doctor: DoctorModel, onSavedConfirmed: (DoctorModel) -> Unit) {
+    composable(Screen.DrProfileManagement.route) {
         DocProfileManageScreen(doctor) { onSavedConfirmed(it) }
     }
 }

@@ -1,12 +1,13 @@
 package com.atul.doctorappointmentappui.core.model
 
 data class UserModel(
-    val address: String = "address...",
-    val age: String = "xx",
-    val email: String = "Loading...",
-    val imageURL: String = "",
+    val address: String = "    --    ",
+    val age: String = "    --    ",
+    val email: String = "    --    ",
+    val imageURL: String = "    --    ",
     val male: Boolean = true,
-    val phone: String = "+0 000 00...",
+    val phone: String = "    --    ",
     val totalAppointments: Int = 0,
-    val userName: String = "loading..."
+    val userName: String = "    --    ",
+    val seller: Boolean = false
 )

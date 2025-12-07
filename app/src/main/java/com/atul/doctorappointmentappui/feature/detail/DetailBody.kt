@@ -52,7 +52,7 @@ fun DetailBody(
     ) {
         Spacer(Modifier.height(24.dp))
         Text(
-            item.Name,
+            item.name,
             color = Color.Black,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
@@ -61,7 +61,7 @@ fun DetailBody(
                 .padding(horizontal = 16.dp)
         )
         Text(
-            item.Special,
+            item.special,
             color =  Color.Black,
             modifier = Modifier.padding(start = 16.dp)
         )
@@ -72,7 +72,7 @@ fun DetailBody(
             Image(painter = painterResource(R.drawable.location), contentDescription = null)
             Spacer(Modifier.width(8.dp))
             Text(
-                item.Address,
+                item.address,
                 color = darkPurple,
                 modifier = Modifier.weight(1f)
             )
@@ -83,11 +83,11 @@ fun DetailBody(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            StateColumn(title = "Patient", value = item.Patiens)
+            StateColumn(title = "Patient", value = "${item.patients} +")
             VerticalDivider(gray)
-            StateColumn(title = "Experience", value = "${item.Expriense}")
+            StateColumn(title = "Experience", value = "${item.experience}")
             VerticalDivider(gray)
-            RatingState("Rating", item.Rating)
+            RatingState("Rating", item.rating)
         }
 
         Text(
@@ -101,7 +101,7 @@ fun DetailBody(
         )
 
         Text(
-            item.Biography,
+            item.biography,
             color = Color.Black,
             modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp)
         )
@@ -116,34 +116,34 @@ fun DetailBody(
                 "Direction",
                 R.drawable.direction,
                 lightPurple,
-                !item.Site.isNullOrBlank(),
-            ) { onDirection(item.Location) }
+                !item.site.isNullOrBlank(),
+            ) { onDirection(item.location) }
             ActionItem(
                 "Website",
                 R.drawable.website,
                 lightPurple,
-                !item.Site.isNullOrBlank(),
-            ) { onOpenWebsite(item.Site) }
+                !item.site.isNullOrBlank(),
+            ) { onOpenWebsite(item.site) }
             ActionItem(
                 "Call",
                 R.drawable.call,
                 lightPurple,
-                !item.Site.isNullOrBlank(),
-            ) { onDial(item.Mobile) }
+                !item.site.isNullOrBlank(),
+            ) { onDial(item.phone) }
             ActionItem(
                 "Message",
                 R.drawable.message,
                 lightPurple,
-                !item.Site.isNullOrBlank(),
-            ) { onSendSms(item.Mobile, "${item.Special} - ${item.Name} - ${item.Biography}") }
+                !item.site.isNullOrBlank(),
+            ) { onSendSms(item.phone, "${item.special} - ${item.name} - ${item.biography}") }
             ActionItem(
                 "Share",
                 R.drawable.share,
                 lightPurple,
-                !item.Site.isNullOrBlank(),
+                !item.site.isNullOrBlank(),
             ) {
-                val subject = item.Name
-                val text = "${item.Name}, ${item.Address}, ${item.Mobile} "
+                val subject = item.name
+                val text = "${item.name}, ${item.address}, ${item.phone} "
                 onShare(subject, text)
             }
         }

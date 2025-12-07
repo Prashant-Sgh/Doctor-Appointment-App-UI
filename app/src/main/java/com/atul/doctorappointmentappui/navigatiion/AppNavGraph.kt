@@ -13,7 +13,7 @@ import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
 import com.atul.doctorappointmentappui.navigatiion.routes.authRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.detailRoute
-import com.atul.doctorappointmentappui.navigatiion.routes.docProManageRoute
+import com.atul.doctorappointmentappui.navigatiion.routes.drProfileManagementRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.homeRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.introRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.manageAccountRoute
@@ -81,11 +81,11 @@ fun AppNavGraph(
 //                Log.d("Firestore", "From NavGraph too: ${userDataViewmodel.getUserData()}")
                 navCon.navigate(Screen.ManageAccount.route)
             },
-            onUserSelected = {
+            onOpenUserProfile = {
                 navCon.navigate(Screen.ManageAccount.route)
             },
-            onDoctorSelected = {
-
+            onOpenDrProfile = {
+                navCon.navigate(Screen.DrProfileManagement.route)
             }
         )
 
@@ -104,7 +104,7 @@ fun AppNavGraph(
             }
         )
 
-        docProManageRoute(
+        drProfileManagementRoute(
             doctor = DoctorModel(),
             onSavedConfirmed = {}
         )

@@ -38,8 +38,8 @@ fun MainScreen(
     onOpenDoctorDetails: (DoctorModel) -> Unit,
     onOpenTopDoctors: () -> Unit,
     onManageAccount: () -> Unit,
-    onUserSelected: () -> Unit,
-    onDoctorSelected: () -> Unit
+    onOpenUserProfile: () -> Unit,
+    onOpenDrProfile: () -> Unit
 ) {
     val categories by viewModel.category.collectAsState()
     var selectedBottom by remember { mutableStateOf(0) }
@@ -73,8 +73,8 @@ fun MainScreen(
 
             1 -> {
                 ManageProfileScreen(
-                    onUserSelected = onUserSelected,
-                    onDoctorSelected =onDoctorSelected
+                    onOpenUserProfile = onOpenUserProfile,
+                    onOpenDrProfile = onOpenDrProfile
                 )
             }
         }

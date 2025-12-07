@@ -32,7 +32,7 @@ fun DetailScreen(
         Box(
             Modifier.fillMaxWidth()
         ) {
-            DetailHeader(pictureUrl = item.Picture, onBack = onBack)
+            DetailHeader(pictureUrl = item.picture, onBack = onBack)
             Surface(
                 color = Color.White,
                 shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp),

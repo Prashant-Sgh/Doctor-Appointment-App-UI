@@ -65,7 +65,7 @@ fun DoctorCard(item: DoctorModel, onClick: () -> Unit) {
                 AsyncImage(
                     model = ImageRequest
                         .Builder(LocalContext.current)
-                        .data(item.Picture)
+                        .data(item.picture)
                         .crossfade(true)
                         .build(),
                     contentDescription = null,
@@ -76,14 +76,14 @@ fun DoctorCard(item: DoctorModel, onClick: () -> Unit) {
 
             Spacer(Modifier.height(8.dp))
             Text(
-                item.Name?: "Something is wrong",
+                item.name?: "Something is wrong",
                 color = Color.Black,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = item.Special,
+                text = item.special,
                 color = colorResource(R.color.ggray),
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
@@ -99,7 +99,7 @@ fun DoctorCard(item: DoctorModel, onClick: () -> Unit) {
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = "${item.Rating}",
+                    text = "${item.rating}",
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
@@ -111,7 +111,7 @@ fun DoctorCard(item: DoctorModel, onClick: () -> Unit) {
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    "${item.Expriense} Years",
+                    "${item.experience} Years",
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
