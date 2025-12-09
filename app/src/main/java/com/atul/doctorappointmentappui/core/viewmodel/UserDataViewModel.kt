@@ -22,19 +22,24 @@ class UserDataViewModel @Inject constructor(
     private val _userUid = MutableStateFlow("")
     val userUid: StateFlow<String> = _userUid
 
-    fun updateUid(uid: String) {
+    private fun updateUid(uid: String) {
         _userUid.value = uid
     }
 
-    fun getData(uid: String) {
+    fun getData(uid: String, context: Context) {
         updateUid(uid)
         repo.fetchUserData(uid) {result ->
-            val data = result?: UserModel(userName = "WTF..")
-            updateUserData(data)
+            if (result != null) {
+                updateUserData(result)
+                showToast(context, "User data fetched.")
+            }
+            else {
+                showToast(context, "User data not-fetched.")
+            }
         }
     }
 
-    fun updateUserData(data: UserModel) {
+    private fun updateUserData(data: UserModel) {
         _userData.value = data
     }
 

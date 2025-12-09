@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.atul.doctorappointmentappui.core.viewmodel.AuthViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
+import com.atul.doctorappointmentappui.core.viewmodel.SellerDataViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
 import com.atul.doctorappointmentappui.navigatiion.AppNavGraph
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,13 +21,14 @@ class MainActivity : ComponentActivity() {
     private val vm by viewModels<MainViewModel>()
     private val authViewmodel: AuthViewModel by viewModels()
     private val userDataViewmodel: UserDataViewModel by viewModels()
+    private val sellerDataViewModel: SellerDataViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             val nav = rememberNavController()
-            AppNavGraph(nav, vm, authViewmodel, userDataViewmodel)
+            AppNavGraph(nav, vm, authViewmodel, userDataViewmodel, sellerDataViewModel)
         }
     }
 }

@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.atul.doctorappointmentappui.core.viewmodel.AuthViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
+import com.atul.doctorappointmentappui.core.viewmodel.SellerDataViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
 import com.atul.doctorappointmentappui.navigatiion.routes.authRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.detailRoute
@@ -25,13 +26,12 @@ fun AppNavGraph(
     navCon: NavHostController,
     vm: MainViewModel,
     authVm: AuthViewModel,
-    userDataViewmodel: UserDataViewModel
+    userDataViewmodel: UserDataViewModel,
+    sellerDataViewModel: SellerDataViewModel
 ) {
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-
-    val userData by userDataViewmodel.userData.collectAsState()
 
     NavHost(navCon, Screen.Intro.route) {
         introRoute(
@@ -77,14 +77,14 @@ fun AppNavGraph(
                 navCon.navigate(Screen.TopDoctors.route)
             },
             onManageAccount = {
-                userDataViewmodel.getData("uid")
-//                Log.d("Firestore", "From NavGraph too: ${userDataViewmodel.getUserData()}")
+                userDataViewmodel.getData("uid", context)
                 navCon.navigate(Screen.ManageAccount.route)
             },
             onOpenUserProfile = {
                 navCon.navigate(Screen.ManageAccount.route)
             },
             onOpenDrProfile = {
+                sellerDataViewModel.getData("uid", context)
                 navCon.navigate(Screen.DrProfileManagement.route)
             }
         )
@@ -105,8 +105,13 @@ fun AppNavGraph(
         )
 
         drProfileManagementRoute(
-            doctor = DoctorModel(),
-            onSavedConfirmed = {}
+//            doctor = sellerData,
+            sellerDataViewModel = sellerDataViewModel,
+            onSavedConfirmed = {
+                scope.launch {
+                    sellerDataViewModel.updateSellerDetails(context, it)
+                }
+            }
         )
 
         topDoctorsRoute(

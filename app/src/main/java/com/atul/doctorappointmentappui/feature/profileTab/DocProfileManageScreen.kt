@@ -1,31 +1,13 @@
 package com.atul.doctorappointmentappui.feature.profileTab
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,34 +20,52 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.DoctorModel
+import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DocProfileManageScreen(
-    doctor: DoctorModel,
+    doctorFlow: StateFlow<DoctorModel>,
     onSaveConfirmed: (DoctorModel) -> Unit
 ) {
-    var speciality by remember { mutableStateOf(doctor.special) }
-    var site by remember { mutableStateOf(doctor.site) }
-    var rating by remember { mutableStateOf(doctor.rating.toString()) }
-    var patients by remember { mutableStateOf(doctor.patients) }
-    var phone by remember { mutableStateOf(doctor.phone) }
-    var name by remember { mutableStateOf(doctor.name) }
-    var picture by remember { mutableStateOf(doctor.picture) }
-    var location by remember { mutableStateOf(doctor.location) }
-    var experience by remember { mutableStateOf(doctor.experience.toString()) }
-    var biography by remember { mutableStateOf(doctor.biography) }
-    var address by remember { mutableStateOf(doctor.address) }
+    val doctor by doctorFlow.collectAsState()
+
+    // Local editable states
+    var speciality by remember { mutableStateOf("") }
+    var site by remember { mutableStateOf("") }
+    var rating by remember { mutableStateOf("") }
+    var patients by remember { mutableStateOf(0) }
+    var phone by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var picture by remember { mutableStateOf("") }
+    var location by remember { mutableStateOf("") }
+    var experience by remember { mutableStateOf("") }
+    var biography by remember { mutableStateOf("") }
+    var address by remember { mutableStateOf("") }
+
+    // Sync form fields from doctor object ONLY when doctor changes
+    LaunchedEffect(doctor) {
+        speciality = doctor.special
+        site = doctor.site
+        rating = doctor.rating.toString()
+        patients = doctor.patients
+        phone = doctor.phone
+        name = doctor.name
+        picture = doctor.picture
+        location = doctor.location
+        experience = doctor.experience.toString()
+        biography = doctor.biography
+        address = doctor.address
+    }
 
     var showConfirmDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Manage Doctor Profile") }
-            )
+            TopAppBar(title = { Text("Manage Doctor Profile") })
         }
     ) { padding ->
+
         Column(
             Modifier
                 .padding(padding)
@@ -73,21 +73,21 @@ fun DocProfileManageScreen(
                 .padding(16.dp)
         ) {
 
-            // ----------- Profile Picture -----------
+            // ---------- Profile Picture ----------
             Card(
                 shape = CircleShape,
                 modifier = Modifier
                     .size(120.dp)
-                    .background(
-                        color = colorResource(R.color.puurple),
-                        shape = RoundedCornerShape(100.dp)
-                    )
+                    .background(colorResource(R.color.puurple), CircleShape)
                     .clip(CircleShape)
                     .align(Alignment.CenterHorizontally),
                 elevation = CardDefaults.cardElevation(6.dp)
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current).data(picture).crossfade(true).build(),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(picture)
+                        .crossfade(true)
+                        .build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop
                 )
@@ -95,6 +95,7 @@ fun DocProfileManageScreen(
 
             Spacer(Modifier.height(12.dp))
 
+            // Picture URL
             OutlinedTextField(
                 value = picture,
                 onValueChange = { picture = it },
@@ -104,16 +105,34 @@ fun DocProfileManageScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            // ----------- Editable Form Fields -----------
+            // ----------- Editable Fields -----------
 
             ProfileTextField("Name", name, onValueChange = { name = it }, null)
+
             ProfileTextField("Speciality", speciality, onValueChange = { speciality = it }, null)
+
             ProfileTextField("Clinic / Site", site, onValueChange = { site = it }, null)
+
             ProfileTextField("Location", location, onValueChange = { location = it }, null)
-            ProfileTextField("Experience (years)", experience, onValueChange = { experience = it }, null)
+
+            ProfileTextField(
+                label = "Experience (years)",
+                value = experience,
+                onValueChange = null,
+                onIntValueChange = { experience = it.toString() }
+            )
+
+            ProfileTextField(
+                label = "Patients Attended",
+                value = patients.toString(),
+                onValueChange = null,
+                onIntValueChange = { patients = it }
+            )
+
             ProfileTextField("Rating", rating, onValueChange = { rating = it }, null)
-            ProfileTextField("Patients Attended", "$patients", onValueChange = null, { { patients = it } })
+
             ProfileTextField("Mobile", phone, onValueChange = { phone = it }, null)
+
             ProfileTextField("Address", address, onValueChange = { address = it }, null)
 
             OutlinedTextField(
@@ -128,7 +147,7 @@ fun DocProfileManageScreen(
 
             Spacer(Modifier.height(32.dp))
 
-            // ----------- Save Button -----------
+            // Save Button
             Button(
                 onClick = { showConfirmDialog = true },
                 modifier = Modifier
@@ -141,7 +160,7 @@ fun DocProfileManageScreen(
         }
     }
 
-    // ----------- Confirmation Popup Dialog -----------
+    // ---------- Confirm Dialog ----------
     if (showConfirmDialog) {
         AlertDialog(
             onDismissRequest = { showConfirmDialog = false },
@@ -155,16 +174,16 @@ fun DocProfileManageScreen(
                             DoctorModel(
                                 special = speciality,
                                 site = site,
-                                rating = rating.toDouble(),
+                                rating = rating.toDoubleOrNull() ?: 0.0,
                                 patients = patients,
                                 phone = phone,
                                 name = name,
                                 picture = picture,
                                 location = location,
-                                experience = experience.toInt(),
+                                experience = experience.toIntOrNull() ?: 0,
                                 biography = biography,
                                 address = address,
-                                id = doctor.id // unchanged
+                                id = doctor.id // keep original
                             )
                         )
                     }
@@ -180,8 +199,14 @@ fun DocProfileManageScreen(
 }
 
 @Composable
-fun ProfileTextField(label: String, value: String, onValueChange: ((String) -> Unit)?, onIntValueChange: ((Int) -> Unit)?) {
+fun ProfileTextField(
+    label: String,
+    value: String,
+    onValueChange: ((String) -> Unit)?,
+    onIntValueChange: ((Int) -> Unit)?
+) {
     if (onValueChange != null) {
+
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
@@ -190,13 +215,13 @@ fun ProfileTextField(label: String, value: String, onValueChange: ((String) -> U
                 .fillMaxWidth()
                 .padding(vertical = 6.dp)
         )
-    }
-    else if (onIntValueChange !=null) {
+
+    } else if (onIntValueChange != null) {
+
         OutlinedTextField(
             value = value,
             onValueChange = { newValue ->
-                onIntValueChange(newValue.toIntOrNull()?: 0)
-
+                onIntValueChange(newValue.toIntOrNull() ?: 0)
             },
             label = { Text(label) },
             modifier = Modifier
@@ -204,5 +229,4 @@ fun ProfileTextField(label: String, value: String, onValueChange: ((String) -> U
                 .padding(vertical = 6.dp)
         )
     }
-
 }
