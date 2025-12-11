@@ -33,14 +33,26 @@ fun AppNavGraph(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
+    fun fetchUserData() {
+//        userDataViewmodel.getData(authVm.currentUserId.value?: "uid", context)
+        userDataViewmodel.getData("uid", context)
+        val userName = userDataViewmodel.userData.value.userName
+        vm.updateUserName(userName)
+    }
+
+    fun navigateToHomeRoute() {
+        fetchUserData()
+        navCon.navigate(Screen.Home.route) {
+            popUpTo(Screen.Intro.route) { inclusive = true }
+        }
+    }
+
     NavHost(navCon, Screen.Intro.route) {
         introRoute(
             onStart = {
                 if (authVm.currentUserId.value != null) {
-                    val userName = authVm.UserName
-                    vm.updateUserName(userName.value)
-                    navCon.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Intro.route) { inclusive = true }
+                    scope.launch {
+                        navigateToHomeRoute()
                     }
                 }
                 else{
@@ -77,7 +89,8 @@ fun AppNavGraph(
                 navCon.navigate(Screen.TopDoctors.route)
             },
             onManageAccount = {
-                userDataViewmodel.getData("uid", context)
+                // Commented to test -
+//                userDataViewmodel.getData("uid", context)
                 navCon.navigate(Screen.ManageAccount.route)
             },
             onOpenUserProfile = {

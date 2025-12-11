@@ -9,5 +9,6 @@ data class UserModel(
     val phone: String = "    --    ",
     val totalAppointments: Int = 0,
     val userName: String = "    --    ",
-    val seller: Boolean = false
+    val seller: Boolean = false,
+    val profileCompleted: Boolean = false
 )

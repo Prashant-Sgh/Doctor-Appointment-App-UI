@@ -14,12 +14,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.DoctorModel
+import com.atul.doctorappointmentappui.feature.profileTab.components.ProfileTextField
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,17 +34,17 @@ fun DocProfileManageScreen(
     val doctor by doctorFlow.collectAsState()
 
     // Local editable states
-    var speciality by remember { mutableStateOf("") }
-    var site by remember { mutableStateOf("") }
-    var rating by remember { mutableStateOf("") }
-    var patients by remember { mutableStateOf(0) }
-    var phone by remember { mutableStateOf("") }
-    var name by remember { mutableStateOf("") }
-    var picture by remember { mutableStateOf("") }
-    var location by remember { mutableStateOf("") }
-    var experience by remember { mutableStateOf("") }
-    var biography by remember { mutableStateOf("") }
-    var address by remember { mutableStateOf("") }
+    var speciality by remember { mutableStateOf(doctor.special) }
+    var site by remember { mutableStateOf(doctor.site) }
+    var rating by remember { mutableStateOf(doctor.rating.toString()) }
+    var patients by remember { mutableStateOf(doctor.patients) }
+    var phone by remember { mutableStateOf(doctor.phone) }
+    var name by remember { mutableStateOf(doctor.name) }
+    var picture by remember { mutableStateOf(doctor.picture) }
+    var location by remember { mutableStateOf(doctor.location) }
+    var experience by remember { mutableStateOf(doctor.experience.toString()) }
+    var biography by remember { mutableStateOf(doctor.biography) }
+    var address by remember { mutableStateOf(doctor.address) }
 
     // Sync form fields from doctor object ONLY when doctor changes
     LaunchedEffect(doctor) {
@@ -198,35 +201,28 @@ fun DocProfileManageScreen(
     }
 }
 
-@Composable
-fun ProfileTextField(
-    label: String,
-    value: String,
-    onValueChange: ((String) -> Unit)?,
-    onIntValueChange: ((Int) -> Unit)?
-) {
-    if (onValueChange != null) {
-
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            label = { Text(label) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 6.dp)
-        )
-
-    } else if (onIntValueChange != null) {
-
-        OutlinedTextField(
-            value = value,
-            onValueChange = { newValue ->
-                onIntValueChange(newValue.toIntOrNull() ?: 0)
-            },
-            label = { Text(label) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 6.dp)
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun DocProfileManageScreenPreview() {
+//    // Create a dummy doctor for the preview
+//    val dummyDoctor = DoctorModel(
+//        id = 1,
+//        name = "Dr. Atul Singh",
+//        special = "Cardiologist",
+//        site = "City Hospital",
+//        rating = 4.8,
+//        patients = 120,
+//        phone = "9876543210",
+//        picture = "", // Empty for placeholder
+//        location = "New York, NY",
+//        experience = 10,
+//        biography = "Experienced cardiologist with over 10 years of practice in treating heart diseases.",
+//        address = "123 Medical Lane, NY"
+//    )
+//
+//    // Pass it as a StateFlow
+//    DocProfileManageScreen(
+//        doctorFlow = MutableStateFlow(dummyDoctor),
+//        onSaveConfirmed = {}
+//    )
+//}
