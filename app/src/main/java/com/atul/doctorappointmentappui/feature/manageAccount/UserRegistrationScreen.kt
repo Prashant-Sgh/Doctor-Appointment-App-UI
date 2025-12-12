@@ -1,5 +1,6 @@
 package com.atul.doctorappointmentappui.feature.manageAccount
 
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.background
@@ -28,6 +29,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.UserModel
+import com.atul.doctorappointmentappui.feature.manageAccount.components.GenderSelectionRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,6 +38,7 @@ fun CompleteProfileScreen(
     initialUser: UserModel,
     onProfileCompleted: (UserModel) -> Unit
 ) {
+    val context  = LocalContext.current
     // Form State (Pre-filled with whatever Google/Auth provided)
     var userName by remember { mutableStateOf(initialUser.userName) }
     var userEmail by remember { mutableStateOf(initialUser.email) }
@@ -52,6 +55,17 @@ fun CompleteProfileScreen(
     var isAgeError by remember { mutableStateOf(false) }
     var isPhoneError by remember { mutableStateOf(false) }
     var isAddressError by remember { mutableStateOf(false) }
+    var isImageError by remember { mutableStateOf(false) }
+
+    LaunchedEffect(initialUser) {
+        userName = initialUser.userName
+        userEmail = initialUser.email
+        userImage = initialUser.imageURL
+        userAge = initialUser.age
+        userPhone = initialUser.phone
+        userAddress = initialUser.address
+        gender = initialUser.male
+    }
 
     Scaffold(
         topBar = {
@@ -174,22 +188,10 @@ fun CompleteProfileScreen(
                 }
 
                 // Gender
-                OutlinedTextField(
-                    value = if (gender) "Male" else "Female",
-                    onValueChange = {},
-                    label = { Text("Gender") },
-                    readOnly = true,
-                    enabled = true,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 8.dp)
-                        .clickable { gender = !gender }
-                        .padding(vertical = 6.dp), // Match vertical padding of other fields
-                    colors = OutlinedTextFieldDefaults.colors(
-                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                        disabledBorderColor = MaterialTheme.colorScheme.outline,
-                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                GenderSelectionRow(
+                    isMale = gender,
+                    isEditable = true,
+                    onGenderSelected = { selectedMale -> gender = selectedMale }
                 )
             }
 
@@ -230,8 +232,9 @@ fun CompleteProfileScreen(
                     isAgeError = userAge.isBlank()
                     isPhoneError = userPhone.isBlank()
                     isAddressError = userAddress.isBlank()
+                    isImageError = userImage.isBlank()
 
-                    val hasError = isNameError || isAgeError || isPhoneError || isAddressError
+                    val hasError = isNameError || isAgeError || isPhoneError || isAddressError || isImageError
 
                     if (!hasError) {
                         val completeUser = initialUser.copy(
@@ -244,6 +247,9 @@ fun CompleteProfileScreen(
                             profileCompleted = true // IMPORTANT: Mark as complete
                         )
                         onProfileCompleted(completeUser)
+                    }
+                    else {
+                        Toast.makeText(context, "Please fill all the fields", Toast.LENGTH_SHORT).show()
                     }
                 },
                 modifier = Modifier

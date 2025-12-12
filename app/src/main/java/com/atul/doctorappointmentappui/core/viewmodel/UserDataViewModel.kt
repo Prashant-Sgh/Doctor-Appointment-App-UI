@@ -4,11 +4,14 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.atul.doctorappointmentappui.core.model.UserModel
 import com.atul.doctorappointmentappui.core.repo.UserDataRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,7 +20,7 @@ class UserDataViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _userData = MutableStateFlow(UserModel())
-    val userData: StateFlow<UserModel> = _userData
+    val userData: StateFlow<UserModel> = _userData.asStateFlow()
 
     private val _userUid = MutableStateFlow("")
     val userUid: StateFlow<String> = _userUid
@@ -28,14 +31,18 @@ class UserDataViewModel @Inject constructor(
 
     fun getData(uid: String, context: Context) {
         updateUid(uid)
-        repo.fetchUserData(uid) {result ->
-            if (result != null) {
-                updateUserData(result)
-                showToast(context, "User data fetched.")
-            }
-            else {
-                showToast(context, "User data not-fetched.")
-            }
+
+        viewModelScope.launch {
+            repo.getUserDataFlow(uid)
+                .collect { user ->
+                    if (user != null) {
+                        updateUserData(user)
+                        showToast(context, "User data fetched.")
+                    }
+                    else {
+                        showToast(context, "User data not-fetched.")
+                    }
+                }
         }
     }
 

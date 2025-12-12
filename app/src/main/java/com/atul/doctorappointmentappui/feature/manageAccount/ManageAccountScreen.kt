@@ -36,6 +36,7 @@ import coil3.request.crossfade
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.UserModel
 import com.atul.doctorappointmentappui.feature.manageAccount.components.GenderOption
+import com.atul.doctorappointmentappui.feature.manageAccount.components.GenderSelectionRow
 import com.atul.doctorappointmentappui.feature.manageAccount.components.IncompleteProfileBanner
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -64,7 +65,7 @@ fun ManageAccountScreen(
     // --- NOTIFICATION STATE ---
     // Check if profile is technically incomplete (you can adjust this logic)
     val isProfileIncomplete = remember(userData) {
-        !userData.profileCompleted || userData.age.isBlank() || userData.address.isBlank()
+        !userData.isProfileInformationFilled
     }
 
     // Allow user to dismiss it for this session
@@ -328,58 +329,23 @@ fun ManageAccountScreen(
 // -------------------------------------------------------------------------
 // Custom Composable for Gender Selection
 // -------------------------------------------------------------------------
+
+
+@Preview
 @Composable
-fun GenderSelectionRow(
-    isMale: Boolean,
-    isEditable: Boolean,
-    onGenderSelected: (Boolean) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp) // Match standard TextField height
-            .clip(RoundedCornerShape(4.dp)) // Match TextField default corners
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
-            .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        // Male Button
-        GenderOption(
-            text = "Male",
-            icon = Icons.Default.Male,
-            isSelected = isMale,
-            isEditable = isEditable,
-            modifier = Modifier.weight(1f),
-            onClick = { onGenderSelected(true) }
-        )
-
-        // Female Button
-        GenderOption(
-            text = "Female",
-            icon = Icons.Default.Female,
-            isSelected = !isMale,
-            isEditable = isEditable,
-            modifier = Modifier.weight(1f),
-            onClick = { onGenderSelected(false) }
-        )
-    }
+private fun ManageAccountScreenPreview() {
+    val dummyUser = UserModel(
+        userName = "Atul",
+        email = "atul@example.com",
+        age = "25",
+        phone = "1234567890",
+        address = "123 Main St",
+        imageURL = "",
+        male = true
+    )
+    ManageAccountScreen(
+        userDataFlow = MutableStateFlow(dummyUser),
+        saveUserData = {},
+        signOutUser = {}
+    )
 }
-
-//@Preview
-//@Composable
-//private fun ManageAccountScreenPreview() {
-//    val dummyUser = UserModel(
-//        userName = "Atul",
-//        email = "atul@example.com",
-//        age = "25",
-//        phone = "1234567890",
-//        address = "123 Main St",
-//        imageURL = "",
-//        male = true
-//    )
-//    ManageAccountScreen(
-//        userDataFlow = MutableStateFlow(dummyUser),
-//        saveUserData = {},
-//        signOutUser = {}
-//    )
-//}
