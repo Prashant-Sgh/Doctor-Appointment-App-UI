@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -30,25 +29,27 @@ import coil3.request.crossfade
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.UserModel
 import com.atul.doctorappointmentappui.feature.manageAccount.components.GenderSelectionRow
+import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompleteProfileScreen(
     // We pass the partial user data (e.g. email/name from Google Auth)
-    initialUser: UserModel,
+    initialUserFlow: StateFlow<UserModel>,
     onProfileCompleted: (UserModel) -> Unit
 ) {
+    val initialUser by initialUserFlow.collectAsState()
     val context  = LocalContext.current
     // Form State (Pre-filled with whatever Google/Auth provided)
-    var userName by remember { mutableStateOf(initialUser.userName) }
-    var userEmail by remember { mutableStateOf(initialUser.email) }
-    var userImage by remember { mutableStateOf(initialUser.imageURL) }
+    var userName by remember(initialUser) { mutableStateOf(initialUser.userName) }
+    var userEmail by remember(initialUser) { mutableStateOf(initialUser.email) }
+    var userImage by remember(initialUser) { mutableStateOf(initialUser.imageURL) }
 
-    // Fields that need to be filled
-    var userAge by remember { mutableStateOf("") }
-    var userPhone by remember { mutableStateOf("") }
-    var userAddress by remember { mutableStateOf("") }
-    var gender by remember { mutableStateOf(true) } // true = Male
+        // Fields that need to be filled
+    var userAge by remember(initialUser) { mutableStateOf("") }
+    var userPhone by remember(initialUser) { mutableStateOf("") }
+    var userAddress by remember(initialUser) { mutableStateOf("") }
+    var gender by remember(initialUser) { mutableStateOf(true) } // true = Male
 
     // Error States
     var isNameError by remember { mutableStateOf(false) }
@@ -143,7 +144,9 @@ fun CompleteProfileScreen(
             Spacer(Modifier.height(16.dp))
 
             // ---------- Form Fields ----------
-            val fieldModifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)
+            val fieldModifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 6.dp)
 
             // Name
             OutlinedTextField(
@@ -170,7 +173,9 @@ fun CompleteProfileScreen(
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 // Age
-                Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+                Column(modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp)) {
                     OutlinedTextField(
                         value = userAge,
                         onValueChange = {
@@ -186,14 +191,13 @@ fun CompleteProfileScreen(
                     )
                     if (isAgeError) Text("Required", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
                 }
-
-                // Gender
-                GenderSelectionRow(
-                    isMale = gender,
-                    isEditable = true,
-                    onGenderSelected = { selectedMale -> gender = selectedMale }
-                )
             }
+            // Gender
+            GenderSelectionRow(
+                isMale = gender,
+                isEditable = true,
+                onGenderSelected = { selectedMale -> gender = selectedMale }
+            )
 
             // Phone
             OutlinedTextField(
@@ -263,3 +267,10 @@ fun CompleteProfileScreen(
         }
     }
 }
+
+
+//@Preview
+//@Composable
+//private fun Preview() {
+//    CompleteProfileScreen(UserModel()) { }
+//}

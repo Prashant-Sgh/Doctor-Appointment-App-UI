@@ -25,10 +25,6 @@ class SellerDataViewModel @Inject constructor(
         _sellerUid.value = uid
     }
 
-    private fun updateSellerData(data: DoctorModel) {
-        _sellerData.value = data
-    }
-
     fun getData(uid: String, context: Context) {
         updateSellerUid(uid)
         repo.fetchSellerData(uid) { result ->

@@ -27,8 +27,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val nav = rememberNavController()
-            AppNavGraph(nav, vm, authViewmodel, userDataViewmodel, sellerDataViewModel)
+            val navCon = rememberNavController()
+            AppNavGraph(navCon, vm, authViewmodel, userDataViewmodel, sellerDataViewModel)
         }
     }
 }

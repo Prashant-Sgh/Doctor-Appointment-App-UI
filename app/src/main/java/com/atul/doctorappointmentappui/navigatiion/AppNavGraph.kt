@@ -8,7 +8,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import com.atul.doctorappointmentappui.core.viewmodel.AuthViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.SellerDataViewModel
@@ -21,7 +20,6 @@ import com.atul.doctorappointmentappui.navigatiion.routes.homeRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.introRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.manageAccountRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.topDoctorsRoute
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -36,54 +34,57 @@ fun AppNavGraph(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    // 1. Observe User Data globally here to make navigation decisions
-    val currentUserData by userDataViewmodel.userData.collectAsState()
-    val authUser = authVm.currentUserId.collectAsState().value
+    // --- Start Destination Logic ---
+    val authUser by authVm.currentUserId.collectAsState()
 
-    // Helper to fetch data when we know we have a UID
-    fun ensureUserDataLoaded() {
-        if (authUser != null && currentUserData.userName == "") {
+    // Collect user data state
+    val currentUserData by userDataViewmodel.userData.collectAsState() // Access value for logic
+
+    // Collect seller data state
+    val currentSellerData by sellerDataViewModel.sellerData.collectAsState()
+
+    LaunchedEffect(authUser, currentUserData.seller) {
+//        if (authUser != null && currentUserData.seller) {
+        if (authUser != null && currentUserData.seller) {
+            sellerDataViewModel.getData("uid", context)
+        }
+    }
+
+    // 3. Calculate the Banner Logic
+    // Show if: User is a Seller AND Seller Profile is NOT complete
+    val showSellerBanner = currentUserData.seller && !currentSellerData.profileCompleted
+
+
+    // Decide the staring screen
+    val startDestination = when {
+        authUser == null -> Screen.Auth.route // Not authenticated
+        !currentUserData.profileCompleted -> Screen.CompleteUserProfile.route // Profile incomplete
+        else -> Screen.Home.route // All good
+    }
+
+    // This effect runs whenever the authenticated user changes
+    LaunchedEffect(authUser) {
+        if (authUser != null) {
+            // If we have a logged-in user, always ensure their data is loaded
+//            userDataViewmodel.getData(authUser!!, context)
             userDataViewmodel.getData("uid", context)
-        }
-    }
-
-    // 2. The critical logic for where to send the user
-    suspend fun navigateToCorrectScreen() {
-        if (authUser == null) {
-            // Case A: Not Logged In
-            navCon.navigate(Screen.Auth.route) {
-                popUpTo(Screen.Intro.route) { inclusive = true }
-            }
         } else {
-            // Ensure we have the latest data before deciding
-            ensureUserDataLoaded()
-
-            // We might need a small delay or a check if data is loaded,
-            // but assuming data flows in:
-            delay(2000)
-
-            if (!currentUserData.profileCompleted) {
-                // Case B: Logged in, but profile incomplete -> Force Setup
-                navCon.navigate(Screen.CompleteUserProfile.route) {
-                    popUpTo(Screen.Intro.route) { inclusive = true }
-                }
-            } else {
-                // Case C: All Good -> Home
-                vm.updateUserName(currentUserData.userName)
-                navCon.navigate(Screen.Home.route) {
-                    popUpTo(Screen.Intro.route) { inclusive = true }
-                }
+            // If user logs out, clear the data
+            userDataViewmodel.clearUserData()
+            // Navigate to Auth screen after logout
+            navCon.navigate(Screen.Auth.route) {
+                popUpTo(0) { inclusive = true }
             }
         }
     }
 
-    NavHost(navCon, Screen.Intro.route) {
+    NavHost(navCon, Screen.Intro.route) { // Always start at Intro to show brand
 
         introRoute(
             onStart = {
-                scope.launch {
-                    // Trigger the check when user clicks "Get Started"
-                    navigateToCorrectScreen()
+                // When "Get Started" is clicked, navigate to the correct calculated destination
+                navCon.navigate(startDestination) {
+                    popUpTo(Screen.Intro.route) { inclusive = true }
                 }
             }
         )
@@ -92,64 +93,42 @@ fun AppNavGraph(
             onGoogleSignIn = {
                 scope.launch {
                     authVm.signInWithGoogle(it, { _, _ -> }, context = context)
-                    // After successful login, check where to go next
-                    // We need to fetch data first
-                    userDataViewmodel.getData(authVm.currentUserId.value ?: "", context)
+                    // The LaunchedEffect(authUser) will handle the rest
                 }
             },
             onEmailAuth = { email, password, isLogin ->
                 scope.launch {
                     authVm.authenticateWithEmailPassword(email, password, isLogin, context) {
-                        // Auth successful, now check profile status
-                        userDataViewmodel.getData(authVm.currentUserId.value ?: "", context)
+                        // The LaunchedEffect(authUser) will handle the rest
                     }
                 }
             },
         )
 
-        // Listen for Auth/Data changes to redirect automatically after login
-        // This acts as a router after the Auth screen closes
-        composable("auth_redirect_handler") {
-            LaunchedEffect(currentUserData) {
-                if (currentUserData.profileCompleted) {
-                    navCon.navigate(Screen.Home.route) { popUpTo(Screen.Auth.route) { inclusive = true } }
-                } else {
-                    navCon.navigate(Screen.CompleteUserProfile.route) { popUpTo(Screen.Auth.route) { inclusive = true } }
-                }
-            }
-        }
-
-        // --- NEW ROUTE: Complete Profile ---
-
         completeUserProfileRoute(
-            context = context,
-            initialUser = currentUserData,
+            initialUser = userDataViewmodel.userData,
+            // Pass the user data directly from the ViewModel's state
             onProfileCompleted = { updatedUser ->
                 scope.launch {
                     // 1. Save to Firestore
                     userDataViewmodel.updateUserDetails(context, updatedUser)
-                    // 2. Navigate to Home
+                    // 2. Navigate to Home after completion
                     navCon.navigate(Screen.Home.route) {
-                        popUpTo("complete_profile_route") { inclusive = true }
+                        popUpTo(Screen.CompleteUserProfile.route) { inclusive = true }
                     }
                 }
-            }
+            },
+            context = context
         )
 
         homeRoute(
             viewmodel = vm,
-            onOpenDetails = { doctorModel ->
-                navCon.navigateToDetail(doctorModel)
-            },
-            onOpenTopDoctors = {
-                navCon.navigate(Screen.TopDoctors.route)
-            },
-            onManageAccount = {
-                navCon.navigate(Screen.ManageAccount.route)
-            },
-            onOpenUserProfile = {
-                navCon.navigate(Screen.ManageAccount.route)
-            },
+            showSellerBanner = showSellerBanner,
+            onBannerClick = { navCon.navigate(Screen.DrProfileManagement.route) },
+            onOpenDetails = { doctorModel -> navCon.navigateToDetail(doctorModel) },
+            onOpenTopDoctors = { navCon.navigate(Screen.TopDoctors.route) },
+            onManageAccount = { navCon.navigate(Screen.ManageAccount.route) },
+            onOpenUserProfile = { navCon.navigate(Screen.ManageAccount.route) },
             onOpenDrProfile = {
                 sellerDataViewModel.getData("uid", context)
                 navCon.navigate(Screen.DrProfileManagement.route)
@@ -158,18 +137,9 @@ fun AppNavGraph(
 
         manageAccountRoute(
             userDataVm = userDataViewmodel,
-            signOutUser = {
-                scope.launch {
-                    authVm.signOutUser()
-                    navCon.navigate(Screen.Intro.route) {
-                        popUpTo(0) { inclusive = true } // Clear stack
-                    }
-                }
-            },
+            signOutUser = { scope.launch { authVm.signOutUser() } }, // LaunchedEffect handles navigation
             saveUserData = {
-                scope.launch {
-                    userDataViewmodel.updateUserDetails(context, it)
-                }
+                scope.launch { userDataViewmodel.updateUserDetails(context, it) }
                 navCon.popBackStack()
             }
         )

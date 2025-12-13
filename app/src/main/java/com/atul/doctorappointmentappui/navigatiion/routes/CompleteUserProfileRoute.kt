@@ -3,14 +3,16 @@ package com.atul.doctorappointmentappui.navigatiion.routes
 import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.runtime.State
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.atul.doctorappointmentappui.core.model.UserModel
 import com.atul.doctorappointmentappui.feature.manageAccount.CompleteProfileScreen
 import com.atul.doctorappointmentappui.navigatiion.Screen
+import kotlinx.coroutines.flow.StateFlow
 
 fun NavGraphBuilder.completeUserProfileRoute (
-    initialUser: UserModel,
+    initialUser: StateFlow<UserModel>,
     onProfileCompleted: (UserModel) -> Unit,
     context: Context
 ) {
@@ -21,7 +23,7 @@ fun NavGraphBuilder.completeUserProfileRoute (
         }
 
         CompleteProfileScreen(
-            initialUser = initialUser,
+            initialUserFlow = initialUser,
             onProfileCompleted = onProfileCompleted
         )
     }

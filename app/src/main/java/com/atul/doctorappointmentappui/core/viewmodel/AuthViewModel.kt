@@ -33,7 +33,8 @@ class AuthViewModel @Inject constructor (
 
     init {
         viewModelScope.launch{
-            _currentUserId.value = checkCurrentUser()
+            val userId = checkCurrentUser()
+            updateUserId(userId)
         }
     }
 
@@ -61,11 +62,15 @@ class AuthViewModel @Inject constructor (
                         GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
                     firebaseAuth.signInWithCredential(firebaseCredential).await()
 //                openAndPopUp(NOTES_LIST_SCREEN, SIGN_IN_SCREEN)
+                    val result = firebaseAuth.signInWithCredential(firebaseCredential).await()
+                    updateUserId(result.user?.uid)
                 } else {
+                    updateUserId(null)
                     Log.e("AuthError", "UNEXPECTED_CREDENTIAL")
                 }
             }
             catch (e: Exception) {
+                updateUserId(null)
                 Log.d("AuthError", e.message.orEmpty())
             }
         }
@@ -89,7 +94,13 @@ class AuthViewModel @Inject constructor (
         }
         else {
             firebaseAuth.createUserWithEmailAndPassword(email, password)
-            onSuccessful()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val userId = firebaseAuth.currentUser?.uid
+                        updateUserId(userId)
+                        onSuccessful
+                    }
+                }
         }
     }
 

@@ -1,13 +1,7 @@
 package com.atul.doctorappointmentappui.feature.home
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -17,51 +11,64 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import coil3.request.crossfade
-import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
+import com.atul.doctorappointmentappui.feature.manageAccount.components.IncompleteProfileBanner
 import com.atul.doctorappointmentappui.feature.profileTab.ManageProfileScreen
 
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
     modifier: Modifier? = null,
+    showSellerBanner: Boolean,    // <--- Received from AppNavGraph
+    onBannerClick: () -> Unit,    // <--- Received from AppNavGraph
     onOpenDoctorDetails: (DoctorModel) -> Unit,
     onOpenTopDoctors: () -> Unit,
     onManageAccount: () -> Unit,
     onOpenUserProfile: () -> Unit,
-    onOpenDrProfile: () -> Unit
+    onOpenDrProfile: () -> Unit,
 ) {
     val categories by viewModel.category.collectAsState()
     var selectedBottom by remember { mutableStateOf(0) }
     val doctors by viewModel.doctors.collectAsState()
     val userName by viewModel.UserName.collectAsState()
 
+    // Local state to handle closing the banner for this session
+    var isBannerDismissed by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         if (categories.isEmpty()) viewModel.loadCategory()
         if (doctors.isEmpty()) viewModel.loadDoctors()
     }
 
-    Scaffold (
+    Scaffold(
         containerColor = Color.White,
         bottomBar = {
             HomeBottomBar(
                 selected = selectedBottom,
-                onSelect = {selectedBottom = it}
-            )}
+                onSelect = { selectedBottom = it }
+            )
+        }
     ) { inner ->
-        when(selectedBottom) {
+        when (selectedBottom) {
             0 -> {
-                LazyColumn( contentPadding = inner) {
+                LazyColumn(contentPadding = inner) {
+
+                    // --- 1. ADD BANNER AS THE FIRST ITEM ---
+                    if (showSellerBanner) {
+                        item {
+                            IncompleteProfileBanner(
+                                isVisible = true, // We already checked the condition above
+                                onDismiss = { isBannerDismissed = true },
+                                onActionClick = {
+                                    onBannerClick()
+                                    isBannerDismissed = true
+                                }
+                            )
+                        }
+                    }
+
+                    // --- Existing Items ---
                     item { HomeHeader(userName) { onManageAccount() } }
                     item { Banner() }
                     item { SectionHeader(title = "Doctor Speciality", onSeeAll = null) }
@@ -71,7 +78,7 @@ fun MainScreen(
                 }
             }
 
-            1 -> {
+            3 -> {
                 ManageProfileScreen(
                     onOpenUserProfile = onOpenUserProfile,
                     onOpenDrProfile = onOpenDrProfile

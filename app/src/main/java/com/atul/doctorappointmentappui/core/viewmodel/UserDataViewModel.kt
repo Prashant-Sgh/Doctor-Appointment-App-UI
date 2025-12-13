@@ -50,6 +50,12 @@ class UserDataViewModel @Inject constructor(
         _userData.value = data
     }
 
+    fun clearUserData() {
+        val userdata = UserModel()
+        updateUserData(userdata)
+    }
+
+
     suspend fun updateUserDetails(context: Context, details: UserModel) {
         val isUpdated = repo.updateUserDetails(_userUid.value, details)
         val toastMessage = if (isUpdated) "Profile updated" else "Profile not-updated!!"

@@ -6,15 +6,26 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DoctorModel(
     val id: Int = 0,
-    val name: String = "Unknown",
-    val address: String = "Address",
-    val biography: String = "Biography",
+    val name: String = "",
+    val address: String = "",
+    val biography: String = "",
     val experience: Int = 0,
-    val location: String = "Location",
-    val phone: String = "+11 23456456789",
-    val patients: Int = 500,
-    val picture: String = "https://avatarfiles.alphacoders.com/375/thumb-1920-375364.png",
+    val location: String = "",
+    val phone: String = "",
+    val patients: Int = 0,
+    val picture: String = "",
     val rating: Double = 0.0,
-    val site: String = "Website",
-    val special: String = "Speciality"
-): Parcelable
+    val site: String = "",
+    val special: String = "",
+    val profileCompleted: Boolean = false
+): Parcelable {
+    val isProfileInformationFilled: Boolean
+        get() = name.isNotBlank() &&
+                address.isNotBlank() &&
+                biography.isNotBlank() &&
+                location.isNotBlank() &&
+                phone.isNotBlank() &&
+                site.isNotBlank() &&
+                special.isNotBlank() &&
+                experience > 0 // Assuming a doctor must have at least 1 year or some input > 0
+}
