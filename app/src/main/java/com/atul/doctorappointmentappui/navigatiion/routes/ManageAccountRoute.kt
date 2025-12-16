@@ -8,9 +8,12 @@ import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
 import com.atul.doctorappointmentappui.feature.manageAccount.ManageAccountScreen
 import com.atul.doctorappointmentappui.navigatiion.Screen
 
-fun NavGraphBuilder.manageAccountRoute(userDataVm: UserDataViewModel, saveUserData: (UserModel) -> Unit, signOutUser: () -> Unit) {
-    val userDataFlow = userDataVm.userData
+fun NavGraphBuilder.manageAccountRoute(
+    signOutUser: () -> Unit
+) {
     composable(Screen.ManageAccount.route) {
-        ManageAccountScreen(userDataFlow, saveUserData= { saveUserData(it) }, signOutUser = {signOutUser()})
+        ManageAccountScreen(
+            signOutUser = { signOutUser() }
+        )
     }
 }

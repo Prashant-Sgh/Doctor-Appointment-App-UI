@@ -3,6 +3,10 @@ package com.atul.doctorappointmentappui.feature.home
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -10,47 +14,86 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.atul.doctorappointmentappui.R
+import com.atul.doctorappointmentappui.navigatiion.Screen
 
 @Composable
-fun HomeBottomBar (selected: Int, onSelect: (Int) -> Unit) {
+fun HomeBottomBar (
+//    selected: Int,
+//    onSelect: (Int) -> Unit,
+    currentRoute: String?,
+    onNavigate: (String) -> Unit
+) {
+
+    // 1. Defined a simple helper to group data
+    data class BottomTab(val label: String, val route: String, val icon: ImageVector)
+
+    // 2. Defined tabs here.
+    val tabs = listOf(
+        BottomTab("Home", Screen.Home.route, Icons.Default.Home),
+        BottomTab("Appointments", Screen.SellerAppointmentsScreen.route, Icons.Default.CalendarMonth),
+        BottomTab("Profile", Screen.ManageAccount.route, Icons.Default.ManageAccounts)
+    )
+
     NavigationBar(
         contentColor = colorResource(R.color.lightGgray),
         modifier = Modifier.height(60.dp),
         tonalElevation = 1.dp,
         windowInsets = WindowInsets(0)
     ) {
-        val titles = listOf("Explorer", "Wishlist", "Settings", "Account")
-        val icons = listOf(
-            R.drawable.btn_1,
-            R.drawable.btn_2,
-            R.drawable.btn_3,
-            R.drawable.btn_4
-        )
+        tabs.forEach { tab ->
+            // Checking if the current route matches this tab
+            val isSelected = currentRoute == tab.route
 
-        titles.forEachIndexed { index, string ->
             NavigationBarItem(
-                selected = selected == index,
-                onClick = {onSelect(index)},
+                selected = isSelected,
+                onClick = {
+                    if (!isSelected) {
+                        onNavigate(tab.route)
+                    }
+                },
                 icon = {
                     Icon(
-                        painter = painterResource(icons[index]),
-                        contentDescription = string,
+                        tab.icon,
+                        contentDescription = tab.label,
                         modifier = Modifier.size(22.dp),
-                        tint = Color.Unspecified
+                        tint = if(isSelected) colorResource(R.color.puurple) else Color.Gray
                     )
                 },
                 label = {
-                    Text(string, color = Color.Black, fontSize = 10.sp)
+                    Text(
+                        tab.label,
+                        color = if (isSelected) colorResource(R.color.puurple) else Color.Black,
+                        fontSize = 10.sp
+                    )
                 },
                 alwaysShowLabel = true
             )
         }
-
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeBottomBarPreview() {
+    // Preview 1: Home Selected
+    HomeBottomBar(
+        currentRoute = Screen.Home.route,
+        onNavigate = {})
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeBottomBarAppointmentsPreview() {
+    // Preview 2: Appointments Selected
+    HomeBottomBar(
+        currentRoute = Screen.SellerAppointmentsScreen.route,
+        onNavigate = {}
+    )
 }

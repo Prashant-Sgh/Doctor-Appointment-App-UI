@@ -30,25 +30,31 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.UserModel
+import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
 import com.atul.doctorappointmentappui.feature.manageAccount.components.GenderOption
 import com.atul.doctorappointmentappui.feature.manageAccount.components.GenderSelectionRow
 import com.atul.doctorappointmentappui.feature.manageAccount.components.IncompleteProfileBanner
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageAccountScreen(
-    userDataFlow: StateFlow<UserModel>,
-    saveUserData: (UserModel) -> Unit,
+    userViewModel: UserDataViewModel = hiltViewModel(),
     signOutUser: () -> Unit
 ) {
+    val userDataFlow = userViewModel.userData
     val userData by userDataFlow.collectAsState()
+
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     // Local State - Initialize with CURRENT userData
     var userImage by remember(userData) { mutableStateOf(userData.imageURL) }
@@ -296,7 +302,9 @@ fun ManageAccountScreen(
                                     seller = userData.seller,
                                     profileCompleted = true
                                 )
-                                saveUserData(newData)
+                                scope.launch{
+                                    userViewModel.updateUserDetails(context , newData)
+                                }
                                 editable = false
                             },
                             modifier = Modifier
@@ -324,28 +332,4 @@ fun ManageAccountScreen(
 
         }
     }
-}
-
-// -------------------------------------------------------------------------
-// Custom Composable for Gender Selection
-// -------------------------------------------------------------------------
-
-
-@Preview
-@Composable
-private fun ManageAccountScreenPreview() {
-    val dummyUser = UserModel(
-        userName = "Atul",
-        email = "atul@example.com",
-        age = "25",
-        phone = "1234567890",
-        address = "123 Main St",
-        imageURL = "",
-        male = true
-    )
-    ManageAccountScreen(
-        userDataFlow = MutableStateFlow(dummyUser),
-        saveUserData = {},
-        signOutUser = {}
-    )
 }

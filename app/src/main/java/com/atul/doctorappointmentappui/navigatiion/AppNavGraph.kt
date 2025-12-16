@@ -8,6 +8,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.atul.doctorappointmentappui.core.viewmodel.AuthViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.SellerDataViewModel
@@ -128,21 +129,13 @@ fun AppNavGraph(
             onOpenDetails = { doctorModel -> navCon.navigateToDetail(doctorModel) },
             onOpenTopDoctors = { navCon.navigate(Screen.TopDoctors.route) },
             onManageAccount = { navCon.navigate(Screen.ManageAccount.route) },
-            onOpenUserProfile = { navCon.navigate(Screen.ManageAccount.route) },
-            onOpenDrProfile = {
-                sellerDataViewModel.getData("uid", context)
-                navCon.navigate(Screen.DrProfileManagement.route)
-            }
+//            onOpenUserProfile = { navCon.navigate(Screen.ManageAccount.route) },
+//            onOpenDrProfile = {
+//                sellerDataViewModel.getData("uid", context)
+//                navCon.navigate(Screen.DrProfileManagement.route)
+//            }
         )
 
-        manageAccountRoute(
-            userDataVm = userDataViewmodel,
-            signOutUser = { scope.launch { authVm.signOutUser() } }, // LaunchedEffect handles navigation
-            saveUserData = {
-                scope.launch { userDataViewmodel.updateUserDetails(context, it) }
-                navCon.popBackStack()
-            }
-        )
 
         drProfileManagementRoute(
             sellerDataViewModel = sellerDataViewModel,

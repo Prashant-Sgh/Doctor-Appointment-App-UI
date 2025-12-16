@@ -35,8 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.AppointmentModel
-import com.atul.doctorappointmentappui.feature.appointment.InfoItem
-import com.atul.doctorappointmentappui.feature.appointment.StatusChip
 
 @Composable
 fun AppointmentCard(

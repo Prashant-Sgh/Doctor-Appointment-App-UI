@@ -18,7 +18,7 @@ class SellerDataViewModel @Inject constructor(
     private val _sellerData = MutableStateFlow(DoctorModel())
     val sellerData: StateFlow<DoctorModel> = _sellerData
 
-    private val _sellerUid = MutableStateFlow("")
+    private val _sellerUid = MutableStateFlow("uid")
     val sellerUid: StateFlow<String> = _sellerUid
 
     private fun updateSellerUid(uid: String) {
