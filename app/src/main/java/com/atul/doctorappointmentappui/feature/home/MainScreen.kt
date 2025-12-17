@@ -31,6 +31,7 @@ import com.atul.doctorappointmentappui.navigatiion.routes.sellerAppointmentsMana
 @Composable
 fun MainScreenWrapper(
     showBanner: Boolean,
+    onBannerClick: () -> Unit,
     signOutUser: () -> Unit,
 ) {
     val navController= rememberNavController()
@@ -61,7 +62,7 @@ fun MainScreenWrapper(
         //This NavHost handles the tab switching
         NavHost(
             navController = navController,
-            startDestination = Screen.Home.route,
+            startDestination = Screen.MainScreen.route,
             modifier = Modifier.padding(innerPadding)
         )
         {
@@ -70,7 +71,7 @@ fun MainScreenWrapper(
                 onOpenDoctorDetails = { doctor -> navController.navigateToDetail(doctor) },
                 onOpenTopDoctors = { navController.navigate(Screen.TopDoctors.route) },
                 onManageAccount = { navController.navigate(Screen.ManageAccount.route) },
-                onBannerClick = { navController.navigate(Screen.DrProfileManagement.route) }
+                onBannerClick = { onBannerClick() }
             )
             manageAccountRoute(
                 signOutUser = { signOutUser() }

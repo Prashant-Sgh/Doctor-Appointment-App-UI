@@ -16,50 +16,44 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.DoctorModel
+import com.atul.doctorappointmentappui.core.viewmodel.SellerDataViewModel
 import com.atul.doctorappointmentappui.feature.profileTab.components.ProfileTextField
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DocProfileManageScreen(
-    doctorFlow: StateFlow<DoctorModel>,
-    onSaveConfirmed: (DoctorModel) -> Unit
+    sellerViewModel: SellerDataViewModel = hiltViewModel(),
 ) {
-    val doctor by doctorFlow.collectAsState()
+
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        sellerViewModel.getData("uid", context)
+    }
+    val doctor by sellerViewModel.sellerData.collectAsState()
 
     // Local editable states
-    var speciality by remember { mutableStateOf(doctor.special) }
-    var site by remember { mutableStateOf(doctor.site) }
-    var rating by remember { mutableStateOf(doctor.rating.toString()) }
-    var patients by remember { mutableStateOf(doctor.patients) }
-    var phone by remember { mutableStateOf(doctor.phone) }
-    var name by remember { mutableStateOf(doctor.name) }
-    var picture by remember { mutableStateOf(doctor.picture) }
-    var location by remember { mutableStateOf(doctor.location) }
-    var experience by remember { mutableStateOf(doctor.experience.toString()) }
-    var biography by remember { mutableStateOf(doctor.biography) }
-    var address by remember { mutableStateOf(doctor.address) }
-
-    // Sync form fields from doctor object ONLY when doctor changes
-    LaunchedEffect(doctor) {
-        speciality = doctor.special
-        site = doctor.site
-        rating = doctor.rating.toString()
-        patients = doctor.patients
-        phone = doctor.phone
-        name = doctor.name
-        picture = doctor.picture
-        location = doctor.location
-        experience = doctor.experience.toString()
-        biography = doctor.biography
-        address = doctor.address
-    }
+    var speciality by remember(doctor) { mutableStateOf(doctor.special) }
+    var site by remember (doctor) { mutableStateOf(doctor.site) }
+    var rating by remember (doctor) { mutableStateOf(doctor.rating.toString()) }
+    var patients by remember (doctor) { mutableStateOf(doctor.patients) }
+    var phone by remember (doctor) { mutableStateOf(doctor.phone) }
+    var name by remember (doctor) { mutableStateOf(doctor.name) }
+    var picture by remember (doctor) { mutableStateOf(doctor.picture) }
+    var location by remember (doctor) { mutableStateOf(doctor.location) }
+    var experience by remember (doctor) { mutableStateOf(doctor.experience.toString()) }
+    var biography by remember (doctor) { mutableStateOf(doctor.biography) }
+    var address by remember (doctor) { mutableStateOf(doctor.address) }
 
     var showConfirmDialog by remember { mutableStateOf(false) }
 
@@ -173,22 +167,23 @@ fun DocProfileManageScreen(
                 TextButton(
                     onClick = {
                         showConfirmDialog = false
-                        onSaveConfirmed(
-                            DoctorModel(
-                                special = speciality,
-                                site = site,
-                                rating = rating.toDoubleOrNull() ?: 0.0,
-                                patients = patients,
-                                phone = phone,
-                                name = name,
-                                picture = picture,
-                                location = location,
-                                experience = experience.toIntOrNull() ?: 0,
-                                biography = biography,
-                                address = address,
-                                id = doctor.id // keep original
-                            )
+                        val newData = DoctorModel(
+                            special = speciality,
+                            site = site,
+                            rating = rating.toDoubleOrNull() ?: 0.0,
+                            patients = patients,
+                            phone = phone,
+                            name = name,
+                            picture = picture,
+                            location = location,
+                            experience = experience.toIntOrNull() ?: 0,
+                            biography = biography,
+                            address = address,
+                            id = doctor.id // keep original
                         )
+                        scope.launch{
+                            sellerViewModel.updateSellerDetails(context, newData)
+                        }
                     }
                 ) { Text("Confirm") }
             },

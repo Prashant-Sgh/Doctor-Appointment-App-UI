@@ -13,11 +13,13 @@ import com.atul.doctorappointmentappui.navigatiion.Screen
 
 fun NavGraphBuilder.homeRoute(
     showBanner: Boolean,
+    onBannerClick: () -> Unit,
     onSignOut: () -> Unit
 ) {
     composable (Screen.Home.route) {
         MainScreenWrapper(
             showBanner = showBanner,
+            onBannerClick = { onBannerClick() },
             signOutUser = {
                 onSignOut()
             }

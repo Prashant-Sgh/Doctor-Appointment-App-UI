@@ -8,6 +8,7 @@ import com.atul.doctorappointmentappui.core.repo.SellerDataRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,7 +17,7 @@ class SellerDataViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _sellerData = MutableStateFlow(DoctorModel())
-    val sellerData: StateFlow<DoctorModel> = _sellerData
+    val sellerData: StateFlow<DoctorModel> = _sellerData.asStateFlow()
 
     private val _sellerUid = MutableStateFlow("uid")
     val sellerUid: StateFlow<String> = _sellerUid
@@ -30,7 +31,7 @@ class SellerDataViewModel @Inject constructor(
         repo.fetchSellerData(uid) { result ->
             if (result != null) {
                 _sellerData.value = result
-                showToast(context, "Seller data fetched")
+                showToast(context, "Seller, data fetched")
             }
             else {
                 showToast(context, "Seller data not-fetched")

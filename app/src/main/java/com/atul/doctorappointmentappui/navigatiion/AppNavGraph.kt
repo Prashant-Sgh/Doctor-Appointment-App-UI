@@ -123,28 +123,19 @@ fun AppNavGraph(
         )
 
         homeRoute(
-            viewmodel = vm,
-            showSellerBanner = showSellerBanner,
-            onBannerClick = { navCon.navigate(Screen.DrProfileManagement.route) },
-            onOpenDetails = { doctorModel -> navCon.navigateToDetail(doctorModel) },
-            onOpenTopDoctors = { navCon.navigate(Screen.TopDoctors.route) },
-            onManageAccount = { navCon.navigate(Screen.ManageAccount.route) },
-//            onOpenUserProfile = { navCon.navigate(Screen.ManageAccount.route) },
-//            onOpenDrProfile = {
-//                sellerDataViewModel.getData("uid", context)
-//                navCon.navigate(Screen.DrProfileManagement.route)
-//            }
-        )
-
-
-        drProfileManagementRoute(
-            sellerDataViewModel = sellerDataViewModel,
-            onSavedConfirmed = {
+            showBanner = showSellerBanner,
+            onBannerClick = {
+                navCon.navigate(Screen.DrProfileManagement.route)
+            },
+            onSignOut = {
                 scope.launch {
-                    sellerDataViewModel.updateSellerDetails(context, it)
+                    authVm.signOut()
                 }
             }
         )
+
+
+        drProfileManagementRoute()
 
         topDoctorsRoute(
             viewmodel = vm,

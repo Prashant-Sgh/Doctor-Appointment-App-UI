@@ -7,9 +7,8 @@ import com.atul.doctorappointmentappui.core.viewmodel.SellerDataViewModel
 import com.atul.doctorappointmentappui.feature.profileTab.DocProfileManageScreen
 import com.atul.doctorappointmentappui.navigatiion.Screen
 
-fun NavGraphBuilder.drProfileManagementRoute(sellerDataViewModel: SellerDataViewModel, onSavedConfirmed: (DoctorModel) -> Unit) {
-    val doctorDataFlow = sellerDataViewModel.sellerData
+fun NavGraphBuilder.drProfileManagementRoute() {
     composable(Screen.DrProfileManagement.route) {
-        DocProfileManageScreen(doctorDataFlow) { onSavedConfirmed(it) }
+        DocProfileManageScreen()
     }
 }

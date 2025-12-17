@@ -2,6 +2,7 @@ package com.atul.doctorappointmentappui.feature.home
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -25,8 +26,6 @@ import com.atul.doctorappointmentappui.navigatiion.Screen
 
 @Composable
 fun HomeBottomBar (
-//    selected: Int,
-//    onSelect: (Int) -> Unit,
     currentRoute: String?,
     onNavigate: (String) -> Unit
 ) {
@@ -36,16 +35,16 @@ fun HomeBottomBar (
 
     // 2. Defined tabs here.
     val tabs = listOf(
-        BottomTab("Home", Screen.Home.route, Icons.Default.Home),
+        BottomTab("Home", Screen.MainScreen.route, Icons.Default.Home),
         BottomTab("Appointments", Screen.SellerAppointmentsScreen.route, Icons.Default.CalendarMonth),
         BottomTab("Profile", Screen.ManageAccount.route, Icons.Default.ManageAccounts)
     )
 
     NavigationBar(
         contentColor = colorResource(R.color.lightGgray),
-        modifier = Modifier.height(60.dp),
+        modifier = Modifier.height(100.dp),
         tonalElevation = 1.dp,
-        windowInsets = WindowInsets(0)
+        windowInsets = WindowInsets.navigationBars
     ) {
         tabs.forEach { tab ->
             // Checking if the current route matches this tab
@@ -79,21 +78,21 @@ fun HomeBottomBar (
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomeBottomBarPreview() {
-    // Preview 1: Home Selected
-    HomeBottomBar(
-        currentRoute = Screen.Home.route,
-        onNavigate = {})
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun HomeBottomBarPreview() {
+//    // Preview 1: Home Selected
+//    HomeBottomBar(
+//        currentRoute = Screen.MainScreen.route,
+//        onNavigate = {})
+//}
 
-@Preview(showBackground = true)
-@Composable
-fun HomeBottomBarAppointmentsPreview() {
-    // Preview 2: Appointments Selected
-    HomeBottomBar(
-        currentRoute = Screen.SellerAppointmentsScreen.route,
-        onNavigate = {}
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun HomeBottomBarAppointmentsPreview() {
+//    // Preview 2: Appointments Selected
+//    HomeBottomBar(
+//        currentRoute = Screen.SellerAppointmentsScreen.route,
+//        onNavigate = {}
+//    )
+//}
