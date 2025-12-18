@@ -5,9 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.atul.doctorappointmentappui.core.viewmodel.AuthViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
@@ -18,17 +15,13 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val vm by viewModels<MainViewModel>()
-    private val authViewmodel: AuthViewModel by viewModels()
-    private val userDataViewmodel: UserDataViewModel by viewModels()
-    private val sellerDataViewModel: SellerDataViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             val navCon = rememberNavController()
-            AppNavGraph(navCon, vm, authViewmodel, userDataViewmodel, sellerDataViewModel)
+            AppNavGraph(navCon)
         }
     }
 }

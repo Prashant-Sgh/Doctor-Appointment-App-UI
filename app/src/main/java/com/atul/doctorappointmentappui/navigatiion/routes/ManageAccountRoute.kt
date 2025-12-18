@@ -9,10 +9,12 @@ import com.atul.doctorappointmentappui.feature.manageAccount.ManageAccountScreen
 import com.atul.doctorappointmentappui.navigatiion.Screen
 
 fun NavGraphBuilder.manageAccountRoute(
+    userViewModel: UserDataViewModel,
     signOutUser: () -> Unit
 ) {
     composable(Screen.ManageAccount.route) {
         ManageAccountScreen(
+            userViewModel = userViewModel,
             signOutUser = { signOutUser() }
         )
     }

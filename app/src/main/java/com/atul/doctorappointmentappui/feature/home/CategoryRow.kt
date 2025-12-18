@@ -87,9 +87,3 @@ fun CategoryRow(items: List<CategoryModel>) {
         }
     }
 }
-
-//@Preview
-//@Composable
-//private fun Preview() {
-//    CategoryItem (CategoryModel(0, "Item", "https://img.freepik.com/premium-photo/random-image_590832-7710.jpg"))
-//}

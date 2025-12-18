@@ -29,6 +29,7 @@ import coil3.request.crossfade
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.UserModel
 import com.atul.doctorappointmentappui.feature.manageAccount.components.GenderSelectionRow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -270,6 +271,27 @@ fun CompleteProfileScreen(
 
 
 //@Preview
+@Preview(showBackground = true, name = "Complete Profile Screen")
+@Composable
+fun CompleteProfileScreenPreview() {
+    // 1. Create a dummy UserModel with initial data.
+    // This simulates what you'd get from Google Sign-In (e.g., name and email are pre-filled).
+    val dummyUser = UserModel()
+
+    // 2. Create a StateFlow that holds this dummy data.
+    // `MutableStateFlow` is the easiest way to do this for a preview.
+    val dummyUserFlow = MutableStateFlow(dummyUser)
+
+    // 3. Call your screen with the dummy flow and an empty action.
+    // The `onProfileCompleted` action does nothing in the preview.
+    CompleteProfileScreen(
+        initialUserFlow = dummyUserFlow,
+        onProfileCompleted = { user ->
+            // In a preview, this action can be empty.
+            // You can add a Log.d("Preview", "Profile Completed: $user") for testing if you like.
+        }
+    )
+}
 //@Composable
 //private fun Preview() {
 //    CompleteProfileScreen(UserModel()) { }

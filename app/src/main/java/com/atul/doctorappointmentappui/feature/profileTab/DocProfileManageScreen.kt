@@ -31,16 +31,16 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DocProfileManageScreen(
-    sellerViewModel: SellerDataViewModel = hiltViewModel(),
+    sellerDataViewModel: SellerDataViewModel,
 ) {
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        sellerViewModel.getData("uid", context)
+        sellerDataViewModel.getData("uid", context)
     }
-    val doctor by sellerViewModel.sellerData.collectAsState()
+    val doctor by sellerDataViewModel.sellerData.collectAsState()
 
     // Local editable states
     var speciality by remember(doctor) { mutableStateOf(doctor.special) }
@@ -182,7 +182,7 @@ fun DocProfileManageScreen(
                             id = doctor.id // keep original
                         )
                         scope.launch{
-                            sellerViewModel.updateSellerDetails(context, newData)
+                            sellerDataViewModel.updateSellerDetails(context, newData)
                         }
                     }
                 ) { Text("Confirm") }

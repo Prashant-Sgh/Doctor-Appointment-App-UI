@@ -19,25 +19,35 @@ import androidx.navigation.compose.rememberNavController
 import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.SellerDataViewModel
+import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
 import com.atul.doctorappointmentappui.feature.manageAccount.components.IncompleteProfileBanner
 import com.atul.doctorappointmentappui.navigatiion.Screen
 import com.atul.doctorappointmentappui.navigatiion.navigateToDetail
+import com.atul.doctorappointmentappui.navigatiion.routes.drProfileManagementRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.mainScreenRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.manageAccountRoute
+import com.atul.doctorappointmentappui.navigatiion.routes.profileRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.sellerAppointmentRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.sellerAppointmentsManagementRoute
 
 
 @Composable
 fun MainScreenWrapper(
+    mainViewModel: MainViewModel,
+    userDataViewModel: UserDataViewModel,
+    sellerDataViewModel: SellerDataViewModel,
     showBanner: Boolean,
     onBannerClick: () -> Unit,
+    onOpenTopDoctors: () -> Unit,
+    onManageAccountClick: () -> Unit,
     signOutUser: () -> Unit,
 ) {
     val navController= rememberNavController()
     // Observe current route to highlight the correct bottom bar icon
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val userData by userDataViewModel.userData.collectAsState()
 
     Scaffold(
         bottomBar = {
@@ -67,26 +77,41 @@ fun MainScreenWrapper(
         )
         {
             mainScreenRoute(
+                mainViewModel = mainViewModel,
                 showBanner = showBanner,
                 onOpenDoctorDetails = { doctor -> navController.navigateToDetail(doctor) },
-                onOpenTopDoctors = { navController.navigate(Screen.TopDoctors.route) },
-                onManageAccount = { navController.navigate(Screen.ManageAccount.route) },
+                onOpenTopDoctors = { onOpenTopDoctors() },
+                onManageAccount = { onManageAccountClick() },
                 onBannerClick = { onBannerClick() }
-            )
-            manageAccountRoute(
-                signOutUser = { signOutUser() }
             )
             sellerAppointmentRoute(
                 onViewAppointment = { sellerAppointmentsManagementRoute(it) }
             )
+            if (userData.seller) {
+                profileRoute(
+                    onOpenUserProfile = {
+                        manageAccountRoute(
+                            userViewModel = userDataViewModel,
+                            signOutUser = { signOutUser() }
+                        )},
+                    onOpenDrProfile = {
+                        drProfileManagementRoute(sellerDataViewModel = sellerDataViewModel)
+                    }
+                )
+            }
+            else {
+                manageAccountRoute(
+                    userViewModel = userDataViewModel,
+                    signOutUser = { signOutUser() }
+                )
+            }
         }
     }
 }
 
 @Composable
 fun MainScreen(
-    mainViewModel: MainViewModel = hiltViewModel(),
-    sellerViewModel: SellerDataViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel,
     showBanner: Boolean = false,
     modifier: Modifier? = null,
     onBannerClick: () -> Unit,    // <--- Received from AppNavGraph

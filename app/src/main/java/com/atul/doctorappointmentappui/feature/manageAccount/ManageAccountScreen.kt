@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageAccountScreen(
-    userViewModel: UserDataViewModel = hiltViewModel(),
+    userViewModel: UserDataViewModel,
     signOutUser: () -> Unit
 ) {
     val userDataFlow = userViewModel.userData
@@ -319,16 +319,18 @@ fun ManageAccountScreen(
                 }
             }
 
-            // --- INSERT BANNER HERE ---
-            // It will sit at the top of the scrollable content
-            IncompleteProfileBanner(
-                isVisible = showNotification && isProfileIncomplete,
-                onDismiss = { showNotification = false },
-                onActionClick = {
-                    editable = true // Automatically open edit mode
-                    showNotification = false // Hide banner since they are acting on it
-                }
-            )
+            if (showNotification && isProfileIncomplete) {
+                // --- INSERT BANNER HERE ---
+                // It will sit at the top of the scrollable content
+                IncompleteProfileBanner(
+                    isVisible = true,
+                    onDismiss = { showNotification = false },
+                    onActionClick = {
+                        editable = true // Automatically open edit mode
+                        showNotification = false // Hide banner since they are acting on it
+                    }
+                )
+            }
 
         }
     }

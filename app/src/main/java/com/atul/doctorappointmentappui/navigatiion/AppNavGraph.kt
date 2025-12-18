@@ -6,6 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.atul.doctorappointmentappui.core.model.DoctorModel
@@ -26,10 +27,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun AppNavGraph(
     navCon: NavHostController,
-    vm: MainViewModel,
-    authVm: AuthViewModel,
-    userDataViewmodel: UserDataViewModel,
-    sellerDataViewModel: SellerDataViewModel
+    mainViewModel: MainViewModel = hiltViewModel(),
+    authVm: AuthViewModel = hiltViewModel(),
+    userDataViewmodel: UserDataViewModel = hiltViewModel(),
+    sellerDataViewModel: SellerDataViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
@@ -123,9 +124,18 @@ fun AppNavGraph(
         )
 
         homeRoute(
+            mainViewModel = mainViewModel,
+            userDataViewModel = userDataViewmodel,
+            sellerDataViewModel = sellerDataViewModel,
             showBanner = showSellerBanner,
             onBannerClick = {
                 navCon.navigate(Screen.DrProfileManagement.route)
+            },
+            onOpenTopDoctors = {
+                navCon.navigate(Screen.TopDoctors.route)
+            },
+            onManageAccountClick = {
+                navCon.navigate(Screen.ManageAccount.route)
             },
             onSignOut = {
                 scope.launch {
@@ -135,10 +145,10 @@ fun AppNavGraph(
         )
 
 
-        drProfileManagementRoute()
+        drProfileManagementRoute(sellerDataViewModel)
 
         topDoctorsRoute(
-            viewmodel = vm,
+            viewmodel = mainViewModel,
             onBack = {
                 navCon.popBackStack()
             },
