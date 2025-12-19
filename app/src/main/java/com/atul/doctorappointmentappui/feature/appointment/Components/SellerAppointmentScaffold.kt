@@ -20,10 +20,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.AppointmentModel
+import com.atul.doctorappointmentappui.core.viewmodel.AppointmentViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SellerAppointmentScaffold(
+    appointmentViewModel: AppointmentViewModel,
     appointments: List<AppointmentModel>,
     onViewAppointment: (AppointmentModel) -> Unit
 ) {
@@ -66,6 +68,7 @@ fun SellerAppointmentScaffold(
             ) {
                 items(appointments) { appointment ->
                     AppointmentCard(
+                        appointmentViewModel = appointmentViewModel,
                         appointment = appointment,
                         onViewClick = { onViewAppointment(appointment) }
                     )

@@ -26,6 +26,7 @@ import com.atul.doctorappointmentappui.navigatiion.Screen
 
 @Composable
 fun HomeBottomBar (
+    seller: Boolean,
     currentRoute: String?,
     onNavigate: (String) -> Unit
 ) {
@@ -34,11 +35,19 @@ fun HomeBottomBar (
     data class BottomTab(val label: String, val route: String, val icon: ImageVector)
 
     // 2. Defined tabs here.
-    val tabs = listOf(
+    val usersTabs = listOf(
         BottomTab("Home", Screen.MainScreen.route, Icons.Default.Home),
         BottomTab("Appointments", Screen.SellerAppointmentsScreen.route, Icons.Default.CalendarMonth),
         BottomTab("Profile", Screen.ManageAccount.route, Icons.Default.ManageAccounts)
     )
+    val sellerTabs = listOf(
+        BottomTab("Home", Screen.MainScreen.route, Icons.Default.Home),
+        BottomTab("Appointments", Screen.SellerAppointmentsScreen.route, Icons.Default.CalendarMonth),
+        BottomTab("Profile", Screen.ManageAccount.route, Icons.Default.ManageAccounts),
+        BottomTab("Doctor", Screen.DrProfileManagement.route, Icons.Default.ManageAccounts)
+    )
+
+    val tabs = if (seller) sellerTabs else usersTabs
 
     NavigationBar(
         contentColor = colorResource(R.color.lightGgray),

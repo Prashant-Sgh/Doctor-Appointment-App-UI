@@ -31,7 +31,6 @@ class UserDataViewModel @Inject constructor(
 
     fun getData(uid: String, context: Context) {
         updateUid(uid)
-
         viewModelScope.launch {
             repo.getUserDataFlow(uid)
                 .collect { user ->

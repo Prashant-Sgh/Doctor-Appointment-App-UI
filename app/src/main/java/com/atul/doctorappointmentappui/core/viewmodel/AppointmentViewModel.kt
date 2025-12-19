@@ -3,11 +3,11 @@ package com.atul.doctorappointmentappui.core.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atul.doctorappointmentappui.core.model.AppointmentModel
+import com.atul.doctorappointmentappui.core.model.UserModel
 import com.atul.doctorappointmentappui.core.repo.AppointmentRepo
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,11 +18,11 @@ class AppointmentViewModel @Inject constructor(
     private val repo: AppointmentRepo
 ): ViewModel() {
 
-    private val _appoitments = MutableStateFlow<List<AppointmentModel>>(emptyList())
-    val appointments: StateFlow<List<AppointmentModel>> = _appoitments.asStateFlow()
+    private val _appointments = MutableStateFlow<List<AppointmentModel>>(emptyList())
+    val appointments: StateFlow<List<AppointmentModel>> = _appointments.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    val isLoading: StateFlow<Boolean> = _isLoading
 
 
     /**
@@ -32,7 +32,7 @@ class AppointmentViewModel @Inject constructor(
         _isLoading.value = true
         viewModelScope.launch {
             repo.getAppointmentsFlow(doctorId).collect { list ->
-                _appoitments.value = list
+                _appointments.value = list
                 _isLoading.value = false
             }
         }
@@ -46,4 +46,9 @@ class AppointmentViewModel @Inject constructor(
             repo.updateAppointmentStatus(appointmentId, newStatus)
         }
     }
+
+    fun getUserDataOf(userId: String): Flow<UserModel?> {
+        return repo.getUserDataFlow(userId)
+    }
+
     }

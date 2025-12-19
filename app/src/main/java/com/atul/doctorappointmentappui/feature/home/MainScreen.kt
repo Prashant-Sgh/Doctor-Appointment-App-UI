@@ -16,7 +16,9 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.atul.doctorappointmentappui.core.model.AppointmentModel
 import com.atul.doctorappointmentappui.core.model.DoctorModel
+import com.atul.doctorappointmentappui.core.viewmodel.AppointmentViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.SellerDataViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
@@ -36,6 +38,7 @@ fun MainScreenWrapper(
     mainViewModel: MainViewModel,
     userDataViewModel: UserDataViewModel,
     sellerDataViewModel: SellerDataViewModel,
+    appointmentViewModel: AppointmentViewModel,
     showBanner: Boolean,
     onBannerClick: () -> Unit,
     onOpenTopDoctors: () -> Unit,
@@ -48,10 +51,12 @@ fun MainScreenWrapper(
     val currentRoute = navBackStackEntry?.destination?.route
 
     val userData by userDataViewModel.userData.collectAsState()
+    val seller = userData.seller
 
     Scaffold(
         bottomBar = {
             HomeBottomBar(
+                seller = seller,
                 currentRoute = currentRoute,
                 onNavigate = { route ->
                     navController.navigate(route) {
@@ -85,26 +90,23 @@ fun MainScreenWrapper(
                 onBannerClick = { onBannerClick() }
             )
             sellerAppointmentRoute(
-                onViewAppointment = { sellerAppointmentsManagementRoute(it) }
+                appointmentViewModel = appointmentViewModel,
+                onViewAppointment = { appointment ->
+                    navController.navigate(
+                        Screen.SellerAppointmentsManagementScreen.createRoute(appointment.appointmentId)
+                    )
+                }
             )
-            if (userData.seller) {
-                profileRoute(
-                    onOpenUserProfile = {
-                        manageAccountRoute(
-                            userViewModel = userDataViewModel,
-                            signOutUser = { signOutUser() }
-                        )},
-                    onOpenDrProfile = {
-                        drProfileManagementRoute(sellerDataViewModel = sellerDataViewModel)
-                    }
-                )
-            }
-            else {
-                manageAccountRoute(
-                    userViewModel = userDataViewModel,
-                    signOutUser = { signOutUser() }
-                )
-            }
+            manageAccountRoute(
+                userViewModel = userDataViewModel,
+                signOutUser = { signOutUser() }
+            )
+            drProfileManagementRoute(sellerDataViewModel = sellerDataViewModel)
+            sellerAppointmentsManagementRoute(
+                appointmentViewModel = appointmentViewModel,
+                onBack = { navController.popBackStack() }
+            )
+
         }
     }
 }

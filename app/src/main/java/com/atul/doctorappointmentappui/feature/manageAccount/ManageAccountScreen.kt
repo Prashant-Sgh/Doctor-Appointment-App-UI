@@ -116,222 +116,217 @@ fun ManageAccountScreen(
         }
     ) { padding ->
 
-        Box(modifier = Modifier.fillMaxSize()
-            .padding(padding)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(colorResource(R.color.lightPuurple).copy(alpha = 0.1f))
+                .padding(padding)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(colorResource(R.color.lightPuurple).copy(alpha = 0.1f))
-                    .padding(padding)
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            // ---------- Profile Picture ----------
+            Box(
+                contentAlignment = Alignment.BottomEnd,
+                modifier = Modifier.padding(bottom = 24.dp)
             ) {
-                // ---------- Profile Picture ----------
-                Box(
-                    contentAlignment = Alignment.BottomEnd,
-                    modifier = Modifier.padding(bottom = 24.dp)
-                ) {
-                    Card(
-                        shape = CircleShape,
-                        modifier = Modifier
-                            .size(130.dp)
-                            .background(Color.White, CircleShape)
-                            .padding(4.dp)
-                            .clip(CircleShape),
-                        elevation = CardDefaults.cardElevation(8.dp)
-                    ) {
-                        if (userImage.isNotBlank() && userImage != "null") {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(userImage)
-                                    .crossfade(true)
-                                    .build(),
-                                contentDescription = "Profile Picture",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        } else {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(colorResource(R.color.puurple)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Person,
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.size(60.dp)
-                                )
-                            }
+
+                if (showNotification && isProfileIncomplete) {
+                    // --- INSERT BANNER HERE ---
+                    // It will sit at the top of the scrollable content
+                    IncompleteProfileBanner(
+                        isVisible = true,
+                        onDismiss = { showNotification = false },
+                        onActionClick = {
+                            editable = true // Automatically open edit mode
+                            showNotification = false // Hide banner since they are acting on it
                         }
-                    }
-                }
-
-                if (editable) {
-                    OutlinedTextField(
-                        value = userImage,
-                        onValueChange = { userImage = it },
-                        label = { Text("Profile Image URL") },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true
                     )
-                    Spacer(Modifier.height(16.dp))
                 }
 
-                // ---------- Form Fields ----------
-                val fieldModifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp)
-
-                OutlinedTextField(
-                    value = userName,
-                    onValueChange = { userName = it },
-                    label = { Text("Full Name") },
-                    readOnly = !editable,
-                    modifier = fieldModifier
-                )
-
-                OutlinedTextField(
-                    value = userEmail,
-                    onValueChange = { userEmail = it },
-                    label = { Text("Email") },
-                    readOnly = !editable,
-                    modifier = fieldModifier
-                )
-
-                // ---------- Age & Gender Row ----------
-                Row(
+                Card(
+                    shape = CircleShape,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .size(130.dp)
+                        .background(Color.White, CircleShape)
+                        .padding(4.dp)
+                        .clip(CircleShape),
+                    elevation = CardDefaults.cardElevation(8.dp)
                 ) {
-                    // Age Field
-                    OutlinedTextField(
-                        value = userAge,
-                        onValueChange = { userAge = it },
-                        label = { Text("Age") },
-                        readOnly = !editable,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 8.dp)
+                    if (userImage.isNotBlank() && userImage != "null") {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(userImage)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Profile Picture",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(colorResource(R.color.puurple)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(60.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
+            if (editable) {
+                OutlinedTextField(
+                    value = userImage,
+                    onValueChange = { userImage = it },
+                    label = { Text("Profile Image URL") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
+                Spacer(Modifier.height(16.dp))
+            }
+
+            // ---------- Form Fields ----------
+            val fieldModifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 6.dp)
+
+            OutlinedTextField(
+                value = userName,
+                onValueChange = { userName = it },
+                label = { Text("Full Name") },
+                readOnly = !editable,
+                modifier = fieldModifier
+            )
+
+            OutlinedTextField(
+                value = userEmail,
+                onValueChange = { userEmail = it },
+                label = { Text("Email") },
+                readOnly = !editable,
+                modifier = fieldModifier
+            )
+
+            // ---------- Age & Gender Row ----------
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Age Field
+                OutlinedTextField(
+                    value = userAge,
+                    onValueChange = { userAge = it },
+                    label = { Text("Age") },
+                    readOnly = !editable,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                )
+
+                // Custom Gender Selection
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp)
+                ) {
+                    // Small Label similar to OutlineTextField label
+                    Text(
+                        text = "Gender",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
                     )
 
-                    // Custom Gender Selection
-                    Column(
+                    GenderSelectionRow(
+                        isMale = gender,
+                        isEditable = editable,
+                        onGenderSelected = { selectedMale -> gender = selectedMale }
+                    )
+                }
+            }
+
+            OutlinedTextField(
+                value = userPhone,
+                onValueChange = { userPhone = it },
+                label = { Text("Phone Number") },
+                readOnly = !editable,
+                modifier = fieldModifier
+            )
+
+            OutlinedTextField(
+                value = userAddress,
+                onValueChange = { userAddress = it },
+                label = { Text("Address") },
+                readOnly = !editable,
+                modifier = fieldModifier,
+                maxLines = 3
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            // ---------- Action Buttons ----------
+            if (editable) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = {
+                            editable = false
+                            // Revert changes
+                            userImage = userData.imageURL
+                            userName = userData.userName
+                            userAge = userData.age
+                            userPhone = userData.phone
+                            userEmail = userData.email
+                            userAddress = userData.address
+                            gender = userData.male
+                        },
                         modifier = Modifier
                             .weight(1f)
-                            .padding(start = 8.dp)
+                            .height(50.dp),
+                        shape = RoundedCornerShape(12.dp)
                     ) {
-                        // Small Label similar to OutlineTextField label
-                        Text(
-                            text = "Gender",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(bottom = 4.dp, start = 4.dp)
-                        )
-
-                        GenderSelectionRow(
-                            isMale = gender,
-                            isEditable = editable,
-                            onGenderSelected = { selectedMale -> gender = selectedMale }
-                        )
+                        Text("Cancel")
                     }
-                }
 
-                OutlinedTextField(
-                    value = userPhone,
-                    onValueChange = { userPhone = it },
-                    label = { Text("Phone Number") },
-                    readOnly = !editable,
-                    modifier = fieldModifier
-                )
-
-                OutlinedTextField(
-                    value = userAddress,
-                    onValueChange = { userAddress = it },
-                    label = { Text("Address") },
-                    readOnly = !editable,
-                    modifier = fieldModifier,
-                    maxLines = 3
-                )
-
-                Spacer(Modifier.height(32.dp))
-
-                // ---------- Action Buttons ----------
-                if (editable) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    Button(
+                        onClick = {
+                            val newData = UserModel(
+                                address = userAddress,
+                                age = userAge,
+                                email = userEmail,
+                                imageURL = userImage,
+                                male = gender,
+                                phone = userPhone,
+                                totalAppointments = userData.totalAppointments,
+                                userName = userName,
+                                seller = userData.seller,
+                                profileCompleted = true
+                            )
+                            scope.launch{
+                                userViewModel.updateUserDetails(context , newData)
+                            }
+                            editable = false
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.puurple))
                     ) {
-                        OutlinedButton(
-                            onClick = {
-                                editable = false
-                                // Revert changes
-                                userImage = userData.imageURL
-                                userName = userData.userName
-                                userAge = userData.age
-                                userPhone = userData.phone
-                                userEmail = userData.email
-                                userAddress = userData.address
-                                gender = userData.male
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(50.dp),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Text("Cancel")
-                        }
-
-                        Button(
-                            onClick = {
-                                val newData = UserModel(
-                                    address = userAddress,
-                                    age = userAge,
-                                    email = userEmail,
-                                    imageURL = userImage,
-                                    male = gender,
-                                    phone = userPhone,
-                                    totalAppointments = userData.totalAppointments,
-                                    userName = userName,
-                                    seller = userData.seller,
-                                    profileCompleted = true
-                                )
-                                scope.launch{
-                                    userViewModel.updateUserDetails(context , newData)
-                                }
-                                editable = false
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(50.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.puurple))
-                        ) {
-                            Text("Save")
-                        }
+                        Text("Save")
                     }
                 }
             }
-
-            if (showNotification && isProfileIncomplete) {
-                // --- INSERT BANNER HERE ---
-                // It will sit at the top of the scrollable content
-                IncompleteProfileBanner(
-                    isVisible = true,
-                    onDismiss = { showNotification = false },
-                    onActionClick = {
-                        editable = true // Automatically open edit mode
-                        showNotification = false // Hide banner since they are acting on it
-                    }
-                )
-            }
-
         }
     }
 }

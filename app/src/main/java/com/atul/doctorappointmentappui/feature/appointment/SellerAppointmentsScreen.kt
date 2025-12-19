@@ -16,12 +16,13 @@ import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.AppointmentModel
 import com.atul.doctorappointmentappui.core.viewmodel.AppointmentViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.SellerDataViewModel
+import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
 import com.atul.doctorappointmentappui.feature.appointment.Components.SellerAppointmentScaffold
 
 // 1. The "Connected" Composable (Has ViewModel logic)
 @Composable
 fun SellerAppointmentsScreen(
-    appointmentViewModel: AppointmentViewModel = hiltViewModel(),
+    appointmentViewModel: AppointmentViewModel,
     sellerDataViewModel: SellerDataViewModel = hiltViewModel(),
     onViewAppointment: (AppointmentModel) -> Unit
 ) {
@@ -39,6 +40,7 @@ fun SellerAppointmentsScreen(
 
     // 3. Delegate to the Pure UI Composable
     SellerAppointmentsContent(
+        appointmentViewModel = appointmentViewModel,
         appointments = appointments,
         isLoading = isLoading,
         onViewAppointment = onViewAppointment
@@ -48,6 +50,7 @@ fun SellerAppointmentsScreen(
 // 2. The "Pure" UI Composable (Easy to Preview, no Hilt)
 @Composable
 fun SellerAppointmentsContent(
+    appointmentViewModel: AppointmentViewModel,
     appointments: List<AppointmentModel>,
     isLoading: Boolean,
     onViewAppointment: (AppointmentModel) -> Unit
@@ -58,46 +61,36 @@ fun SellerAppointmentsContent(
         }
     } else {
         // I corrected the lambda syntax here from your original snippet
-        SellerAppointmentScaffold(appointments) { onViewAppointment(it) }
+        SellerAppointmentScaffold(appointmentViewModel, appointments) { onViewAppointment(it) }
     }
 }
 
 // 3. The Preview
-@Preview(showBackground = true)
-@Composable
-fun SellerAppointmentsScreenPreview() {
-    // Create dummy data
-    val dummyAppointments = listOf(
-        AppointmentModel(
-            patientName = "John Doe",
-            date = "2023-10-27",
-            time = "10:00 AM",
-            status = "PENDING",
-            problemDescription = "Fever and headache"
-        ),
-        AppointmentModel(
-            patientName = "Jane Smith",
-            date = "2023-10-27",
-            time = "11:30 AM",
-            status = "CONFIRMED",
-            problemDescription = "Dental checkup"
-        )
-    )
-
-    // Render the Pure UI composable
-    SellerAppointmentsContent(
-        appointments = dummyAppointments,
-        isLoading = false,
-        onViewAppointment = {}
-    )
-}
-
-@Preview(showBackground = true, name = "Loading State")
-@Composable
-fun SellerAppointmentsLoadingPreview() {
-    SellerAppointmentsContent(
-        appointments = emptyList(),
-        isLoading = true,
-        onViewAppointment = {}
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun SellerAppointmentsScreenPreview() {
+//    // Create dummy data
+//    val dummyAppointments = listOf(
+//        AppointmentModel(
+//            patientName = "John Doe",
+//            date = "2023-10-27",
+//            time = "10:00 AM",
+//            status = "PENDING",
+//            problemDescription = "Fever and headache"
+//        ),
+//        AppointmentModel(
+//            patientName = "Jane Smith",
+//            date = "2023-10-27",
+//            time = "11:30 AM",
+//            status = "CONFIRMED",
+//            problemDescription = "Dental checkup"
+//        )
+//    )
+//
+//    // Render the Pure UI composable
+//    SellerAppointmentsContent(
+//        appointments = dummyAppointments,
+//        isLoading = false,
+//        onViewAppointment = {}
+//    )
+//}

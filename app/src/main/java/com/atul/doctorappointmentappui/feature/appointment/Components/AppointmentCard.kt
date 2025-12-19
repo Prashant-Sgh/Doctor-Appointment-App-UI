@@ -26,21 +26,61 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.AppointmentModel
+import com.atul.doctorappointmentappui.core.model.UserModel
+import com.atul.doctorappointmentappui.core.viewmodel.AppointmentViewModel
+import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun AppointmentCard(
+    appointmentViewModel: AppointmentViewModel,
     appointment: AppointmentModel,
     onViewClick: () -> Unit
 ) {
+
+    var userData: Flow<UserModel?> by remember(appointment) { mutableStateOf<Flow<UserModel?>>(appointmentViewModel.getUserDataOf(appointment.userId)) }
+
+    val javaDate = remember(appointment.date) {
+        appointment.date?.toDate()
+    }
+
+    val dateString = remember (javaDate) {
+        if (javaDate != null) {
+            SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault()).format(javaDate)
+        } else {
+            "--/--/----"
+        }
+    }
+
+    val timeString = remember (javaDate) {
+        if (javaDate != null) {
+            SimpleDateFormat("hh:mm a", Locale.getDefault()).format(javaDate)
+        } else {
+            "--:--"
+        }
+    }
+
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -106,7 +146,7 @@ fun AppointmentCard(
             ) {
                 InfoItem(
                     icon = Icons.Default.CalendarToday,
-                    text = appointment.date
+                    text = dateString
                 )
 
                 // Vertical Divider
@@ -119,7 +159,7 @@ fun AppointmentCard(
 
                 InfoItem(
                     icon = Icons.Default.Schedule,
-                    text = appointment.time
+                    text = timeString
                 )
             }
 

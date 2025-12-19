@@ -10,6 +10,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.atul.doctorappointmentappui.core.model.DoctorModel
+import com.atul.doctorappointmentappui.core.viewmodel.AppointmentViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.AuthViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.SellerDataViewModel
@@ -30,7 +31,8 @@ fun AppNavGraph(
     mainViewModel: MainViewModel = hiltViewModel(),
     authVm: AuthViewModel = hiltViewModel(),
     userDataViewmodel: UserDataViewModel = hiltViewModel(),
-    sellerDataViewModel: SellerDataViewModel = hiltViewModel()
+    sellerDataViewModel: SellerDataViewModel = hiltViewModel(),
+    appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
@@ -127,6 +129,7 @@ fun AppNavGraph(
             mainViewModel = mainViewModel,
             userDataViewModel = userDataViewmodel,
             sellerDataViewModel = sellerDataViewModel,
+            appointmentViewModel = appointmentViewModel,
             showBanner = showSellerBanner,
             onBannerClick = {
                 navCon.navigate(Screen.DrProfileManagement.route)
