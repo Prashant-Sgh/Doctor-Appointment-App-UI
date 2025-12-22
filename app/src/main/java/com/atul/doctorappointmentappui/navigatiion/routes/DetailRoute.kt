@@ -16,13 +16,19 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.savedstate.savedState
+import com.atul.doctorappointmentappui.core.model.AppointmentModel
 import com.atul.doctorappointmentappui.core.model.DoctorModel
+import com.atul.doctorappointmentappui.core.model.UserAppointmentDetails
+import com.atul.doctorappointmentappui.core.model.UserModel
 import com.atul.doctorappointmentappui.feature.detail.DetailScreen
+import com.atul.doctorappointmentappui.feature.detail.DetailScreenRoute
 import com.atul.doctorappointmentappui.navigatiion.Screen
 
 fun NavGraphBuilder.detailRoute(
+    currentUserData: UserModel,
     nav: NavHostController,
-    onBack:() -> Unit
+    onBack:() -> Unit,
+    onBookAppointment: (AppointmentModel) -> Unit
 ) {
     composable (Screen.Detail.route) {
         backStackEntry: NavBackStackEntry ->
@@ -40,8 +46,10 @@ fun NavGraphBuilder.detailRoute(
         }
 
         if(doctor != null) {
-            DetailScreen(
-                item = doctor,
+            DetailScreenRoute(
+               doctor = doctor,
+                currentUserData = currentUserData,
+                onBookAppointment = onBookAppointment,
                 onBack = onBack,
                 onOpenWebsite = {url ->
                     context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))

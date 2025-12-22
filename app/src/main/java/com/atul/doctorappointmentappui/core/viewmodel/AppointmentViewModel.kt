@@ -3,8 +3,10 @@ package com.atul.doctorappointmentappui.core.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atul.doctorappointmentappui.core.model.AppointmentModel
+import com.atul.doctorappointmentappui.core.model.UserAppointmentDetails
 import com.atul.doctorappointmentappui.core.model.UserModel
 import com.atul.doctorappointmentappui.core.repo.AppointmentRepo
+import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Date
 
 @HiltViewModel
 class AppointmentViewModel @Inject constructor(
@@ -36,6 +39,18 @@ class AppointmentViewModel @Inject constructor(
                 _isLoading.value = false
             }
         }
+    }
+
+    suspend fun createAppointment(appointmentData: AppointmentModel,  currentUserData: UserModel) {
+        val appointmentId = ""
+        val appointmentModel = appointmentData
+            .copy(appointmentId = appointmentId,
+                userId = currentUserData.userId,
+                date = Timestamp(Date()),
+                status = "PENDING",
+                createdAt = Timestamp(Date()),
+            )
+        repo.createAppointment(appointmentData)
     }
 
     /**

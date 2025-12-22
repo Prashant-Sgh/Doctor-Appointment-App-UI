@@ -2,6 +2,7 @@ package com.atul.doctorappointmentappui.core.model
 
 
 data class UserModel(
+    val userId:String = "",
     val address: String = "",
     val age: String = "",
     val email: String = "",
