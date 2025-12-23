@@ -40,7 +40,6 @@ fun SellerAppointmentsScreen(
 
     // 3. Delegate to the Pure UI Composable
     SellerAppointmentsContent(
-        appointmentViewModel = appointmentViewModel,
         appointments = appointments,
         isLoading = isLoading,
         onViewAppointment = onViewAppointment
@@ -50,7 +49,6 @@ fun SellerAppointmentsScreen(
 // 2. The "Pure" UI Composable (Easy to Preview, no Hilt)
 @Composable
 fun SellerAppointmentsContent(
-    appointmentViewModel: AppointmentViewModel,
     appointments: List<AppointmentModel>,
     isLoading: Boolean,
     onViewAppointment: (AppointmentModel) -> Unit
@@ -60,8 +58,10 @@ fun SellerAppointmentsContent(
             CircularProgressIndicator(color = colorResource(R.color.puurple))
         }
     } else {
-        // I corrected the lambda syntax here from your original snippet
-        SellerAppointmentScaffold(appointmentViewModel, appointments) { onViewAppointment(it) }
+        SellerAppointmentScaffold(
+            appointments = appointments,
+            onViewAppointment = { onViewAppointment(it) }
+        )
     }
 }
 

@@ -34,6 +34,25 @@ class AppointmentRepo @Inject constructor() {
         awaitClose { listener.remove() }
     }
 
+    fun getUserAppointmentsFlow(userId: String): Flow<List<AppointmentModel>> = callbackFlow {
+        val listener = collection
+            .whereEqualTo("userId", userId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.d("AppointmentRepo", "Listen failed.", error)
+                    return@addSnapshotListener
+                }
+                if (snapshot != null && !snapshot.isEmpty) {
+                    val appointments = snapshot.toObjects(AppointmentModel::class.java)
+                    trySend(appointments)
+                } else {
+                    trySend(emptyList())
+                }
+            }
+        // Close the listener when viewmodel is cleared/screen closed
+        awaitClose { listener.remove() }
+    }
+
     suspend fun createAppointment(appointmentData: AppointmentModel): Result<Unit> {
         return try {
             // 1. Create a reference to a new document. This generates a unique ID on the client.

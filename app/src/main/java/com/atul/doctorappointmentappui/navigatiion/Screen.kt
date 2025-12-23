@@ -12,7 +12,11 @@ sealed class Screen (val route: String) {
     data object DrProfileManagement: Screen("docAccount")
     data object CompleteUserProfile: Screen("completeUserProfile")
     data object SellerAppointmentsScreen: Screen("sellerAppointmentsScreen")
+    data object UserAppointmentsScreen: Screen("userAppointmentsScreen")
     data object SellerAppointmentsManagementScreen: Screen("sellerAppointmentsManagementScreen/{appointmentId}") {
         fun createRoute(appointmentId: String) = "sellerAppointmentsManagementScreen/$appointmentId"
+    }
+    data object UserAppointmentsManagementScreen: Screen("userAppointmentsManagementScreen/{appointmentId}") {
+        fun createRoute(appointmentId: String) = "userAppointmentsManagementScreen/$appointmentId"
     }
 }

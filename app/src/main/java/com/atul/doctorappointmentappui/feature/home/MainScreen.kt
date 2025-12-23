@@ -1,5 +1,6 @@
 package com.atul.doctorappointmentappui.feature.home
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
@@ -9,8 +10,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -25,12 +28,15 @@ import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
 import com.atul.doctorappointmentappui.feature.manageAccount.components.IncompleteProfileBanner
 import com.atul.doctorappointmentappui.navigatiion.Screen
 import com.atul.doctorappointmentappui.navigatiion.navigateToDetail
+import com.atul.doctorappointmentappui.navigatiion.routes.detailRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.drProfileManagementRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.mainScreenRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.manageAccountRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.profileRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.sellerAppointmentRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.sellerAppointmentsManagementRoute
+import com.atul.doctorappointmentappui.navigatiion.routes.userAppointmentRoute
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -45,13 +51,18 @@ fun MainScreenWrapper(
     onManageAccountClick: () -> Unit,
     signOutUser: () -> Unit,
 ) {
+
     val navController= rememberNavController()
     // Observe current route to highlight the correct bottom bar icon
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
     val userData by userDataViewModel.userData.collectAsState()
     val seller = userData.seller
+    val userId = userData.userId
 
     Scaffold(
         bottomBar = {
@@ -105,6 +116,33 @@ fun MainScreenWrapper(
             sellerAppointmentsManagementRoute(
                 appointmentViewModel = appointmentViewModel,
                 onBack = { navController.popBackStack() }
+            )
+            userAppointmentRoute(
+                appointmentViewModel = appointmentViewModel,
+                userId = userId
+            )
+
+            detailRoute(
+                currentUserData = userData,
+                nav = navController,
+                onBack = {
+                    navController.popBackStack()
+                },
+                onBookAppointment = { appointmentData ->
+                    scope.launch {
+                        val result = appointmentViewModel.createAppointment(appointmentData, userData.userId)
+
+                        when {
+                            result.isSuccess -> {
+                                navController.popBackStack()
+                                Toast.makeText(context, "Appointment booked successfully", Toast.LENGTH_SHORT).show()
+                            }
+                            result.isFailure -> {
+                                Toast.makeText(context, "Failed to book appointment", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
             )
 
         }

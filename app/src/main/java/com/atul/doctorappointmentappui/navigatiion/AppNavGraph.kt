@@ -160,17 +160,17 @@ fun AppNavGraph(
             }
         )
 
-        detailRoute(
-            currentUserData = currentUserData,
-            nav = navCon,
-            onBack = {
-                navCon.popBackStack()
-            },
-            onBookAppointment = {
-                scope.launch {
-                    appointmentViewModel.createAppointment(it, currentUserData)
-                }
-            }
-        )
+//        detailRoute(
+//            currentUserData = currentUserData,
+//            nav = navCon,
+//            onBack = {
+//                navCon.popBackStack()
+//            },
+//            onBookAppointment = {
+//                scope.launch {
+//                    appointmentViewModel.createAppointment(it, currentUserData)
+//                }
+//            }
+//        )
     }
 }

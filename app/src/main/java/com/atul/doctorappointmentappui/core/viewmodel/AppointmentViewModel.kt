@@ -41,16 +41,26 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
-    suspend fun createAppointment(appointmentData: AppointmentModel,  currentUserData: UserModel) {
-        val appointmentId = ""
+    fun fetchUserAppointments(userId: String) {
+        _isLoading.value = true
+        viewModelScope.launch {
+            repo.getUserAppointmentsFlow(userId).collect { list ->
+                _appointments.value = list
+                _isLoading.value = false
+            }
+        }
+    }
+
+    suspend fun createAppointment(appointmentData: AppointmentModel,  userId: String): Result<Unit> {
         val appointmentModel = appointmentData
-            .copy(appointmentId = appointmentId,
-                userId = currentUserData.userId,
+            .copy(
+                userId = userId,
                 date = Timestamp(Date()),
                 status = "PENDING",
                 createdAt = Timestamp(Date()),
             )
-        repo.createAppointment(appointmentData)
+        val result = repo.createAppointment(appointmentModel)
+        return result
     }
 
     /**

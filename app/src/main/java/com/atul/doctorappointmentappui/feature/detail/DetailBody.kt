@@ -171,3 +171,17 @@ fun DetailBody(
         Spacer(Modifier.height(8.dp))
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun Preview() {
+    DetailBody(
+        DoctorModel(),
+        onOpenWebsite = {},
+        onSendSms = { _, _ -> },
+        onDial = {},
+        onDirection = {},
+        onShare = { _, _ -> },
+        onBookAppointmentClick = {}
+    )
+}

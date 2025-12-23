@@ -37,7 +37,7 @@ fun HomeBottomBar (
     // 2. Defined tabs here.
     val usersTabs = listOf(
         BottomTab("Home", Screen.MainScreen.route, Icons.Default.Home),
-        BottomTab("Appointments", Screen.SellerAppointmentsScreen.route, Icons.Default.CalendarMonth),
+        BottomTab("Appointments", Screen.UserAppointmentsScreen.route, Icons.Default.CalendarMonth),
         BottomTab("Profile", Screen.ManageAccount.route, Icons.Default.ManageAccounts)
     )
     val sellerTabs = listOf(
