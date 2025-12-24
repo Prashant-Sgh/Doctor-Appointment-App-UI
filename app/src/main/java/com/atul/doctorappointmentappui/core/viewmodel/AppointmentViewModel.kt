@@ -3,6 +3,7 @@ package com.atul.doctorappointmentappui.core.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atul.doctorappointmentappui.core.model.AppointmentModel
+import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.atul.doctorappointmentappui.core.model.UserAppointmentDetails
 import com.atul.doctorappointmentappui.core.model.UserModel
 import com.atul.doctorappointmentappui.core.repo.AppointmentRepo
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import java.util.Date
 
@@ -76,4 +78,7 @@ class AppointmentViewModel @Inject constructor(
         return repo.getUserDataFlow(userId)
     }
 
+    fun getDoctorData(doctorId: String, onResult: (DoctorModel?) -> Unit){
+        repo.fetchSellerData(doctorId, onResult)
     }
+}

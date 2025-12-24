@@ -219,18 +219,18 @@ fun BecomeSellerScreen(
                     // 3. Only proceed if NO errors
                     if (!hasError) {
                         val newDoctorProfile = DoctorModel(
-                            special = speciality,
-                            site = site,
-                            rating = 5.0,
-                            patients = 0,
-                            phone = phone,
+                            id = "0",
                             name = name,
-                            picture = picture,
-                            location = location,
-                            experience = experience.toIntOrNull() ?: 0,
-                            biography = biography,
                             address = address,
-                            id = 0
+                            biography = biography,
+                            experience = experience.toIntOrNull() ?: 0,
+                            location = location,
+                            phone = phone,
+                            patients = 0,
+                            picture = picture,
+                            rating = 5.0,
+                            site = site,
+                            special = speciality,
                         )
                         onRegisterClicked(newDoctorProfile)
                     }
@@ -248,12 +248,12 @@ fun BecomeSellerScreen(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun BecomeSellerScreenPreview() {
-    BecomeSellerScreen(
-        onRegisterClicked = {},
-        onNavigateBack = {}
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun BecomeSellerScreenPreview() {
+//    BecomeSellerScreen(
+//        onRegisterClicked = {},
+//        onNavigateBack = {}
+//    )
+//}
 

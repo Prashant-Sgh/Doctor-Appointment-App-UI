@@ -40,7 +40,7 @@ fun AppointmentBookingSheetContent(
     patientName: String,
     userId: String,
     doctorName: String,
-    doctorId: Int,
+    doctorId: String,
     date: Date = Date(),
     problemDescription: String,
     onProblemDescriptionChange: (String) -> Unit,
@@ -92,7 +92,7 @@ fun AppointmentBookingSheetContent(
             onClick = {
                 onConfirmClick(
                     AppointmentModel(
-                        doctorId = doctorId.toString(),
+                        doctorId = doctorId,
                         userId = userId,
                         patientName = patientName,
                         problemDescription = problemDescription,
@@ -163,7 +163,7 @@ private fun rememberFormattedDate(date: Date, pattern: String = "EEEE, MMMM dd, 
 //private fun AppointmentBookingSheetContentPreview() {
 //    MaterialTheme {
 //        AppointmentBookingSheetContent(
-//            doctorId = 0,
+//            doctorId = "0",
 //            patientName = "Atul Singh",
 //            doctorName = "Dr. Emily Carter",
 ////            date = Date(), // Today's date

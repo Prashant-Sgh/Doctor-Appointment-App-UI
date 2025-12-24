@@ -136,7 +136,7 @@ fun DetailScreen(
 private fun DetailScreenPreview() {
     MaterialTheme {
         DetailScreen(
-            item = DoctorModel(id = 0, name = "Dr. Atul Kumar", picture = ""),
+            item = DoctorModel(id = "0", name = "Dr. Atul Kumar", picture = ""),
             currentUserData = UserModel(userId = "user1", userName = "John Doe"),
             onBookAppointment = {},
             onBack = {},

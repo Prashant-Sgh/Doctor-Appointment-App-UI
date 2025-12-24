@@ -1,8 +1,11 @@
 package com.atul.doctorappointmentappui.core.repo
 
 import android.util.Log
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.atul.doctorappointmentappui.core.model.AppointmentModel
+import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.atul.doctorappointmentappui.core.model.UserModel
+import com.atul.doctorappointmentappui.core.viewmodel.SellerDataViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.channels.awaitClose
@@ -11,7 +14,8 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class AppointmentRepo @Inject constructor() {
+class AppointmentRepo @Inject constructor(
+) {
     private val db = Firebase.firestore
     private val collection =db.collection("appointments")
 
@@ -119,5 +123,25 @@ class AppointmentRepo @Inject constructor() {
         awaitClose {
             listenerRegistration.remove()
         }
+    }
+
+    fun fetchSellerData(uid: String, onResult: (DoctorModel?) -> Unit) {
+        db.collection("sellers")
+            .document(uid)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val seller = document.toObject(DoctorModel::class.java)
+                    onResult(seller)
+                    Log.d("Firestore", "Seller data fetched")
+                } else {
+                    onResult(null)
+                    Log.d("Firestore", "Seller document does not exist")
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.d("Firestore", "Failed to fetch seller !! ERROR -", e)
+                onResult(null)
+            }
     }
 }

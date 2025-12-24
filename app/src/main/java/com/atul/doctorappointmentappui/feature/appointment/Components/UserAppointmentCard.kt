@@ -1,5 +1,6 @@
 package com.atul.doctorappointmentappui.feature.appointment.Components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,22 +27,34 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.AppointmentModel
+import com.atul.doctorappointmentappui.core.model.DoctorModel
+import com.atul.doctorappointmentappui.core.viewmodel.AppointmentViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
 fun UserAppointmentCard(
+    appointmentViewModel: AppointmentViewModel = hiltViewModel(),
     appointment: AppointmentModel,
     onViewClick: (String) -> Unit
 ) {
@@ -67,6 +80,19 @@ fun UserAppointmentCard(
         }
     }
 
+    var doctorData by remember { mutableStateOf(DoctorModel()) }
+
+    LaunchedEffect(appointment) {
+        appointmentViewModel.getDoctorData(
+            appointment.doctorId,
+            onResult = { result ->
+                if(result != null){
+                    doctorData = result
+                }
+            }
+        )
+    }
+
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -88,10 +114,18 @@ fun UserAppointmentCard(
                     modifier = Modifier.size(48.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
+//                        Icon(
+//                            imageVector = Icons.Default.Person,
+//                            contentDescription = null,
+//                            tint = colorResource(R.color.puurple)
+//                        )
+                        AsyncImage(
+                            model = ImageRequest
+                                .Builder(LocalContext.current)
+                                .data(doctorData.picture)
+                                .crossfade(true)
+                                .build(),
                             contentDescription = null,
-                            tint = colorResource(R.color.puurple)
                         )
                     }
                 }
@@ -173,23 +207,23 @@ fun UserAppointmentCard(
 }
 
 //// --- Generated Preview ---
-//@Preview(showBackground = true, backgroundColor = 0xFFF5F5F5)
-//@Composable
-//private fun UserAppointmentCardPreview() {
-//    MaterialTheme {
-//        Box(modifier = Modifier.padding(16.dp)) {
-//            UserAppointmentCard(
-//                appointment = AppointmentModel(
-//                    appointmentId = "appt123",
-//                    patientName = "Atul Kumar",
-//                    problemDescription = "Follow-up after seasonal flu",
-//                    status = "CONFIRMED",
-//                    date = com.google.firebase.Timestamp.now() // Uses current time for the preview
-//                ),
-//                onViewClick = { appointmentId ->
-//                    println("Clicked on appointment: $appointmentId")
-//                }
-//            )
-//        }
-//    }
-//}
+@Preview(showBackground = true, backgroundColor = 0xFFF5F5F5)
+@Composable
+private fun UserAppointmentCardPreview() {
+    MaterialTheme {
+        Box(modifier = Modifier.padding(16.dp)) {
+            UserAppointmentCard(
+                appointment = AppointmentModel(
+                    appointmentId = "appt123",
+                    patientName = "Atul Kumar",
+                    problemDescription = "Follow-up after seasonal flu",
+                    status = "CONFIRMED",
+                    date = com.google.firebase.Timestamp.now() // Uses current time for the preview
+                ),
+                onViewClick = { appointmentId ->
+                    println("Clicked on appointment: $appointmentId")
+                }
+            )
+        }
+    }
+}

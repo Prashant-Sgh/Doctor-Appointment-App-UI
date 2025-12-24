@@ -22,6 +22,15 @@ class SellerDataViewModel @Inject constructor(
     private val _sellerUid = MutableStateFlow("uid")
     val sellerUid: StateFlow<String> = _sellerUid
 
+    suspend fun createSellerProfile(uid: String, doctorData: DoctorModel, context: Context) {
+        val finalDocData = doctorData.copy(id = uid)
+        val result = repo.createSellerProfile(uid, finalDocData)
+        when {
+            result.isSuccess -> showToast(context, "Seller profile created")
+            result.isFailure -> showToast(context, "Something went wrong")
+        }
+    }
+
     private fun updateSellerUid(uid: String) {
         _sellerUid.value = uid
     }

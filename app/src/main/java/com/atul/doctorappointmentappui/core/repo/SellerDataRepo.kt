@@ -3,6 +3,7 @@ package com.atul.doctorappointmentappui.core.repo
 import android.util.Log
 import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -10,6 +11,27 @@ import javax.inject.Inject
 class SellerDataRepo @Inject constructor() {
     // Ideally inject via constructor, but keeping your structure
     private val db = Firebase.firestore
+
+    /**
+     * Creates a new document for a seller in the 'sellers' collection.
+     *
+     * @param uid The unique ID for the document (typically the user's Firebase Auth UID).
+     * @param doctorData The initial data for the seller, based on the DoctorModel.
+     * @return A Result object indicating success (Result.success(Unit)) or failure (Result.failure(exception)).
+     */
+    suspend fun createSellerProfile(uid: String, doctorData: DoctorModel): Result<Unit> {
+        return try {
+            db.collection("sellers")
+                .document(uid)
+                .set(doctorData)
+                .await() // Wait for the operation to complete
+            Log.d("Firestore", "Seller profile created successfully for UID: $uid")
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e("Firestore", "Error creating seller profile for UID: $uid", e)
+            Result.failure(e)
+        }
+    }
 
     fun fetchSellerData(uid: String, onResult: (DoctorModel?) -> Unit) {
         db.collection("sellers")
@@ -40,8 +62,6 @@ class SellerDataRepo @Inject constructor() {
             )
 
             // 2. Save entire object to Firestore
-            // Using .set() with Merge is often safer if we want to ensure fields exist,
-            // but straight .set(data) works perfectly for a full profile update.
             db.collection("sellers")
                 .document(uid)
                 .set(updatedSellerData)
