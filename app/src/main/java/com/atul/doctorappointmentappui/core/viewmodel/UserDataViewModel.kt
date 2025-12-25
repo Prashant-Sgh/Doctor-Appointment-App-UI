@@ -19,20 +19,27 @@ class UserDataViewModel @Inject constructor(
     private val repo: UserDataRepo
 ): ViewModel() {
 
+    private val _userId = MutableStateFlow("")
+    val userId: StateFlow<String> = _userId
+
+    init {
+        val userId = repo.getCurrentUserId()
+        updateUid(userId)
+    }
+
     private val _userData = MutableStateFlow(UserModel())
     val userData: StateFlow<UserModel> = _userData.asStateFlow()
 
-    private val _userUid = MutableStateFlow("")
-    val userUid: StateFlow<String> = _userUid
 
     private fun updateUid(uid: String) {
-        _userUid.value = uid
+        _userId.value = uid
     }
 
-    fun getData(uid: String, context: Context) {
-        updateUid(uid)
+    fun getData(context: Context) {
+        val userId = userId.value
+        updateUid(userId)
         viewModelScope.launch {
-            repo.getUserDataFlow(uid)
+            repo.getUserDataFlow(userId)
                 .collect { user ->
                     if (user != null) {
                         updateUserData(user)
@@ -56,7 +63,7 @@ class UserDataViewModel @Inject constructor(
 
 
     suspend fun updateUserDetails(context: Context, details: UserModel) {
-        val isUpdated = repo.updateUserDetails(_userUid.value, details)
+        val isUpdated = repo.updateUserDetails(userId.value, details)
         val toastMessage = if (isUpdated) "Profile updated" else "Profile not-updated!!"
         showToast(context, toastMessage)
     }

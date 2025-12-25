@@ -38,7 +38,7 @@ fun DocProfileManageScreen(
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        sellerDataViewModel.getData("uid", context)
+        sellerDataViewModel.getData(context)
     }
     val doctor by sellerDataViewModel.sellerData.collectAsState()
 
@@ -201,7 +201,7 @@ fun DocProfileManageScreen(
 //private fun DocProfileManageScreenPreview() {
 //    // Create a dummy doctor for the preview
 //    val dummyDoctor = DoctorModel(
-//        id = 1,
+//        id = "1",
 //        name = "Dr. Atul Singh",
 //        special = "Cardiologist",
 //        site = "City Hospital",
@@ -218,6 +218,6 @@ fun DocProfileManageScreen(
 //    // Pass it as a StateFlow
 //    DocProfileManageScreen(
 //        doctorFlow = MutableStateFlow(dummyDoctor),
-//        onSaveConfirmed = {}
+//        onSaveConfirmed = {},
 //    )
 //}

@@ -9,6 +9,13 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class SellerDataRepo @Inject constructor() {
+
+    private val auth = FirebaseAuth.getInstance()
+
+    fun getCurrentUserId(): String? {
+        return auth.currentUser?.uid
+    }
+
     // Ideally inject via constructor, but keeping your structure
     private val db = Firebase.firestore
 

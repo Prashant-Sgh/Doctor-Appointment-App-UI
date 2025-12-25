@@ -3,6 +3,7 @@ package com.atul.doctorappointmentappui.core.repo
 import android.util.Log
 import com.atul.doctorappointmentappui.core.model.UserModel
 import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -11,6 +12,12 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class UserDataRepo @Inject constructor() {
+
+    fun getCurrentUserId(): String {
+        val userId = Firebase.auth.currentUser?.uid?: ""
+        return userId
+    }
+
     // Ideally this should be injected via constructor, but we'll keep it simple for now
     // to match your Hilt setup without changing your module file.
     private val db = Firebase.firestore
@@ -70,61 +77,3 @@ class UserDataRepo @Inject constructor() {
         }
     }
 }
-
-
-
-
-//import android.util.Log
-//import com.atul.doctorappointmentappui.core.model.UserModel
-//import com.google.firebase.Firebase
-//import com.google.firebase.firestore.firestore
-//import kotlinx.coroutines.tasks.await
-//import javax.inject.Inject
-//
-//
-//class UserDataRepo @Inject constructor(){
-//    private val db = Firebase.firestore
-//
-//    fun fetchUserData(uid: String, onResult: (UserModel?) -> Unit) {
-//        db.collection("users")
-//            .document(uid)
-//            .get()
-//            .addOnSuccessListener { document ->
-//                val user = document.toObject(UserModel::class.java)
-//                onResult(user)
-//                Log.d("Firestore", "User data Fetched.")
-//            }
-//            .addOnFailureListener {e ->
-//                Log.d("Firestore", "Failed to fetch user !! ERROR - ", e)
-//                onResult(null)
-//            }
-//    }
-//
-//    suspend fun updateUserDetails(uid: String, userData: UserModel): Boolean {
-//
-//        val data = mapOf(
-//            "imageURL" to userData.imageURL,
-//            "userName" to userData.userName,
-//            "age" to userData.age,
-//            "male" to userData.male,
-//            "email" to userData.email,
-//            "phone" to userData.phone,
-//            "address" to userData.address,
-//            "totalAppointments" to userData.totalAppointments,
-//            "seller" to userData.seller,
-//            "profileCompleted" to userData.profileCompleted
-//        )
-//
-//        return try {
-//            db.collection("users")
-//                .document(uid)
-//                .update(data)
-//                .await()
-//            true
-//        }
-//        catch (e: Exception) {
-//            false
-//        }
-//    }
-//
-//}

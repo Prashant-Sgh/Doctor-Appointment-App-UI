@@ -48,9 +48,8 @@ fun AppNavGraph(
     val currentSellerData by sellerDataViewModel.sellerData.collectAsState()
 
     LaunchedEffect(authUser, currentUserData.seller) {
-//        if (authUser != null && currentUserData.seller) {
-        if (authUser != null && currentUserData.seller) {
-            sellerDataViewModel.getData("uid", context)
+        if (authUser != "" && currentUserData.seller) {
+            sellerDataViewModel.getData(context)
         }
     }
 
@@ -61,17 +60,17 @@ fun AppNavGraph(
 
     // Decide the staring screen
     val startDestination = when {
-        authUser == null -> Screen.Auth.route // Not authenticated
+        authUser == "" -> Screen.Auth.route // Not authenticated
         !currentUserData.profileCompleted -> Screen.CompleteUserProfile.route // Profile incomplete
         else -> Screen.Home.route // All good
     }
 
     // This effect runs whenever the authenticated user changes
     LaunchedEffect(authUser) {
-        if (authUser != null) {
+//        if (authUser != null && authUser != "") {
+        if (authUser != "") {
             // If we have a logged-in user, always ensure their data is loaded
-//            userDataViewmodel.getData(authUser!!, context)
-            userDataViewmodel.getData("uid", context)
+            userDataViewmodel.getData(context)
         } else {
             // If user logs out, clear the data
             userDataViewmodel.clearUserData()
@@ -104,6 +103,7 @@ fun AppNavGraph(
                 scope.launch {
                     authVm.authenticateWithEmailPassword(email, password, isLogin, context) {
                         // The LaunchedEffect(authUser) will handle the rest
+                        navCon.navigate(Screen.Intro.route)
                     }
                 }
             },
@@ -147,7 +147,6 @@ fun AppNavGraph(
             }
         )
 
-
         drProfileManagementRoute(sellerDataViewModel)
 
         topDoctorsRoute(
@@ -159,18 +158,5 @@ fun AppNavGraph(
                 navCon.navigateToDetail(doctor)
             }
         )
-
-//        detailRoute(
-//            currentUserData = currentUserData,
-//            nav = navCon,
-//            onBack = {
-//                navCon.popBackStack()
-//            },
-//            onBookAppointment = {
-//                scope.launch {
-//                    appointmentViewModel.createAppointment(it, currentUserData)
-//                }
-//            }
-//        )
     }
 }

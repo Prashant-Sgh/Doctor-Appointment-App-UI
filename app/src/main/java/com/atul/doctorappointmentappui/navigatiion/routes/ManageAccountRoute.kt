@@ -11,12 +11,14 @@ import com.atul.doctorappointmentappui.navigatiion.Screen
 
 fun NavGraphBuilder.manageAccountRoute(
     userViewModel: UserDataViewModel,
-    signOutUser: () -> Unit
+    signOutUser: () -> Unit,
+    onNavigateToSellerRegistration: () -> Unit
 ) {
     composable(Screen.ManageAccount.route) {
         ManageAccountRoute(
             viewModel = userViewModel,
-            onSignOut = { signOutUser() }
+            onSignOut = { signOutUser() },
+            onNavigateToSellerRegistration = onNavigateToSellerRegistration
         )
     }
 }

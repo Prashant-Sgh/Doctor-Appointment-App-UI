@@ -25,9 +25,9 @@ class AuthViewModel @Inject constructor (
     private val firebaseAuth: FirebaseAuth
 ) : ViewModel() {
 
-    private val _currentUserId = MutableStateFlow<String?>(null)
-    val currentUserId: StateFlow<String?> = _currentUserId
-    fun updateUserId(userId: String?) {
+    private val _currentUserId = MutableStateFlow<String>("")
+    val currentUserId: StateFlow<String> = _currentUserId
+    fun updateUserId(userId: String) {
         _currentUserId.value = userId
     }
 
@@ -45,8 +45,8 @@ class AuthViewModel @Inject constructor (
         _UserName.value = name
     }
 
-    suspend fun checkCurrentUser (): String? {
-        val currentUser = firebaseAuth.currentUser?.uid
+    suspend fun checkCurrentUser (): String {
+        val currentUser = firebaseAuth.currentUser?.uid?: ""
         updateUserId(currentUser)
         return currentUser
     }
@@ -63,14 +63,14 @@ class AuthViewModel @Inject constructor (
                     firebaseAuth.signInWithCredential(firebaseCredential).await()
 //                openAndPopUp(NOTES_LIST_SCREEN, SIGN_IN_SCREEN)
                     val result = firebaseAuth.signInWithCredential(firebaseCredential).await()
-                    updateUserId(result.user?.uid)
+                    checkCurrentUser()
                 } else {
-                    updateUserId(null)
+                    updateUserId("")
                     Log.e("AuthError", "UNEXPECTED_CREDENTIAL")
                 }
             }
             catch (e: Exception) {
-                updateUserId(null)
+                updateUserId("")
                 Log.d("AuthError", e.message.orEmpty())
             }
         }
@@ -81,13 +81,13 @@ class AuthViewModel @Inject constructor (
             firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val userId = firebaseAuth.currentUser?.uid
+                        val userId = firebaseAuth.currentUser?.uid?: ""
                         updateUserId(userId)
                         onSuccessful()
                         Toast.makeText(context, "Signing in successful", Toast.LENGTH_SHORT).show()
                     }
                     else {
-                        updateUserId(null)
+                        updateUserId("")
                         Toast.makeText(context, "Signing in failed", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -97,10 +97,11 @@ class AuthViewModel @Inject constructor (
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val userId = firebaseAuth.currentUser?.uid
-                        updateUserId(userId)
+//                        updateUserId(userId)
                         onSuccessful
                     }
                 }
+            checkCurrentUser()
         }
     }
 

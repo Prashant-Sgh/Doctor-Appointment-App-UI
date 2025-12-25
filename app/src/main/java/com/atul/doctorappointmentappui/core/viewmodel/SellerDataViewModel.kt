@@ -16,11 +16,16 @@ class SellerDataViewModel @Inject constructor(
     private val repo: SellerDataRepo
 ): ViewModel() {
 
-    private val _sellerData = MutableStateFlow(DoctorModel())
-    val sellerData: StateFlow<DoctorModel> = _sellerData.asStateFlow()
-
     private val _sellerUid = MutableStateFlow("uid")
     val sellerUid: StateFlow<String> = _sellerUid
+
+    init {
+        val sellerId = repo.getCurrentUserId()?: ""
+        updateSellerUid(sellerId)
+    }
+
+    private val _sellerData = MutableStateFlow(DoctorModel())
+    val sellerData: StateFlow<DoctorModel> = _sellerData.asStateFlow()
 
     suspend fun createSellerProfile(uid: String, doctorData: DoctorModel, context: Context) {
         val finalDocData = doctorData.copy(id = uid)
@@ -35,9 +40,10 @@ class SellerDataViewModel @Inject constructor(
         _sellerUid.value = uid
     }
 
-    fun getData(uid: String, context: Context) {
-        updateSellerUid(uid)
-        repo.fetchSellerData(uid) { result ->
+    fun getData(context: Context) {
+        val sellerId = _sellerUid.value
+        updateSellerUid(sellerId)
+        repo.fetchSellerData(sellerId) { result ->
             if (result != null) {
                 _sellerData.value = result
                 showToast(context, "Seller, data fetched")

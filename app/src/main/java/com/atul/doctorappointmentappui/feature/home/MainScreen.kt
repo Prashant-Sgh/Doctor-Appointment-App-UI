@@ -30,9 +30,9 @@ import com.atul.doctorappointmentappui.navigatiion.Screen
 import com.atul.doctorappointmentappui.navigatiion.navigateToDetail
 import com.atul.doctorappointmentappui.navigatiion.routes.detailRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.drProfileManagementRoute
+import com.atul.doctorappointmentappui.navigatiion.routes.drRegistrationRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.mainScreenRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.manageAccountRoute
-import com.atul.doctorappointmentappui.navigatiion.routes.profileRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.sellerAppointmentRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.sellerAppointmentsManagementRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.userAppointmentRoute
@@ -110,7 +110,14 @@ fun MainScreenWrapper(
             )
             manageAccountRoute(
                 userViewModel = userDataViewModel,
-                signOutUser = { signOutUser() }
+                signOutUser = { signOutUser() },
+                onNavigateToSellerRegistration = {
+                    navController.navigate(Screen.DrRegistrationScreen.route)
+                }
+            )
+            drRegistrationRoute(
+                userId = userId,
+                onNavigateBack = { navController.popBackStack() }
             )
             drProfileManagementRoute(sellerDataViewModel = sellerDataViewModel)
             sellerAppointmentsManagementRoute(
