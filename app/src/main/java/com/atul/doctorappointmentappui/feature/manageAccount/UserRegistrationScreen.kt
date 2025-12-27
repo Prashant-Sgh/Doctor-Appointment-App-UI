@@ -54,6 +54,7 @@ fun CompleteProfileScreen(
 
     // Error States
     var isNameError by remember { mutableStateOf(false) }
+    var isEmailError by remember { mutableStateOf(false) }
     var isAgeError by remember { mutableStateOf(false) }
     var isPhoneError by remember { mutableStateOf(false) }
     var isAddressError by remember { mutableStateOf(false) }
@@ -165,12 +166,17 @@ fun CompleteProfileScreen(
             // Email (Read Only - from Auth)
             OutlinedTextField(
                 value = userEmail,
-                onValueChange = { },
+                onValueChange = {
+                    userEmail = it
+                    if(it.isNotBlank()) isEmailError = false
+                                },
                 label = { Text("Email") },
-                readOnly = true,
-                enabled = false,
+                isError = isEmailError,
+//                readOnly = true,
+//                enabled = false,
                 modifier = fieldModifier
             )
+            if (isEmailError) Text("Email is required", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 // Age
@@ -234,16 +240,18 @@ fun CompleteProfileScreen(
                 onClick = {
                     // Validation
                     isNameError = userName.isBlank()
+                    isEmailError = userEmail.isBlank()
                     isAgeError = userAge.isBlank()
                     isPhoneError = userPhone.isBlank()
                     isAddressError = userAddress.isBlank()
                     isImageError = userImage.isBlank()
 
-                    val hasError = isNameError || isAgeError || isPhoneError || isAddressError || isImageError
+                    val hasError = isNameError || isEmailError || isAgeError || isPhoneError || isAddressError || isImageError
 
                     if (!hasError) {
                         val completeUser = initialUser.copy(
                             userName = userName,
+                            email = userEmail,
                             imageURL = userImage,
                             age = userAge,
                             phone = userPhone,

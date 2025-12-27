@@ -28,7 +28,7 @@ class SellerDataViewModel @Inject constructor(
     val sellerData: StateFlow<DoctorModel> = _sellerData.asStateFlow()
 
     suspend fun createSellerProfile(uid: String, doctorData: DoctorModel, context: Context) {
-        val finalDocData = doctorData.copy(id = uid)
+        val finalDocData = doctorData.copy(id = uid, rating = 5.0)
         val result = repo.createSellerProfile(uid, finalDocData)
         when {
             result.isSuccess -> showToast(context, "Seller profile created")

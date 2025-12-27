@@ -19,51 +19,45 @@ class UserDataViewModel @Inject constructor(
     private val repo: UserDataRepo
 ): ViewModel() {
 
-    private val _userId = MutableStateFlow("")
-    val userId: StateFlow<String> = _userId
-
-    init {
-        val userId = repo.getCurrentUserId()
-        updateUid(userId)
-    }
-
     private val _userData = MutableStateFlow(UserModel())
     val userData: StateFlow<UserModel> = _userData.asStateFlow()
 
+    fun getData(userId: String, context: Context) {
+        if (userId.isBlank()) {
+            Log.d("UserDataViewModel", "getData called with blank UID. Aborting.")
+            return
+        }
 
-    private fun updateUid(uid: String) {
-        _userId.value = uid
-    }
-
-    fun getData(context: Context) {
-        val userId = userId.value
-        updateUid(userId)
         viewModelScope.launch {
-            repo.getUserDataFlow(userId)
-                .collect { user ->
-                    if (user != null) {
-                        updateUserData(user)
-                        showToast(context, "User data fetched.")
+            if (repo.doesUserExist(userId)) {
+                repo.getUserDataFlow(userId)
+                    .collect { user ->
+                        if (user != null) {
+                            _userData.value = user
+                            showToast(context, "User data fetched.")
+                        }
+                        else {
+                            showToast(context, "User document for UID: $userId does not exist.")
+                            _userData.value = UserModel(userId = userId, profileCompleted = false)
+                        }
                     }
-                    else {
-                        showToast(context, "User data not-fetched.")
-                    }
-                }
+            }
         }
     }
 
-    private fun updateUserData(data: UserModel) {
-        _userData.value = data
-    }
-
     fun clearUserData() {
-        val userdata = UserModel()
-        updateUserData(userdata)
+        _userData.value = UserModel()
     }
 
+    suspend fun updateUserDetails(userId: String, context: Context, details: UserModel, onSuccess: () -> Unit) {
 
-    suspend fun updateUserDetails(context: Context, details: UserModel) {
-        val isUpdated = repo.updateUserDetails(userId.value, details)
+        if (userId.isBlank()) {
+            showToast(context, "Cannot update profile: User ID is missing.")
+            return
+        }
+
+        val isUpdated = repo.updateUserDetails(userId, details)
+        if (isUpdated) onSuccess()
         val toastMessage = if (isUpdated) "Profile updated" else "Profile not-updated!!"
         showToast(context, toastMessage)
     }

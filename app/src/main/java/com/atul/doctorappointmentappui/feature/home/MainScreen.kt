@@ -45,6 +45,7 @@ fun MainScreenWrapper(
     userDataViewModel: UserDataViewModel,
     sellerDataViewModel: SellerDataViewModel,
     appointmentViewModel: AppointmentViewModel,
+    userId: String,
     showBanner: Boolean,
     onBannerClick: () -> Unit,
     onOpenTopDoctors: () -> Unit,
@@ -62,7 +63,7 @@ fun MainScreenWrapper(
 
     val userData by userDataViewModel.userData.collectAsState()
     val seller = userData.seller
-    val userId = userData.userId
+//    val userId = userData.userId
 
     Scaffold(
         bottomBar = {
@@ -110,6 +111,7 @@ fun MainScreenWrapper(
             )
             manageAccountRoute(
                 userViewModel = userDataViewModel,
+                userId = userId,
                 signOutUser = { signOutUser() },
                 onNavigateToSellerRegistration = {
                     navController.navigate(Screen.DrRegistrationScreen.route)

@@ -22,6 +22,18 @@ class UserDataRepo @Inject constructor() {
     // to match your Hilt setup without changing your module file.
     private val db = Firebase.firestore
 
+    suspend fun doesUserExist(uid: String): Boolean {
+        if (uid.isBlank()) return false
+        return try {
+            val user = db.collection("users").document(uid).get().await()
+
+            user.exists()
+        } catch (e: Exception) {
+            Log.d("UserRepo", "Error checking for user existence", e)
+            false
+        }
+    }
+
     /**
      * Fetches user data using a Flow.
      * This allows real-time updates. If the user changes their profile on another device,
@@ -62,6 +74,7 @@ class UserDataRepo @Inject constructor() {
         return try {
             // Automatically update the profileCompleted flag before saving
             val updatedUserData = userData.copy(
+                userId = uid,
                 profileCompleted = userData.isProfileInformationFilled
             )
             // .set(userData) automatically maps the fields from the data class.

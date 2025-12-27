@@ -11,7 +11,7 @@ fun NavGraphBuilder. drRegistrationRoute(
 ) {
     composable(Screen.DrRegistrationScreen.route){
         DoctorRegistrationRoute(
-            userId = "",
+            userId = userId,
             onNavigateBack = onNavigateBack,
         )
     }

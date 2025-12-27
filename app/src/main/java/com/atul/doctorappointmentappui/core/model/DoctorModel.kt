@@ -23,9 +23,11 @@ data class DoctorModel(
         get() = name.isNotBlank() &&
                 address.isNotBlank() &&
                 biography.isNotBlank() &&
+                experience > 0 && // Assuming a doctor must have at least 1 year or some input > 0
                 location.isNotBlank() &&
                 phone.isNotBlank() &&
+                patients >= 0 &&
+                picture.isNotBlank() &&
                 site.isNotBlank() &&
-                special.isNotBlank() &&
-                experience > 0 // Assuming a doctor must have at least 1 year or some input > 0
+                special.isNotBlank()
 }

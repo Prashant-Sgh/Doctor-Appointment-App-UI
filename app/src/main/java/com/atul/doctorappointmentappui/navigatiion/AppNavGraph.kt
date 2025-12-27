@@ -39,7 +39,7 @@ fun AppNavGraph(
     val scope = rememberCoroutineScope()
 
     // --- Start Destination Logic ---
-    val authUser by authVm.currentUserId.collectAsState()
+    val authUserId by authVm.currentUserId.collectAsState()
 
     // Collect user data state
     val currentUserData by userDataViewmodel.userData.collectAsState() // Access value for logic
@@ -47,8 +47,8 @@ fun AppNavGraph(
     // Collect seller data state
     val currentSellerData by sellerDataViewModel.sellerData.collectAsState()
 
-    LaunchedEffect(authUser, currentUserData.seller) {
-        if (authUser != "" && currentUserData.seller) {
+    LaunchedEffect(authUserId, currentUserData.seller) {
+        if (authUserId != "" && currentUserData.seller) {
             sellerDataViewModel.getData(context)
         }
     }
@@ -60,17 +60,17 @@ fun AppNavGraph(
 
     // Decide the staring screen
     val startDestination = when {
-        authUser == "" -> Screen.Auth.route // Not authenticated
+        authUserId == "" -> Screen.Auth.route // Not authenticated
         !currentUserData.profileCompleted -> Screen.CompleteUserProfile.route // Profile incomplete
         else -> Screen.Home.route // All good
     }
 
     // This effect runs whenever the authenticated user changes
-    LaunchedEffect(authUser) {
+    LaunchedEffect(authUserId) {
 //        if (authUser != null && authUser != "") {
-        if (authUser != "") {
+        if (authUserId != "") {
             // If we have a logged-in user, always ensure their data is loaded
-            userDataViewmodel.getData(context)
+            userDataViewmodel.getData(authUserId, context)
         } else {
             // If user logs out, clear the data
             userDataViewmodel.clearUserData()
@@ -115,10 +115,11 @@ fun AppNavGraph(
             onProfileCompleted = { updatedUser ->
                 scope.launch {
                     // 1. Save to Firestore
-                    userDataViewmodel.updateUserDetails(context, updatedUser)
-                    // 2. Navigate to Home after completion
-                    navCon.navigate(Screen.Home.route) {
-                        popUpTo(Screen.CompleteUserProfile.route) { inclusive = true }
+                    userDataViewmodel.updateUserDetails(authUserId, context, updatedUser) {
+                        // 2. Navigate to Intro screen after completion
+                        navCon.navigate(Screen.Intro.route) {
+                            popUpTo(Screen.CompleteUserProfile.route) { inclusive = true }
+                        }
                     }
                 }
             },
@@ -130,6 +131,7 @@ fun AppNavGraph(
             userDataViewModel = userDataViewmodel,
             sellerDataViewModel = sellerDataViewModel,
             appointmentViewModel = appointmentViewModel,
+            userId = authUserId,
             showBanner = showSellerBanner,
             onBannerClick = {
                 navCon.navigate(Screen.DrProfileManagement.route)

@@ -70,7 +70,8 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun ManageAccountRoute(
-    viewModel: UserDataViewModel = hiltViewModel(),
+    viewModel: UserDataViewModel,
+    userId: String,
     onSignOut: () -> Unit,
     // This would be provided by your navigation graph
     onNavigateToSellerRegistration: () -> Unit
@@ -98,7 +99,7 @@ fun ManageAccountRoute(
         onEditClick = { editable = true },
         onSaveClick = {
             scope.launch{
-                viewModel.updateUserDetails(context, formState)
+                viewModel.updateUserDetails(userId, context, formState, onSuccess = {})
                 editable = false
             }
         },

@@ -1,24 +1,36 @@
 package com.atul.doctorappointmentappui.feature.registerAsDoctor
 
+import androidx.compose.foundation.background
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.atul.doctorappointmentappui.core.viewmodel.SellerDataViewModel
 import kotlinx.coroutines.launch
@@ -97,6 +109,43 @@ fun DoctorRegistrationScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
+            Card(
+                shape = CircleShape,
+                modifier = Modifier
+                    .size(130.dp)
+                    .background(Color.White, CircleShape)
+                    .padding(4.dp)
+                    .clip(CircleShape),
+                elevation = CardDefaults.cardElevation(8.dp)
+            ) {
+                if (doctorData.picture.isNotBlank() && doctorData.picture != "") {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(doctorData.picture)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Profile Picture",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(colorResource(R.color.puurple)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(60.dp)
+                        )
+                    }
+                }
+            }
+
             Text(
                 text = "Please provide your details to get started. All fields are required.",
                 style = MaterialTheme.typography.bodyMedium,
@@ -108,6 +157,14 @@ fun DoctorRegistrationScreen(
             val fieldModifier = Modifier.fillMaxWidth()
 
             OutlinedTextField(
+                value = doctorData.picture,
+                onValueChange = { onDataChange(doctorData.copy(picture = it)) },
+                label = { Text("Picture URL") },
+                modifier = fieldModifier,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+            )
+
+            OutlinedTextField(
                 value = doctorData.name,
                 onValueChange = { onDataChange(doctorData.copy(name = it)) },
                 label = { Text("Full Name") },
@@ -116,9 +173,9 @@ fun DoctorRegistrationScreen(
             )
 
             OutlinedTextField(
-                value = doctorData.special,
-                onValueChange = { onDataChange(doctorData.copy(special = it)) },
-                label = { Text("Speciality (e.g., Cardiologist)") },
+                value = doctorData.address,
+                onValueChange = { onDataChange(doctorData.copy(address = it)) },
+                label = { Text("Clinic Address") },
                 modifier = fieldModifier,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
@@ -132,9 +189,10 @@ fun DoctorRegistrationScreen(
             )
 
             OutlinedTextField(
-                value = doctorData.site,
-                onValueChange = { onDataChange(doctorData.copy(site = it)) },
-                label = { Text("Clinic / Hospital Name") },
+                value = doctorData.location,
+                onValueChange = { onDataChange(doctorData.copy(location = it)) },
+//                label = { Text("City, State (e.g., New York, NY)") },
+                label = { Text("Location - URL") },
                 modifier = fieldModifier,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
@@ -148,17 +206,35 @@ fun DoctorRegistrationScreen(
             )
 
             OutlinedTextField(
-                value = doctorData.location,
-                onValueChange = { onDataChange(doctorData.copy(location = it)) },
-                label = { Text("City, State (e.g., New York, NY)") },
+                value = doctorData.patients.toString(),
+                onValueChange = { onDataChange(doctorData.copy(patients = it.toIntOrNull() ?: 0)) },
+                label = { Text("Patients  (e.g., 200)") },
                 modifier = fieldModifier,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
 
             OutlinedTextField(
-                value = doctorData.address,
-                onValueChange = { onDataChange(doctorData.copy(address = it)) },
-                label = { Text("Clinic Address") },
+                value = doctorData.rating.toString(),
+                onValueChange = { /* No value change for rating */},
+                readOnly = true,
+                enabled = false,
+                label = { Text("Rating") },
+                modifier = fieldModifier,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+            )
+
+            OutlinedTextField(
+                value = doctorData.site,
+                onValueChange = { onDataChange(doctorData.copy(site = it)) },
+                label = { Text("Website (e.g., www.example.com)") },
+                modifier = fieldModifier,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+            )
+
+            OutlinedTextField(
+                value = doctorData.special,
+                onValueChange = { onDataChange(doctorData.copy(special = it)) },
+                label = { Text("Speciality (e.g., Cardiologist)") },
                 modifier = fieldModifier,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
             )
@@ -190,41 +266,41 @@ fun DoctorRegistrationScreen(
 
 // --- Previews ---
 
-@Preview(showBackground = true, name = "Empty Form", heightDp = 1200)
-@Composable
-private fun DoctorRegistrationScreenEmptyPreview() {
-    MaterialTheme {
-        DoctorRegistrationScreen(
-            doctorData = DoctorModel(),
-            onDataChange = {},
-            isSaveEnabled = false, // Button is disabled
-            onSaveClick = {},
-            onBackClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true, name = "Filled Form", heightDp = 1200)
-@Composable
-private fun DoctorRegistrationScreenFilledPreview() {
-    val filledDoctor = DoctorModel(
-        name = "Dr. Jane Doe",
-        special = "Pediatrician",
-        experience = 8,
-        site = "Sunshine Pediatrics",
-        phone = "555-123-4567",
-        location = "San Francisco, CA",
-        address = "123 Health St, San Francisco, CA",
-        biography = "Dedicated pediatrician with a focus on early childhood development and care."
-    )
-
-    MaterialTheme {
-        DoctorRegistrationScreen(
-            doctorData = filledDoctor,
-            onDataChange = {},
-            isSaveEnabled = true, // Button is enabled
-            onSaveClick = {},
-            onBackClick = {}
-        )
-    }
-}
+//@Preview(showBackground = true, name = "Empty Form", heightDp = 1200)
+//@Composable
+//private fun DoctorRegistrationScreenEmptyPreview() {
+//    MaterialTheme {
+//        DoctorRegistrationScreen(
+//            doctorData = DoctorModel(),
+//            onDataChange = {},
+//            isSaveEnabled = false, // Button is disabled
+//            onSaveClick = {},
+//            onBackClick = {}
+//        )
+//    }
+//}
+//
+//@Preview(showBackground = true, name = "Filled Form", heightDp = 1200)
+//@Composable
+//private fun DoctorRegistrationScreenFilledPreview() {
+//    val filledDoctor = DoctorModel(
+//        name = "Dr. Jane Doe",
+//        address = "123 Health St, San Francisco, CA",
+//        biography = "Dedicated pediatrician with a focus on early childhood development and care.",
+//        experience = 8,
+//        location = "San Francisco, CA",
+//        phone = "555-123-4567",
+//        site = "Sunshine Pediatrics",
+//        special = "Pediatrician",
+//    )
+//
+//    MaterialTheme {
+//        DoctorRegistrationScreen(
+//            doctorData = filledDoctor,
+//            onDataChange = {},
+//            isSaveEnabled = true, // Button is enabled
+//            onSaveClick = {},
+//            onBackClick = {}
+//        )
+//    }
+//}

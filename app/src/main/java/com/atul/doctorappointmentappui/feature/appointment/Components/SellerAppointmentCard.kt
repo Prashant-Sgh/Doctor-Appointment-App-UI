@@ -57,10 +57,11 @@ fun SellerAppointmentCard(
 ) {
 
     val context = LocalContext.current
+    val userId = appointment.userId
     val userData by userViewmodel.userData.collectAsState()
 
     LaunchedEffect(appointment) {
-        userViewmodel.getData(context)
+        userViewmodel.getData(userId, context)
     }
 
     val javaDate = remember(appointment.date) {
