@@ -7,8 +7,8 @@ import com.atul.doctorappointmentappui.core.viewmodel.SellerDataViewModel
 import com.atul.doctorappointmentappui.feature.profileTab.DocProfileManageScreen
 import com.atul.doctorappointmentappui.navigatiion.Screen
 
-fun NavGraphBuilder.drProfileManagementRoute(sellerDataViewModel: SellerDataViewModel) {
+fun NavGraphBuilder.drProfileManagementRoute(sellerDataViewModel: SellerDataViewModel, sellerId: String) {
     composable(Screen.DrProfileManagement.route) {
-        DocProfileManageScreen(sellerDataViewModel = sellerDataViewModel)
+        DocProfileManageScreen(sellerDataViewModel = sellerDataViewModel, sellerId)
     }
 }

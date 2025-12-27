@@ -19,6 +19,7 @@ fun NavGraphBuilder.homeRoute(
     onBannerClick: () -> Unit,
     onOpenTopDoctors: () -> Unit,
     onManageAccountClick: () -> Unit,
+    onRestartApp: () -> Unit,
     onSignOut: () -> Unit
 ) {
     composable (Screen.Home.route) {
@@ -32,6 +33,7 @@ fun NavGraphBuilder.homeRoute(
             onBannerClick = { onBannerClick() },
             onOpenTopDoctors = { onOpenTopDoctors() },
             onManageAccountClick = { onManageAccountClick() },
+            onRestartApp = onRestartApp,
             signOutUser = {
                 onSignOut()
             }

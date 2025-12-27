@@ -43,6 +43,7 @@ import kotlinx.coroutines.launch
 fun DoctorRegistrationRoute(
     viewModel: SellerDataViewModel = hiltViewModel(),
     userId: String,
+    onSuccess: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
     // This holds the state of the form fields as the user types.
@@ -64,7 +65,7 @@ fun DoctorRegistrationRoute(
             // Here you would call your ViewModel to create the profile
             // For example: viewModel.createDoctorProfile(formState)
             scope.launch{
-                viewModel.createSellerProfile(userId, doctorData, context)
+                viewModel.createSellerProfile(userId, doctorData, onSuccess, context)
             }
         },
         onBackClick = onNavigateBack

@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,15 +49,18 @@ fun AppNavGraph(
     // Collect seller data state
     val currentSellerData by sellerDataViewModel.sellerData.collectAsState()
 
-    LaunchedEffect(authUserId, currentUserData.seller) {
+    val fetchData = remember { mutableStateOf(false) }
+
+    LaunchedEffect(authUserId, currentUserData.seller, fetchData.value) {
         if (authUserId != "" && currentUserData.seller) {
-            sellerDataViewModel.getData(context)
+            userDataViewmodel.getData(authUserId, context)
+            sellerDataViewModel.getData(authUserId, context)
         }
     }
 
     // 3. Calculate the Banner Logic
     // Show if: User is a Seller AND Seller Profile is NOT complete
-    val showSellerBanner = currentUserData.seller && !currentSellerData.profileCompleted
+    val showSellerBanner = remember { mutableStateOf(currentUserData.seller && !currentSellerData.profileCompleted) }
 
 
     // Decide the staring screen
@@ -66,7 +71,7 @@ fun AppNavGraph(
     }
 
     // This effect runs whenever the authenticated user changes
-    LaunchedEffect(authUserId) {
+    LaunchedEffect(authUserId, fetchData.value) {
 //        if (authUser != null && authUser != "") {
         if (authUserId != "") {
             // If we have a logged-in user, always ensure their data is loaded
@@ -102,7 +107,7 @@ fun AppNavGraph(
             onEmailAuth = { email, password, isLogin ->
                 scope.launch {
                     authVm.authenticateWithEmailPassword(email, password, isLogin, context) {
-                        // The LaunchedEffect(authUser) will handle the rest
+                        fetchData.value = !fetchData.value
                         navCon.navigate(Screen.Intro.route)
                     }
                 }
@@ -116,6 +121,7 @@ fun AppNavGraph(
                 scope.launch {
                     // 1. Save to Firestore
                     userDataViewmodel.updateUserDetails(authUserId, context, updatedUser) {
+                        fetchData.value = !fetchData.value
                         // 2. Navigate to Intro screen after completion
                         navCon.navigate(Screen.Intro.route) {
                             popUpTo(Screen.CompleteUserProfile.route) { inclusive = true }
@@ -132,7 +138,7 @@ fun AppNavGraph(
             sellerDataViewModel = sellerDataViewModel,
             appointmentViewModel = appointmentViewModel,
             userId = authUserId,
-            showBanner = showSellerBanner,
+            showBanner = showSellerBanner.value,
             onBannerClick = {
                 navCon.navigate(Screen.DrProfileManagement.route)
             },
@@ -142,14 +148,21 @@ fun AppNavGraph(
             onManageAccountClick = {
                 navCon.navigate(Screen.ManageAccount.route)
             },
+            onRestartApp = {navCon.navigate(Screen.Intro.route) {
+                popUpTo(Screen.Home.route) { inclusive = true }
+            } },
             onSignOut = {
                 scope.launch {
                     authVm.signOut()
+                    fetchData.value = !fetchData.value
+                    navCon.navigate(Screen.Intro.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
                 }
             }
         )
 
-        drProfileManagementRoute(sellerDataViewModel)
+        drProfileManagementRoute(sellerDataViewModel, authUserId)
 
         topDoctorsRoute(
             viewmodel = mainViewModel,

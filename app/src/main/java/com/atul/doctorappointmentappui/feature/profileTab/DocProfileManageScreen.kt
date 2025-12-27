@@ -32,13 +32,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun DocProfileManageScreen(
     sellerDataViewModel: SellerDataViewModel,
+    sellerId: String
 ) {
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        sellerDataViewModel.getData(context)
+        sellerDataViewModel.getData(sellerId, context)
     }
     val doctor by sellerDataViewModel.sellerData.collectAsState()
 
@@ -182,7 +183,7 @@ fun DocProfileManageScreen(
                             id = doctor.id // keep original
                         )
                         scope.launch{
-                            sellerDataViewModel.updateSellerDetails(context, newData)
+                            sellerDataViewModel.updateSellerDetails(sellerId, context, newData)
                         }
                     }
                 ) { Text("Confirm") }

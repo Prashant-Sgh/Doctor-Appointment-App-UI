@@ -38,13 +38,6 @@ class AuthViewModel @Inject constructor (
         }
     }
 
-    private val _UserName = MutableStateFlow("Authenticated Guest")
-    val UserName: StateFlow<String> = _UserName
-
-    fun updateUserName(name: String) {
-        _UserName.value = name
-    }
-
     suspend fun checkCurrentUser (): String {
         val currentUser = firebaseAuth.currentUser?.uid?: ""
         updateUserId(currentUser)
@@ -96,9 +89,7 @@ class AuthViewModel @Inject constructor (
             firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val userId = firebaseAuth.currentUser?.uid
-//                        updateUserId(userId)
-                        onSuccessful
+                        onSuccessful()
                     }
                 }
             checkCurrentUser()
@@ -107,6 +98,7 @@ class AuthViewModel @Inject constructor (
 
     suspend fun signOut () {
         firebaseAuth.signOut()
+        checkCurrentUser()
     }
 
 }

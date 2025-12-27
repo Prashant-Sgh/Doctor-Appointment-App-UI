@@ -16,33 +16,19 @@ class SellerDataViewModel @Inject constructor(
     private val repo: SellerDataRepo
 ): ViewModel() {
 
-    private val _sellerUid = MutableStateFlow("uid")
-    val sellerUid: StateFlow<String> = _sellerUid
-
-    init {
-        val sellerId = repo.getCurrentUserId()?: ""
-        updateSellerUid(sellerId)
-    }
-
     private val _sellerData = MutableStateFlow(DoctorModel())
     val sellerData: StateFlow<DoctorModel> = _sellerData.asStateFlow()
 
-    suspend fun createSellerProfile(uid: String, doctorData: DoctorModel, context: Context) {
+    suspend fun createSellerProfile(uid: String, doctorData: DoctorModel, onSuccess: () -> Unit, context: Context) {
         val finalDocData = doctorData.copy(id = uid, rating = 5.0)
-        val result = repo.createSellerProfile(uid, finalDocData)
+        val result = repo.createSellerProfile(uid, finalDocData, onSuccess)
         when {
             result.isSuccess -> showToast(context, "Seller profile created")
             result.isFailure -> showToast(context, "Something went wrong")
         }
     }
 
-    private fun updateSellerUid(uid: String) {
-        _sellerUid.value = uid
-    }
-
-    fun getData(context: Context) {
-        val sellerId = _sellerUid.value
-        updateSellerUid(sellerId)
+    fun getData(sellerId: String, context: Context) {
         repo.fetchSellerData(sellerId) { result ->
             if (result != null) {
                 _sellerData.value = result
@@ -54,8 +40,8 @@ class SellerDataViewModel @Inject constructor(
         }
     }
 
-    suspend fun updateSellerDetails(context: Context, details: DoctorModel) {
-        val isUpdated = repo.updateSellerDetails(sellerUid.value, details)
+    suspend fun updateSellerDetails(sellerId: String, context: Context, details: DoctorModel) {
+        val isUpdated = repo.updateSellerDetails(sellerId, details)
         val toastMessage = if (isUpdated) "Seller profile updated." else "Seller profile not-updated!!"
         showToast(context, toastMessage)
     }

@@ -26,13 +26,14 @@ class SellerDataRepo @Inject constructor() {
      * @param doctorData The initial data for the seller, based on the DoctorModel.
      * @return A Result object indicating success (Result.success(Unit)) or failure (Result.failure(exception)).
      */
-    suspend fun createSellerProfile(uid: String, doctorData: DoctorModel): Result<Unit> {
+    suspend fun createSellerProfile(uid: String, doctorData: DoctorModel, onSuccess: () -> Unit): Result<Unit> {
         return try {
             db.collection("sellers")
                 .document(uid)
                 .set(doctorData)
                 .await() // Wait for the operation to complete
             Log.d("Firestore", "Seller profile created successfully for UID: $uid")
+            onSuccess()
             Result.success(Unit)
         } catch (e: Exception) {
             Log.e("Firestore", "Error creating seller profile for UID: $uid", e)

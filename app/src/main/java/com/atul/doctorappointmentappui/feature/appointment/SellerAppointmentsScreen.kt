@@ -23,12 +23,9 @@ import com.atul.doctorappointmentappui.feature.appointment.Components.SellerAppo
 @Composable
 fun SellerAppointmentsScreen(
     appointmentViewModel: AppointmentViewModel,
-    sellerDataViewModel: SellerDataViewModel = hiltViewModel(),
+    doctorId: String,
     onViewAppointment: (AppointmentModel) -> Unit
 ) {
-
-    val doctorId by sellerDataViewModel.sellerUid.collectAsState()
-
     // 1. Fetch data when screen opens
     LaunchedEffect(doctorId) {
         appointmentViewModel.fetchAppointments(doctorId)

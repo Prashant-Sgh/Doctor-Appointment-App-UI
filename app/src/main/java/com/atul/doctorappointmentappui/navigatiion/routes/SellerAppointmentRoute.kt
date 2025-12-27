@@ -9,11 +9,13 @@ import com.atul.doctorappointmentappui.navigatiion.Screen
 
 fun NavGraphBuilder.sellerAppointmentRoute(
     appointmentViewModel: AppointmentViewModel,
+    doctorId: String,
     onViewAppointment: (AppointmentModel) -> Unit
 ) {
     composable(Screen.SellerAppointmentsScreen.route) {
         SellerAppointmentsScreen(
             appointmentViewModel = appointmentViewModel,
+            doctorId = doctorId,
             onViewAppointment = { onViewAppointment(it) }
         )
     }

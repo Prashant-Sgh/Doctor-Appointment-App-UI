@@ -50,6 +50,7 @@ fun MainScreenWrapper(
     onBannerClick: () -> Unit,
     onOpenTopDoctors: () -> Unit,
     onManageAccountClick: () -> Unit,
+    onRestartApp: () -> Unit,
     signOutUser: () -> Unit,
 ) {
 
@@ -103,6 +104,7 @@ fun MainScreenWrapper(
             )
             sellerAppointmentRoute(
                 appointmentViewModel = appointmentViewModel,
+                doctorId = userId,
                 onViewAppointment = { appointment ->
                     navController.navigate(
                         Screen.SellerAppointmentsManagementScreen.createRoute(appointment.appointmentId)
@@ -119,9 +121,19 @@ fun MainScreenWrapper(
             )
             drRegistrationRoute(
                 userId = userId,
+                onSuccess = {
+                    scope.launch {
+                        userDataViewModel.updateUserDetails(
+                            userId,
+                            context,
+                            userData.copy(seller = true),
+                            onRestartApp
+                        )
+                    }
+                            },
                 onNavigateBack = { navController.popBackStack() }
             )
-            drProfileManagementRoute(sellerDataViewModel = sellerDataViewModel)
+            drProfileManagementRoute(sellerDataViewModel = sellerDataViewModel, userId)
             sellerAppointmentsManagementRoute(
                 appointmentViewModel = appointmentViewModel,
                 onBack = { navController.popBackStack() }

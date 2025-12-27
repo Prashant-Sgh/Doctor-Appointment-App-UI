@@ -7,11 +7,13 @@ import com.atul.doctorappointmentappui.navigatiion.Screen
 
 fun NavGraphBuilder. drRegistrationRoute(
     userId: String,
+    onSuccess: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
     composable(Screen.DrRegistrationScreen.route){
         DoctorRegistrationRoute(
             userId = userId,
+            onSuccess = onSuccess,
             onNavigateBack = onNavigateBack,
         )
     }
