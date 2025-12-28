@@ -14,12 +14,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.atul.doctorappointmentappui.core.model.AppointmentModel
 import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.atul.doctorappointmentappui.core.viewmodel.AppointmentViewModel
 import com.atul.doctorappointmentappui.core.viewmodel.MainViewModel
@@ -28,14 +26,13 @@ import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
 import com.atul.doctorappointmentappui.feature.manageAccount.components.IncompleteProfileBanner
 import com.atul.doctorappointmentappui.navigatiion.Screen
 import com.atul.doctorappointmentappui.navigatiion.navigateToDetail
+import com.atul.doctorappointmentappui.navigatiion.routes.appointmentRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.detailRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.drProfileManagementRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.drRegistrationRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.mainScreenRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.manageAccountRoute
-import com.atul.doctorappointmentappui.navigatiion.routes.sellerAppointmentRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.sellerAppointmentsManagementRoute
-import com.atul.doctorappointmentappui.navigatiion.routes.userAppointmentRoute
 import kotlinx.coroutines.launch
 
 
@@ -45,11 +42,12 @@ fun MainScreenWrapper(
     userDataViewModel: UserDataViewModel,
     sellerDataViewModel: SellerDataViewModel,
     appointmentViewModel: AppointmentViewModel,
+    userName: String,
     userId: String,
     showBanner: Boolean,
     onBannerClick: () -> Unit,
     onOpenTopDoctors: () -> Unit,
-    onManageAccountClick: () -> Unit,
+    onReload: () -> Unit,
     onRestartApp: () -> Unit,
     signOutUser: () -> Unit,
 ) {
@@ -64,7 +62,6 @@ fun MainScreenWrapper(
 
     val userData by userDataViewModel.userData.collectAsState()
     val seller = userData.seller
-//    val userId = userData.userId
 
     Scaffold(
         bottomBar = {
@@ -96,21 +93,28 @@ fun MainScreenWrapper(
         {
             mainScreenRoute(
                 mainViewModel = mainViewModel,
+                userName = userName,
                 showBanner = showBanner,
                 onOpenDoctorDetails = { doctor -> navController.navigateToDetail(doctor) },
                 onOpenTopDoctors = { onOpenTopDoctors() },
-                onManageAccount = { onManageAccountClick() },
+                onReload = onReload,
                 onBannerClick = { onBannerClick() }
             )
-            sellerAppointmentRoute(
+
+            appointmentRoute(
                 appointmentViewModel = appointmentViewModel,
-                doctorId = userId,
+                authId = userId,
+                seller = seller,
                 onViewAppointment = { appointment ->
                     navController.navigate(
                         Screen.SellerAppointmentsManagementScreen.createRoute(appointment.appointmentId)
                     )
+                },
+                onCancelAppointment = { appointmentId ->
+                    appointmentViewModel.updateStatus(appointmentId, "CANCELLED")
                 }
             )
+
             manageAccountRoute(
                 userViewModel = userDataViewModel,
                 userId = userId,
@@ -119,6 +123,15 @@ fun MainScreenWrapper(
                     navController.navigate(Screen.DrRegistrationScreen.route)
                 }
             )
+
+            drProfileManagementRoute(sellerDataViewModel = sellerDataViewModel, userId)
+
+            sellerAppointmentsManagementRoute(
+                appointmentViewModel = appointmentViewModel,
+                userPicture = userData.imageURL,
+                onBack = { navController.popBackStack() }
+            )
+
             drRegistrationRoute(
                 userId = userId,
                 onSuccess = {
@@ -130,17 +143,8 @@ fun MainScreenWrapper(
                             onRestartApp
                         )
                     }
-                            },
+                },
                 onNavigateBack = { navController.popBackStack() }
-            )
-            drProfileManagementRoute(sellerDataViewModel = sellerDataViewModel, userId)
-            sellerAppointmentsManagementRoute(
-                appointmentViewModel = appointmentViewModel,
-                onBack = { navController.popBackStack() }
-            )
-            userAppointmentRoute(
-                appointmentViewModel = appointmentViewModel,
-                userId = userId
             )
 
             detailRoute(
@@ -165,7 +169,6 @@ fun MainScreenWrapper(
                     }
                 }
             )
-
         }
     }
 }
@@ -173,18 +176,18 @@ fun MainScreenWrapper(
 @Composable
 fun MainScreen(
     mainViewModel: MainViewModel,
+    userName: String,
     showBanner: Boolean = false,
     modifier: Modifier? = null,
     onBannerClick: () -> Unit,    // <--- Received from AppNavGraph
     onOpenDoctorDetails: (DoctorModel) -> Unit,
     onOpenTopDoctors: () -> Unit,
-    onManageAccount: () -> Unit,
+    onReload: () -> Unit,
 ) {
 
     // Collect Data
     val categories by mainViewModel.category.collectAsState()
     val doctors by mainViewModel.doctors.collectAsState()
-    val userName by mainViewModel.UserName.collectAsState()
 
     // Local state to handle closing the banner for this session
     var isBannerDismissed by remember { mutableStateOf(false) }
@@ -213,7 +216,7 @@ fun MainScreen(
         }
 
         // --- Existing Items ---
-        item { HomeHeader(userName) { onManageAccount() } }
+        item { HomeHeader(userName) { onReload() } }
         item { Banner() }
         item { SectionHeader(title = "Doctor Speciality", onSeeAll = null) }
         item { CategoryRow(categories) }

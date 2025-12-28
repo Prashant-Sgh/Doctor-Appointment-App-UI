@@ -58,6 +58,16 @@ fun AppNavGraph(
         }
     }
 
+    // Reload data for user, fetch doctor and category list and if he/ she is doctor then fetch that too.
+    fun reloadData(isSeller: Boolean) {
+        userDataViewmodel.getData(authUserId, context)
+        mainViewModel.loadDoctors(true)
+        mainViewModel.loadCategory(true)
+        if (isSeller) {
+            sellerDataViewModel.getData(authUserId, context)
+        }
+    }
+
     // 3. Calculate the Banner Logic
     // Show if: User is a Seller AND Seller Profile is NOT complete
     val showSellerBanner = remember { mutableStateOf(currentUserData.seller && !currentSellerData.profileCompleted) }
@@ -137,6 +147,7 @@ fun AppNavGraph(
             userDataViewModel = userDataViewmodel,
             sellerDataViewModel = sellerDataViewModel,
             appointmentViewModel = appointmentViewModel,
+            userName = currentUserData.userName,
             userId = authUserId,
             showBanner = showSellerBanner.value,
             onBannerClick = {
@@ -145,8 +156,8 @@ fun AppNavGraph(
             onOpenTopDoctors = {
                 navCon.navigate(Screen.TopDoctors.route)
             },
-            onManageAccountClick = {
-                navCon.navigate(Screen.ManageAccount.route)
+            onReload = {
+                reloadData(currentUserData.seller)
             },
             onRestartApp = {navCon.navigate(Screen.Intro.route) {
                 popUpTo(Screen.Home.route) { inclusive = true }
@@ -162,16 +173,5 @@ fun AppNavGraph(
             }
         )
 
-        drProfileManagementRoute(sellerDataViewModel, authUserId)
-
-        topDoctorsRoute(
-            viewmodel = mainViewModel,
-            onBack = {
-                navCon.popBackStack()
-            },
-            onOpenDetails = { doctor ->
-                navCon.navigateToDetail(doctor)
-            }
-        )
     }
 }

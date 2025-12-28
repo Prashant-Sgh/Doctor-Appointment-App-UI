@@ -14,11 +14,12 @@ fun NavGraphBuilder.homeRoute(
     userDataViewModel: UserDataViewModel,
     sellerDataViewModel: SellerDataViewModel,
     appointmentViewModel: AppointmentViewModel,
+    userName: String,
     userId: String,
     showBanner: Boolean,
     onBannerClick: () -> Unit,
     onOpenTopDoctors: () -> Unit,
-    onManageAccountClick: () -> Unit,
+    onReload: () -> Unit,
     onRestartApp: () -> Unit,
     onSignOut: () -> Unit
 ) {
@@ -28,11 +29,12 @@ fun NavGraphBuilder.homeRoute(
             userDataViewModel = userDataViewModel,
             sellerDataViewModel = sellerDataViewModel,
             appointmentViewModel = appointmentViewModel,
+            userName = userName,
             userId = userId,
             showBanner = showBanner,
             onBannerClick = { onBannerClick() },
             onOpenTopDoctors = { onOpenTopDoctors() },
-            onManageAccountClick = { onManageAccountClick() },
+            onReload = onReload,
             onRestartApp = onRestartApp,
             signOutUser = {
                 onSignOut()

@@ -1,4 +1,4 @@
-package com.atul.doctorappointmentappui.feature.appointment.Components
+package com.atul.doctorappointmentappui.feature.appointment.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape

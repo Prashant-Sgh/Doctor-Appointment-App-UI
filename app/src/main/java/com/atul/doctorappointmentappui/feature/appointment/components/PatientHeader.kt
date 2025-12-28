@@ -1,4 +1,4 @@
-package com.atul.doctorappointmentappui.feature.appointment.Components
+package com.atul.doctorappointmentappui.feature.appointment.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,12 +18,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.atul.doctorappointmentappui.core.model.AppointmentModel
 
 @Composable
-fun PatientHeader(appointment: AppointmentModel) {
+fun PatientHeader(appointment: AppointmentModel, userPicture: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -35,12 +39,22 @@ fun PatientHeader(appointment: AppointmentModel) {
                 .background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = "Patient",
-                modifier = Modifier.size(36.dp),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+            if (userPicture != "") {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(userPicture)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "User Picture"
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "Patient",
+                    modifier = Modifier.size(36.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
         }
         Column {
             Text(

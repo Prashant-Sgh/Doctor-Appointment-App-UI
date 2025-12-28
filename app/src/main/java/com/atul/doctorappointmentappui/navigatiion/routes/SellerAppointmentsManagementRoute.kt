@@ -8,6 +8,7 @@ import com.atul.doctorappointmentappui.navigatiion.Screen
 
 fun NavGraphBuilder.sellerAppointmentsManagementRoute(
     appointmentViewModel: AppointmentViewModel,
+    userPicture: String,
     onBack: () -> Unit
 ) {
     composable(
@@ -19,6 +20,7 @@ fun NavGraphBuilder.sellerAppointmentsManagementRoute(
         if (appointmentId != null) {
             SellerAppointmentsManagementRoute(
                 appointmentId = appointmentId,
+                userPicture = userPicture,
                 viewModel = appointmentViewModel,
                 onBack = { onBack() }
             )

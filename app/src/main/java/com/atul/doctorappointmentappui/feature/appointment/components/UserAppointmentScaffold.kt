@@ -1,4 +1,4 @@
-package com.atul.doctorappointmentappui.feature.appointment.Components
+package com.atul.doctorappointmentappui.feature.appointment.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,17 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.AppointmentModel
-import com.atul.doctorappointmentappui.core.viewmodel.AppointmentViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SellerAppointmentScaffold(
-//    appointmentViewModel: AppointmentViewModel,
+fun UserAppointmentScaffold(
     appointments: List<AppointmentModel>,
-    onViewAppointment: (AppointmentModel) -> Unit
+    onAppointmentCancel: (String) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -67,13 +66,42 @@ fun SellerAppointmentScaffold(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(appointments) { appointment ->
-                    SellerAppointmentCard(
-//                        appointmentViewModel = appointmentViewModel,
+                    UserAppointmentCard(
                         appointment = appointment,
-                        onViewClick = { onViewAppointment(appointment) }
+                        onViewClick = { appointmentId -> onAppointmentCancel(appointmentId) }
                     )
                 }
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    UserAppointmentScaffold(
+        appointments = listOf(
+            AppointmentModel(
+                appointmentId = "appt123",
+                patientName = "Atul Singh",
+                problemDescription = "Follow-up after seasonal flu",
+                status = "CONFIRMED",
+                date = com.google.firebase.Timestamp.now() // Uses current time for the preview
+            ),
+            AppointmentModel(
+                appointmentId = "appt123",
+                patientName = "Bram to",
+                problemDescription = "Follow-up after seasonal flu",
+                status = "CANCELLED",
+                date = com.google.firebase.Timestamp.now() // Uses current time for the preview
+            ),
+            AppointmentModel(
+                appointmentId = "appt123",
+                patientName = "Atul",
+                problemDescription = "Follow-up after seasonal flu",
+                status = "PENDING",
+                date = com.google.firebase.Timestamp.now() // Uses current time for the preview
+            )
+        )
+    ) { }
 }

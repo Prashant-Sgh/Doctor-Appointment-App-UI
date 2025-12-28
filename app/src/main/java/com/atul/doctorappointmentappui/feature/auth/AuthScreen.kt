@@ -130,11 +130,11 @@ fun AuthScreen(
     }
 }
 
-//@Preview
-//@Composable
-//private fun Preview() {
-//    AuthScreen(
-//        {},
-//        {},
-//    )
-//}
+@Preview
+@Composable
+private fun Preview() {
+    AuthScreen(
+        {},
+        {_,_,_ ->},
+    )
+}

@@ -30,13 +30,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.atul.doctorappointmentappui.core.model.AppointmentModel
 import com.atul.doctorappointmentappui.core.viewmodel.AppointmentViewModel
-import com.atul.doctorappointmentappui.feature.appointment.Components.AppointmentActionsBottomBar
-import com.atul.doctorappointmentappui.feature.appointment.Components.AppointmentDetailsCard
-import com.atul.doctorappointmentappui.feature.appointment.Components.PatientHeader
+import com.atul.doctorappointmentappui.feature.appointment.components.AppointmentActionsBottomBar
+import com.atul.doctorappointmentappui.feature.appointment.components.AppointmentDetailsCard
+import com.atul.doctorappointmentappui.feature.appointment.components.PatientHeader
 
 @Composable
 fun SellerAppointmentsManagementRoute(
     appointmentId: String,
+    userPicture: String = "",
     viewModel: AppointmentViewModel,
     onBack: () -> Unit,
 ) {
@@ -63,6 +64,7 @@ fun SellerAppointmentsManagementRoute(
     // 4. Call the Stateless UI Composable with pure data and lambdas
     SellerAppointmentsManagementScreen(
         appointment = appointment,
+        userPicture = userPicture,
         onBack = onBack,
         onConfirm = onConfirm,
         onCancel = onCancel
@@ -74,6 +76,7 @@ fun SellerAppointmentsManagementRoute(
 @Composable
 fun SellerAppointmentsManagementScreen(
     appointment: AppointmentModel?, // Takes pure data, not a ViewModel
+    userPicture: String,
     onBack: () -> Unit,
     onConfirm: () -> Unit,
     onCancel: () -> Unit
@@ -121,7 +124,7 @@ fun SellerAppointmentsManagementScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp)
             ) {
-                PatientHeader(appointment)
+                PatientHeader(appointment, userPicture)
                 Spacer(modifier = Modifier.height(24.dp))
                 AppointmentDetailsCard(appointment)
             }

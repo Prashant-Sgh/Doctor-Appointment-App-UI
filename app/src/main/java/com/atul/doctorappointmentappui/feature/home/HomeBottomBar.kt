@@ -37,12 +37,12 @@ fun HomeBottomBar (
     // 2. Defined tabs here.
     val usersTabs = listOf(
         BottomTab("Home", Screen.MainScreen.route, Icons.Default.Home),
-        BottomTab("Appointments", Screen.UserAppointmentsScreen.route, Icons.Default.CalendarMonth),
+        BottomTab("Appointments", Screen.AppointmentsScreen.route, Icons.Default.CalendarMonth),
         BottomTab("Profile", Screen.ManageAccount.route, Icons.Default.ManageAccounts)
     )
     val sellerTabs = listOf(
         BottomTab("Home", Screen.MainScreen.route, Icons.Default.Home),
-        BottomTab("Appointments", Screen.SellerAppointmentsScreen.route, Icons.Default.CalendarMonth),
+        BottomTab("Appointments", Screen.AppointmentsScreen.route, Icons.Default.CalendarMonth),
         BottomTab("Profile", Screen.ManageAccount.route, Icons.Default.ManageAccounts),
         BottomTab("Doctor", Screen.DrProfileManagement.route, Icons.Default.ManageAccounts)
     )
@@ -92,15 +92,17 @@ fun HomeBottomBar (
 //fun HomeBottomBarPreview() {
 //    // Preview 1: Home Selected
 //    HomeBottomBar(
+//        seller = false,
 //        currentRoute = Screen.MainScreen.route,
 //        onNavigate = {})
 //}
-
+//
 //@Preview(showBackground = true)
 //@Composable
 //fun HomeBottomBarAppointmentsPreview() {
 //    // Preview 2: Appointments Selected
 //    HomeBottomBar(
+//        seller = false,
 //        currentRoute = Screen.SellerAppointmentsScreen.route,
 //        onNavigate = {}
 //    )

@@ -9,20 +9,22 @@ import com.atul.doctorappointmentappui.navigatiion.Screen
 
 fun NavGraphBuilder.mainScreenRoute(
     mainViewModel: MainViewModel,
+    userName: String,
     showBanner: Boolean,
     onBannerClick: () -> Unit,
     onOpenDoctorDetails: (DoctorModel) -> Unit,
     onOpenTopDoctors: () -> Unit,
-    onManageAccount: () -> Unit,
+    onReload: () -> Unit,
 ) {
     composable (Screen.MainScreen.route) {
         MainScreen(
             mainViewModel = mainViewModel,
+            userName  = userName,
             showBanner = showBanner,
             onBannerClick = { onBannerClick() },
             onOpenDoctorDetails = { onOpenDoctorDetails(it) },
             onOpenTopDoctors = { onOpenTopDoctors() },
-            onManageAccount = { onManageAccount() },
+            onReload = onReload,
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.atul.doctorappointmentappui.feature.appointment.Components
+package com.atul.doctorappointmentappui.feature.appointment.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,21 +15,20 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,24 +44,18 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.atul.doctorappointmentappui.R
 import com.atul.doctorappointmentappui.core.model.AppointmentModel
-import com.atul.doctorappointmentappui.core.viewmodel.UserDataViewModel
+import com.atul.doctorappointmentappui.core.model.DoctorModel
+import com.atul.doctorappointmentappui.core.viewmodel.AppointmentViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun SellerAppointmentCard(
-    userViewmodel: UserDataViewModel = hiltViewModel(),
+fun UserAppointmentCard(
+    appointmentViewModel: AppointmentViewModel = hiltViewModel(),
     appointment: AppointmentModel,
-    onViewClick: () -> Unit
+    onViewClick: (String) -> Unit
 ) {
-
-    val context = LocalContext.current
-    val userId = appointment.userId
-    val userData by userViewmodel.userData.collectAsState()
-
-    LaunchedEffect(appointment) {
-        userViewmodel.getData(userId, context)
-    }
+//    val userData by userDataFlow.collectAsState()
 
     val javaDate = remember(appointment.date) {
         appointment.date?.toDate()
@@ -82,6 +75,19 @@ fun SellerAppointmentCard(
         } else {
             "--:--"
         }
+    }
+
+    var doctorData by remember { mutableStateOf(DoctorModel()) }
+
+    LaunchedEffect(appointment) {
+        appointmentViewModel.getDoctorData(
+            appointment.doctorId,
+            onResult = { result ->
+                if(result != null){
+                    doctorData = result
+                }
+            }
+        )
     }
 
     Card(
@@ -105,22 +111,19 @@ fun SellerAppointmentCard(
                     modifier = Modifier.size(48.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        val userImage = userData.imageURL
-                        if (userImage == "") {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = null,
-                                tint = colorResource(R.color.puurple)
-                            )
-                        } else {
-                            AsyncImage(
-                                model = ImageRequest.Builder(context)
-                                    .data(userImage)
-                                    .crossfade(true)
-                                    .build(),
-                                contentDescription = null
-                            )
-                        }
+//                        Icon(
+//                            imageVector = Icons.Default.Person,
+//                            contentDescription = null,
+//                            tint = colorResource(R.color.puurple)
+//                        )
+                        AsyncImage(
+                            model = ImageRequest
+                                .Builder(LocalContext.current)
+                                .data(doctorData.picture)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                        )
                     }
                 }
 
@@ -181,7 +184,7 @@ fun SellerAppointmentCard(
 
             // --- Action Button ---
             Button(
-                onClick = onViewClick,
+                onClick = { onViewClick(appointment.appointmentId) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -191,7 +194,7 @@ fun SellerAppointmentCard(
                 )
             ) {
                 Text(
-                    text = "View Details",
+                    text = "Cancel Appointment",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -200,9 +203,24 @@ fun SellerAppointmentCard(
     }
 }
 
-@Preview
+//// --- Generated Preview ---
+@Preview(showBackground = true, backgroundColor = 0xFFF5F5F5)
 @Composable
-private fun Preview() {
-    // Gemini generate a preview for the above composable
-    SellerAppointmentCard(appointment = AppointmentModel()) { }
+private fun UserAppointmentCardPreview() {
+    MaterialTheme {
+        Box(modifier = Modifier.padding(16.dp)) {
+            UserAppointmentCard(
+                appointment = AppointmentModel(
+                    appointmentId = "appt123",
+                    patientName = "Atul Kumar",
+                    problemDescription = "Follow-up after seasonal flu",
+                    status = "CONFIRMED",
+                    date = com.google.firebase.Timestamp.now() // Uses current time for the preview
+                ),
+                onViewClick = { appointmentId ->
+                    println("Clicked on appointment: $appointmentId")
+                }
+            )
+        }
+    }
 }
