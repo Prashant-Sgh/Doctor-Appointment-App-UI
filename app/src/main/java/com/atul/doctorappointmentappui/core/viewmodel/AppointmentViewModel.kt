@@ -43,6 +43,17 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
+    val _preBookedSlots = MutableStateFlow<List<String>>(emptyList())
+    val preBookedSlots: StateFlow<List<String>> = _preBookedSlots.asStateFlow()
+
+    fun getBookedTimeSlots(doctorId: String) {
+        viewModelScope.launch {
+            repo.getBookedTimeSlots(doctorId).collect { list ->
+                _preBookedSlots.value = list
+            }
+        }
+    }
+
     fun fetchUserAppointments(userId: String) {
         _isLoading.value = true
         viewModelScope.launch {

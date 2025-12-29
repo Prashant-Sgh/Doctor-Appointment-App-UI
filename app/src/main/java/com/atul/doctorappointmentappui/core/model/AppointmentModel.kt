@@ -8,6 +8,7 @@ data class AppointmentModel(
     val userId: String = "",
     val patientName: String = "",
     val problemDescription: String = "",
+    val timeSlot: String = "",
     val date: Timestamp? = null,
     val time: String = "", // Note: Your Firebase structure doesn't have a separate time field. We will need to derive it from the 'date' Timestamp.
     val status: String = "", // PENDING, CONFIRMED, COMPLETED, CANCELLED

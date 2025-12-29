@@ -38,6 +38,26 @@ class AppointmentRepo @Inject constructor(
         awaitClose { listener.remove() }
     }
 
+    fun getBookedTimeSlots(doctorId: String): Flow<List<String>> = callbackFlow {
+        val listener = collection
+            .whereEqualTo("doctorId", doctorId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.d("AppointmentRepo", "Listen failed.", error)
+                    return@addSnapshotListener
+                }
+                if (snapshot != null && !snapshot.isEmpty) {
+                    val appointments = snapshot.toObjects(AppointmentModel::class.java)
+                    val allSlots = appointments.map { it.timeSlot }
+                    trySend(allSlots)
+                } else {
+                    trySend(emptyList())
+                }
+            }
+        // Close the listener when viewmodel is cleared/screen closed
+        awaitClose { listener.remove() }
+    }
+
     fun getUserAppointmentsFlow(userId: String): Flow<List<AppointmentModel>> = callbackFlow {
         val listener = collection
             .whereEqualTo("userId", userId)

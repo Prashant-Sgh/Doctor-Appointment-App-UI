@@ -15,6 +15,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,12 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.atul.doctorappointmentappui.core.model.AppointmentModel
 import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.atul.doctorappointmentappui.core.model.UserModel
+import com.atul.doctorappointmentappui.core.viewmodel.AppointmentViewModel
 import com.atul.doctorappointmentappui.feature.detail.components.AppointmentBookingSheetContent
-import com.atul.doctorappointmentappui.feature.detail.components.AppointmentBookingSheetContentTest
-import java.util.Date
 
 /**
  * A stateful composable that holds the logic for the Detail Screen.
@@ -36,6 +38,7 @@ import java.util.Date
  */
 @Composable
 fun DetailScreenRoute(
+    appointmentViewModel: AppointmentViewModel = hiltViewModel(),
     doctor: DoctorModel,
     currentUserData: UserModel,
     onBookAppointment: (AppointmentModel) -> Unit,
@@ -46,9 +49,17 @@ fun DetailScreenRoute(
     onDirection: (String) -> Unit,
     onShare: (subject: String, text: String) -> Unit,
 ) {
+
+    val preBookedSlots by appointmentViewModel.preBookedSlots.collectAsState()
+
+    LaunchedEffect(doctor.id) {
+        appointmentViewModel.getBookedTimeSlots(doctor.id)
+    }
+
     DetailScreen(
         item = doctor,
         currentUserData = currentUserData,
+        preBookedSlots = preBookedSlots,
         onBookAppointment = onBookAppointment,
         onBack = onBack,
         onOpenWebsite = onOpenWebsite,
@@ -68,6 +79,7 @@ fun DetailScreenRoute(
 fun DetailScreen(
     item: DoctorModel,
     currentUserData: UserModel,
+    preBookedSlots: List<String>,
     onBookAppointment: (AppointmentModel) -> Unit,
     onBack: () -> Unit,
     onOpenWebsite: (String) -> Unit,
@@ -95,14 +107,14 @@ fun DetailScreen(
 //                onProblemDescriptionChange = { newDescription -> problemDescription = newDescription },
 //                onConfirmClick = { appointmentData -> onBookAppointment(appointmentData) }
 //            )
-            AppointmentBookingSheetContentTest(
+            AppointmentBookingSheetContent(
                 patientName = currentUserData.userName,
                 userId = currentUserData.userId,
                 doctorName = item.name,
                 doctorId = item.id,
 //                date = Date(), // Pass the current date
                 problemDescription = problemDescription,
-                preBookedSlots = listOf("09:30 AM", "11:00 AM", "01:00 PM"),
+                preBookedSlots = preBookedSlots,
                 onProblemDescriptionChange = { newDescription -> problemDescription = newDescription },
                 onConfirmClick = { appointmentData -> onBookAppointment(appointmentData) }
             )
@@ -152,6 +164,7 @@ private fun DetailScreenPreview() {
             item = DoctorModel(id = "0", name = "Dr. Atul Kumar", picture = ""),
             currentUserData = UserModel(userId = "user1", userName = "John Doe"),
             onBookAppointment = {},
+            preBookedSlots = listOf("10:00 AM", "02:00 PM"),
             onBack = {},
             onOpenWebsite = {},
             onSendSms = { _, _ -> },
