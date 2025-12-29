@@ -27,6 +27,7 @@ import com.atul.doctorappointmentappui.core.model.AppointmentModel
 import com.atul.doctorappointmentappui.core.model.DoctorModel
 import com.atul.doctorappointmentappui.core.model.UserModel
 import com.atul.doctorappointmentappui.feature.detail.components.AppointmentBookingSheetContent
+import com.atul.doctorappointmentappui.feature.detail.components.AppointmentBookingSheetContentTest
 import java.util.Date
 
 /**
@@ -84,16 +85,28 @@ fun DetailScreen(
             onDismissRequest = { isSheetVisible = false },
             sheetState = sheetState,
         ) {
-            AppointmentBookingSheetContent(
+//            AppointmentBookingSheetContent(
+//                patientName = currentUserData.userName,
+//                userId = currentUserData.userId,
+//                doctorName = item.name,
+//                doctorId = item.id,
+////                date = Date(), // Pass the current date
+//                problemDescription = problemDescription,
+//                onProblemDescriptionChange = { newDescription -> problemDescription = newDescription },
+//                onConfirmClick = { appointmentData -> onBookAppointment(appointmentData) }
+//            )
+            AppointmentBookingSheetContentTest(
                 patientName = currentUserData.userName,
                 userId = currentUserData.userId,
                 doctorName = item.name,
                 doctorId = item.id,
 //                date = Date(), // Pass the current date
                 problemDescription = problemDescription,
+                preBookedSlots = listOf("09:30 AM", "11:00 AM", "01:00 PM"),
                 onProblemDescriptionChange = { newDescription -> problemDescription = newDescription },
                 onConfirmClick = { appointmentData -> onBookAppointment(appointmentData) }
             )
+
         }
     }
 
