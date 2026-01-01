@@ -3,3 +3,27 @@
 
     <style name="Theme.DoctorAppointmentAppUI" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
+
+<!--    <?xml version="1.0" encoding="utf-8"?>-->
+<!--<resources>-->
+
+<!--&lt;!&ndash; 1. The Main App Theme (Based on Material 3) &ndash;&gt;-->
+<!--&lt;!&ndash; This REPLACES your old Theme.DoctorAppointmentAppUI. Note the new parent. &ndash;&gt;-->
+<!--<style name="Theme.DoctorAppointmentAppUI" parent="Theme.Material3.DayNight.NoActionBar">-->
+<!--    &lt;!&ndash; You can add your app's main color palette here later &ndash;&gt;-->
+<!--    &lt;!&ndash; Example: &ndash;&gt;-->
+<!--    &lt;!&ndash; <item name="colorPrimary">@color/puurple</item> &ndash;&gt;-->
+<!--</style>-->
+
+
+<!--&lt;!&ndash; 2. The Special Splash Screen Theme (Used only at launch) &ndash;&gt;-->
+<!--<style name="Theme.App.Starting" parent="Theme.SplashScreen">-->
+<!--    &lt;!&ndash; This is the theme for the system splash screen &ndash;&gt;-->
+<!--    <item name="windowSplashScreenBackground">@color/white</item>-->
+<!--    <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>-->
+
+<!--    &lt;!&ndash; After this splash screen, apply the main theme defined above &ndash;&gt;-->
+<!--    <item name="postSplashScreenTheme">@style/Theme.DoctorAppointmentAppUI</item>-->
+<!--</style>-->
+
+<!--</resources>-->
