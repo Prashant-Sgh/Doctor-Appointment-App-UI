@@ -22,6 +22,9 @@ class UserDataViewModel @Inject constructor(
     private val _userData = MutableStateFlow(UserModel())
     val userData: StateFlow<UserModel> = _userData.asStateFlow()
 
+    private val _loadingState = MutableStateFlow(true)
+    val loadingState: StateFlow<Boolean> = _loadingState.asStateFlow()
+
     fun getData(userId: String, context: Context) {
         if (userId.isBlank()) {
             Log.d("UserDataViewModel", "getData called with blank UID. Aborting.")
@@ -34,11 +37,13 @@ class UserDataViewModel @Inject constructor(
                     .collect { user ->
                         if (user != null) {
                             _userData.value = user
+                            _loadingState.value = false
                             showToast(context, "User data fetched.")
                         }
                         else {
-                            showToast(context, "User document for UID: $userId does not exist.")
                             _userData.value = UserModel(userId = userId, profileCompleted = false)
+                            _loadingState.value = false
+                            showToast(context, "User document for UID: $userId does not exist.")
                         }
                     }
             }

@@ -34,7 +34,8 @@ import androidx.compose.ui.unit.sp
 import com.atul.doctorappointmentappui.R
 
 @Composable
-fun IntroScreen(onStartClick: ()-> Unit ) {
+fun IntroScreen(onStartClick: ()-> Unit, afterLoadingState: () -> Unit) {
+    afterLoadingState()
     Box(
         modifier = Modifier
             .fillMaxSize()

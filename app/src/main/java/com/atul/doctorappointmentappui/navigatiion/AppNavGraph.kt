@@ -24,6 +24,7 @@ import com.atul.doctorappointmentappui.navigatiion.routes.drProfileManagementRou
 import com.atul.doctorappointmentappui.navigatiion.routes.homeRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.introRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.manageAccountRoute
+import com.atul.doctorappointmentappui.navigatiion.routes.splashScreenRoute
 import com.atul.doctorappointmentappui.navigatiion.routes.topDoctorsRoute
 import kotlinx.coroutines.launch
 
@@ -45,6 +46,8 @@ fun AppNavGraph(
 
     // Collect user data state
     val currentUserData by userDataViewmodel.userData.collectAsState() // Access value for logic
+    val loadingState by userDataViewmodel.loadingState.collectAsState()
+
 
     // Collect seller data state
     val currentSellerData by sellerDataViewModel.sellerData.collectAsState()
@@ -96,7 +99,7 @@ fun AppNavGraph(
         }
     }
 
-    NavHost(navCon, Screen.Intro.route) { // Always start at Intro to show brand
+    NavHost(navCon, Screen.SplashScreen.route) { // Always start at Intro to show brand
 
         introRoute(
             onStart = {
@@ -104,7 +107,23 @@ fun AppNavGraph(
                 navCon.navigate(startDestination) {
                     popUpTo(Screen.Intro.route) { inclusive = true }
                 }
+            },
+            afterLoadingState = {
+                if (!loadingState) {
+                    navCon.navigate(startDestination) {
+                        popUpTo(Screen.Intro.route) { inclusive = true }
+                    }
+                }
             }
+        )
+
+        splashScreenRoute(
+            afterLoading = {
+                navCon.navigate(startDestination) {
+                    popUpTo(Screen.Intro.route) { inclusive = true }
+                }
+            },
+            loadingState = loadingState
         )
 
         authRoute(

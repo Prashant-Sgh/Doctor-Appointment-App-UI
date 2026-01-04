@@ -2,6 +2,7 @@ package com.atul.doctorappointmentappui.navigatiion
 
 sealed class Screen (val route: String) {
     data object Intro: Screen("intro")
+    data object SplashScreen: Screen("splashScreen")
     data object Home: Screen("home")
     data object MainScreen: Screen("mainScreen")
     data object TopDoctors: Screen("topDoctors")
