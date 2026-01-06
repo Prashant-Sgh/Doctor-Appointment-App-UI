@@ -120,7 +120,7 @@ fun AppNavGraph(
         splashScreenRoute(
             afterLoading = {
                 navCon.navigate(startDestination) {
-                    popUpTo(Screen.Intro.route) { inclusive = true }
+                    popUpTo(Screen.SplashScreen.route) { inclusive = true }
                 }
             },
             loadingState = loadingState
