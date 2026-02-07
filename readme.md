@@ -49,4 +49,4 @@ This repository contains the source code only.
 This project represents the kind of scalable, real-world mobile applications I build for startups and businesses.
 
 📩 Learn more or get in touch via my portfolio:  
-🔗 **[check out my full portfolio](https://atul-portfolio-sigma-two.vercel.app/)**
+🔗 **[check out my portfolio](https://atul-portfolio-sigma-two.vercel.app/)**
