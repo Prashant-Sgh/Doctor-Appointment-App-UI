@@ -40,7 +40,7 @@ This repository contains the source code only.
 
 👉 **For a detailed case study, architecture decisions, challenges, user flows, and visuals, visit:**
 
-🔗 **https://myPortfolio.com**
+🔗 **[check out my full case-study](https://atul-portfolio-sigma-two.vercel.app/projects/clinic-appointment-system)**
 
 ---
 
@@ -49,4 +49,4 @@ This repository contains the source code only.
 This project represents the kind of scalable, real-world mobile applications I build for startups and businesses.
 
 📩 Learn more or get in touch via my portfolio:  
-🔗 **https://myPortfolio.com**
+🔗 **[check out my full portfolio](https://atul-portfolio-sigma-two.vercel.app/)**
